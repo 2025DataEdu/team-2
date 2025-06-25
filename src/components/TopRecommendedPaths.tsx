@@ -1,15 +1,13 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import LocationBasedRecommendedPaths from './LocationBasedRecommendedPaths';
-import DistanceSelector from './DistanceSelector';
 import { useLocation } from '@/hooks/useLocation';
 
 interface TopRecommendedPathsProps {
   title?: string;
 }
 
-const TopRecommendedPaths = ({ title = "추천 산책로 TOP 3" }: TopRecommendedPathsProps) => {
-  const [selectedDistance, setSelectedDistance] = useState(5);
+const TopRecommendedPaths = ({ title = "내 주변 추천 산책로 TOP 3" }: TopRecommendedPathsProps) => {
   const { latitude, longitude, isLoading: locationLoading, error: locationError } = useLocation();
 
   if (locationLoading) {
@@ -38,15 +36,10 @@ const TopRecommendedPaths = ({ title = "추천 산책로 TOP 3" }: TopRecommende
 
   return (
     <div>
-      <DistanceSelector 
-        selectedDistance={selectedDistance}
-        onDistanceChange={setSelectedDistance}
-      />
-      
       <LocationBasedRecommendedPaths
         userLatitude={latitude}
         userLongitude={longitude}
-        maxDistance={selectedDistance}
+        maxDistance={5}
         title={title}
       />
     </div>

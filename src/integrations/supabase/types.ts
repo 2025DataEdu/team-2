@@ -97,46 +97,55 @@ export type Database = {
       }
       건강정보: {
         Row: {
-          birth_year: number | null
-          blood_pressure_dia: number | null
-          blood_pressure_sys: number | null
-          cholesterol_total: number | null
-          diagnosis_code: string | null
-          exercise_frequency: string | null
-          gender: string | null
-          height_cm: number | null
-          patient_id: string
-          smoking_status: string | null
-          visit_date: string | null
-          weight_kg: number | null
+          ID: number
+          나이: number | null
+          성별: string | null
+          "수축기 혈압": number | null
+          "신장(cm)": number | null
+          "운동 빈도(회/주)": string | null
+          "음주 빈도(회/주)": string | null
+          이름: string | null
+          "이완기 혈압": number | null
+          "진단 질병": string | null
+          "체중(kg)": number | null
+          "총콜레스테롤(mg/dL)": number | null
+          "혈당(mg/dL)": number | null
+          혈액형: string | null
+          "흡연 여부": string | null
         }
         Insert: {
-          birth_year?: number | null
-          blood_pressure_dia?: number | null
-          blood_pressure_sys?: number | null
-          cholesterol_total?: number | null
-          diagnosis_code?: string | null
-          exercise_frequency?: string | null
-          gender?: string | null
-          height_cm?: number | null
-          patient_id: string
-          smoking_status?: string | null
-          visit_date?: string | null
-          weight_kg?: number | null
+          ID: number
+          나이?: number | null
+          성별?: string | null
+          "수축기 혈압"?: number | null
+          "신장(cm)"?: number | null
+          "운동 빈도(회/주)"?: string | null
+          "음주 빈도(회/주)"?: string | null
+          이름?: string | null
+          "이완기 혈압"?: number | null
+          "진단 질병"?: string | null
+          "체중(kg)"?: number | null
+          "총콜레스테롤(mg/dL)"?: number | null
+          "혈당(mg/dL)"?: number | null
+          혈액형?: string | null
+          "흡연 여부"?: string | null
         }
         Update: {
-          birth_year?: number | null
-          blood_pressure_dia?: number | null
-          blood_pressure_sys?: number | null
-          cholesterol_total?: number | null
-          diagnosis_code?: string | null
-          exercise_frequency?: string | null
-          gender?: string | null
-          height_cm?: number | null
-          patient_id?: string
-          smoking_status?: string | null
-          visit_date?: string | null
-          weight_kg?: number | null
+          ID?: number
+          나이?: number | null
+          성별?: string | null
+          "수축기 혈압"?: number | null
+          "신장(cm)"?: number | null
+          "운동 빈도(회/주)"?: string | null
+          "음주 빈도(회/주)"?: string | null
+          이름?: string | null
+          "이완기 혈압"?: number | null
+          "진단 질병"?: string | null
+          "체중(kg)"?: number | null
+          "총콜레스테롤(mg/dL)"?: number | null
+          "혈당(mg/dL)"?: number | null
+          혈액형?: string | null
+          "흡연 여부"?: string | null
         }
         Relationships: []
       }

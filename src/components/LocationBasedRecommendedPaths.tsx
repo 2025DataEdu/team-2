@@ -80,7 +80,7 @@ const LocationBasedRecommendedPaths = ({
           🚶‍♂️ {title}
         </h4>
         <div className="text-sm text-gray-500">
-          {maxDistance}km 이내에 등록된 산책로가 없습니다.
+          5km 이내에 등록된 산책로가 없습니다.
         </div>
       </div>
     );
@@ -89,7 +89,7 @@ const LocationBasedRecommendedPaths = ({
   return (
     <div>
       <h4 className="font-medium text-gray-900 mb-4 flex items-center gap-2">
-        🚶‍♂️ {title} (반경 {maxDistance}km)
+        🚶‍♂️ {title} (5km 이내, 가까운 순)
       </h4>
       
       <div className="space-y-3">
@@ -147,7 +147,7 @@ const LocationBasedRecommendedPaths = ({
 
       <div className="mt-4 p-3 bg-blue-50 rounded-lg">
         <p className="text-sm text-blue-700">
-          💡 현재 위치에서 가까운 순서대로 정렬된 실제 등록 산책로입니다.
+          💡 현재 위치에서 5km 이내, 가까운 순서대로 정렬된 실제 등록 산책로입니다.
         </p>
       </div>
     </div>
