@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Clock, Info, Toilet, Car, Building, Coffee, ShoppingCart, Lightbulb } from 'lucide-react';
 import SmallMap from './SmallMap';
-import NearbyRestaurants from './NearbyRestaurants';
+import TopRecommendedPaths from './TopRecommendedPaths';
 
 interface RealWalkingPath {
   CoursCode: string;
@@ -300,8 +300,8 @@ const RealPathDetailModal = ({ path, isOpen, onClose, onSelect }: RealPathDetail
             </div>
           </div>
 
-          {/* 구글 지도 기반 근처 맛집 & 디저트 */}
-          <NearbyRestaurants title="근처 맛집 & 디저트" />
+          {/* 추천 산책로 TOP 3 */}
+          <TopRecommendedPaths title="비슷한 추천 산책로 TOP 3" />
 
           {/* 추가 옵션 */}
           {path.Option && (
