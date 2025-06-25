@@ -152,6 +152,123 @@ export type Database = {
         }
         Relationships: []
       }
+      전통시장현황: {
+        Row: {
+          Code: string
+          PNU: number | null
+          "간이 도서관_보유여부": string | null
+          경위도X좌표: number | null
+          경위도Y좌표: number | null
+          고객동선통로_보유여부: string | null
+          "고객지원센터 보유 여부": string | null
+          고객휴게실_보유여부: string | null
+          공동물류창고_보유여부: string | null
+          교육장_보유여부: string | null
+          도로명주소: string | null
+          문화교실_보유여부: string | null
+          물품보관함_보유여부: string | null
+          방송센터_보유여부: string | null
+          쇼핑카트_보유여부: string | null
+          수유센터_보유여부: string | null
+          "스프링쿨러 보유 여부": string | null
+          시군구: string | null
+          시도: string | null
+          "시장 유형": string | null
+          시장명: string | null
+          "시장전용 고객주차장_보유여부": string | null
+          시장코드: string | null
+          "아케이드 보유 여부": string | null
+          엘리베이터_에스컬레이터_보유여부: string | null
+          "외국인 안내센터_보유여부": string | null
+          유아놀이방_보유여부: string | null
+          자동심장충격기_보유여부: string | null
+          자전거보관함_보유여부: string | null
+          정제도로명주소: string | null
+          정제지번주소: string | null
+          종합콜센터_보유여부: string | null
+          지번주소: string | null
+          체육시설_보유여부: string | null
+          "화재감지기 보유여부": string | null
+          회의실_보유여부: string | null
+        }
+        Insert: {
+          Code: string
+          PNU?: number | null
+          "간이 도서관_보유여부"?: string | null
+          경위도X좌표?: number | null
+          경위도Y좌표?: number | null
+          고객동선통로_보유여부?: string | null
+          "고객지원센터 보유 여부"?: string | null
+          고객휴게실_보유여부?: string | null
+          공동물류창고_보유여부?: string | null
+          교육장_보유여부?: string | null
+          도로명주소?: string | null
+          문화교실_보유여부?: string | null
+          물품보관함_보유여부?: string | null
+          방송센터_보유여부?: string | null
+          쇼핑카트_보유여부?: string | null
+          수유센터_보유여부?: string | null
+          "스프링쿨러 보유 여부"?: string | null
+          시군구?: string | null
+          시도?: string | null
+          "시장 유형"?: string | null
+          시장명?: string | null
+          "시장전용 고객주차장_보유여부"?: string | null
+          시장코드?: string | null
+          "아케이드 보유 여부"?: string | null
+          엘리베이터_에스컬레이터_보유여부?: string | null
+          "외국인 안내센터_보유여부"?: string | null
+          유아놀이방_보유여부?: string | null
+          자동심장충격기_보유여부?: string | null
+          자전거보관함_보유여부?: string | null
+          정제도로명주소?: string | null
+          정제지번주소?: string | null
+          종합콜센터_보유여부?: string | null
+          지번주소?: string | null
+          체육시설_보유여부?: string | null
+          "화재감지기 보유여부"?: string | null
+          회의실_보유여부?: string | null
+        }
+        Update: {
+          Code?: string
+          PNU?: number | null
+          "간이 도서관_보유여부"?: string | null
+          경위도X좌표?: number | null
+          경위도Y좌표?: number | null
+          고객동선통로_보유여부?: string | null
+          "고객지원센터 보유 여부"?: string | null
+          고객휴게실_보유여부?: string | null
+          공동물류창고_보유여부?: string | null
+          교육장_보유여부?: string | null
+          도로명주소?: string | null
+          문화교실_보유여부?: string | null
+          물품보관함_보유여부?: string | null
+          방송센터_보유여부?: string | null
+          쇼핑카트_보유여부?: string | null
+          수유센터_보유여부?: string | null
+          "스프링쿨러 보유 여부"?: string | null
+          시군구?: string | null
+          시도?: string | null
+          "시장 유형"?: string | null
+          시장명?: string | null
+          "시장전용 고객주차장_보유여부"?: string | null
+          시장코드?: string | null
+          "아케이드 보유 여부"?: string | null
+          엘리베이터_에스컬레이터_보유여부?: string | null
+          "외국인 안내센터_보유여부"?: string | null
+          유아놀이방_보유여부?: string | null
+          자동심장충격기_보유여부?: string | null
+          자전거보관함_보유여부?: string | null
+          정제도로명주소?: string | null
+          정제지번주소?: string | null
+          종합콜센터_보유여부?: string | null
+          지번주소?: string | null
+          체육시설_보유여부?: string | null
+          "화재감지기 보유여부"?: string | null
+          회의실_보유여부?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
