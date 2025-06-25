@@ -77,7 +77,7 @@ const WalkingPathCard = ({ path, onSelect, onCardClick }: WalkingPathCardProps) 
       </CardHeader>
       
       <CardContent>
-        <p className="text-gray-600 mb-4 text-sm">{path.description}</p>
+        <p className="text-gray-600 mb-4 text-sm line-clamp-3">{path.description}</p>
         
         {/* 추천 이유 섹션 */}
         <div className="mb-4 p-3 bg-blue-50 rounded-lg border-l-3 border-blue-400">
