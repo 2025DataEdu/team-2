@@ -3,9 +3,7 @@ import React from 'react';
 import PathRecommendationHeader from './PathRecommendationHeader';
 import AIAnalysisCard from './AIAnalysisCard';
 import PathGrid from './PathGrid';
-import RealPathGrid from './RealPathGrid';
 import { usePathRecommendations } from '@/hooks/usePathRecommendations';
-import { useRealPathData } from '@/hooks/useRealPathData';
 
 interface WalkingPath {
   id: string;
@@ -42,8 +40,6 @@ const WalkingPathRecommendations = ({ userProfile, onPathSelect, userLocation }:
     userLocation
   });
 
-  const { paths: realPaths, isLoading: isRealPathsLoading, error: realPathsError } = useRealPathData();
-
   return (
     <div className="w-full space-y-6">
       <PathRecommendationHeader 
@@ -64,22 +60,6 @@ const WalkingPathRecommendations = ({ userProfile, onPathSelect, userLocation }:
           isLoading={isLoading}
           onPathSelect={onPathSelect}
         />
-      </div>
-
-      {/* 실제 산책로 데이터 */}
-      <div>
-        <h3 className="text-xl font-semibold mb-4 text-blue-700">🗺️ 주변 실제 산책로</h3>
-        {realPathsError ? (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <p className="text-red-700">데이터를 불러오는 중 오류가 발생했습니다: {realPathsError}</p>
-          </div>
-        ) : (
-          <RealPathGrid 
-            paths={realPaths}
-            isLoading={isRealPathsLoading}
-            onPathSelect={onPathSelect}
-          />
-        )}
       </div>
     </div>
   );
