@@ -9,6 +9,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Clock, TrendingUp, Heart, Star, Lightbulb, UtensilsCrossed } from 'lucide-react';
+import MiniMap from './MiniMap';
 
 interface WalkingPath {
   id: string;
@@ -23,6 +24,9 @@ interface WalkingPath {
   amenities: string[];
   recommendationReason: string;
   nearbyFood: string[];
+  nearbyMarkets?: string[]; // 전통시장 정보 추가
+  latitude?: number; // 위치 정보 추가
+  longitude?: number;
 }
 
 interface PathDetailModalProps {
@@ -82,6 +86,17 @@ const PathDetailModal = ({ path, isOpen, onClose, onSelect }: PathDetailModalPro
         </DialogHeader>
 
         <div className="space-y-6">
+          {/* 지도 추가 */}
+          <div>
+            <h4 className="font-medium text-gray-900 mb-3">📍 위치</h4>
+            <MiniMap 
+              latitude={path.latitude} 
+              longitude={path.longitude} 
+              pathName={path.name}
+              className="w-full h-40"
+            />
+          </div>
+
           <p className="text-gray-600">{path.description}</p>
           
           {/* 추천 이유 섹션 */}
@@ -138,6 +153,23 @@ const PathDetailModal = ({ path, isOpen, onClose, onSelect }: PathDetailModalPro
               ))}
             </div>
           </div>
+
+          {/* 근처 전통시장 */}
+          {path.nearbyMarkets && path.nearbyMarkets.length > 0 && (
+            <div>
+              <div className="flex items-center gap-2 font-medium text-gray-900 mb-3">
+                <MapPin className="h-5 w-5 text-orange-600" />
+                근처 전통시장
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                {path.nearbyMarkets.map((market, index) => (
+                  <Badge key={index} variant="outline" className="text-sm bg-orange-50 text-orange-700 border-orange-200">
+                    {market}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* 근처 맛집/디저트 */}
           <div>

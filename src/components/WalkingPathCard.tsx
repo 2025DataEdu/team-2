@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MapPin, Clock, TrendingUp, Heart, Star, Lightbulb, UtensilsCrossed } from 'lucide-react';
+import MiniMap from './MiniMap';
 
 interface WalkingPath {
   id: string;
@@ -18,6 +19,9 @@ interface WalkingPath {
   amenities: string[];
   recommendationReason: string;
   nearbyFood: string[];
+  nearbyMarkets?: string[]; // 전통시장 정보 추가
+  latitude?: number; // 위치 정보 추가
+  longitude?: number;
 }
 
 interface WalkingPathCardProps {
@@ -77,6 +81,16 @@ const WalkingPathCard = ({ path, onSelect, onCardClick }: WalkingPathCardProps) 
       </CardHeader>
       
       <CardContent>
+        {/* 지도 추가 */}
+        <div className="mb-4">
+          <MiniMap 
+            latitude={path.latitude} 
+            longitude={path.longitude} 
+            pathName={path.name}
+            className="w-full h-24"
+          />
+        </div>
+
         <p className="text-gray-600 mb-4 text-sm">{path.description}</p>
         
         {/* 추천 이유 섹션 */}
@@ -120,7 +134,24 @@ const WalkingPathCard = ({ path, onSelect, onCardClick }: WalkingPathCardProps) 
           </div>
         </div>
 
-        {/* 근처 맛집/디저트 정보 추가 */}
+        {/* 근처 전통시장 정보 추가 */}
+        {path.nearbyMarkets && path.nearbyMarkets.length > 0 && (
+          <div className="mb-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+              <MapPin className="h-4 w-4 text-orange-600" />
+              근처 전통시장
+            </div>
+            <div className="flex gap-2 flex-wrap">
+              {path.nearbyMarkets.map((market, index) => (
+                <Badge key={index} variant="outline" className="text-xs bg-orange-50 text-orange-700 border-orange-200">
+                  {market}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* 근처 맛집/디저트 정보 */}
         <div className="mb-4">
           <div className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
             <UtensilsCrossed className="h-4 w-4 text-orange-600" />
