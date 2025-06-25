@@ -8,7 +8,10 @@ import SelectedPathDetails from '@/components/SelectedPathDetails';
 import WalkingPathRecommendations from '@/components/WalkingPathRecommendations';
 import NearbyMarketRecommendation from '@/components/NearbyMarketRecommendation';
 import VoiceInterface from '@/components/VoiceInterface';
+import WalkingPathsPage from '@/components/WalkingPathsPage';
 import { useLocation } from '@/hooks/useLocation';
+import { Button } from '@/components/ui/button';
+import { Map, List } from 'lucide-react';
 
 interface UserProfile {
   age: number;
@@ -34,7 +37,7 @@ interface WalkingPath {
 }
 
 const Index = () => {
-  const [currentStep, setCurrentStep] = useState<'loading' | 'recommendations' | 'selected'>('loading');
+  const [currentStep, setCurrentStep] = useState<'loading' | 'recommendations' | 'selected' | 'map'>('loading');
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [selectedPath, setSelectedPath] = useState<WalkingPath | null>(null);
   const location = useLocation();
@@ -98,8 +101,37 @@ const Index = () => {
     setCurrentStep('loading');
   };
 
+  const switchToMap = () => {
+    setCurrentStep('map');
+  };
+
+  const switchToRecommendations = () => {
+    setCurrentStep('recommendations');
+  };
+
   if (currentStep === 'loading' || location.isLoading) {
     return <LoadingScreen />;
+  }
+
+  if (currentStep === 'map') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100">
+        <div className="container mx-auto py-4 px-4">
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-2xl font-bold text-green-700">산책로 지도</h1>
+            <Button 
+              onClick={switchToRecommendations}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <List className="h-4 w-4" />
+              추천 목록으로
+            </Button>
+          </div>
+        </div>
+        <WalkingPathsPage />
+      </div>
+    );
   }
 
   return (
@@ -107,11 +139,21 @@ const Index = () => {
       <div className="container mx-auto py-8 px-4">
         <AppHeader />
         
-        <NavigationButtons 
-          currentStep={currentStep}
-          onResetToRecommendations={resetToRecommendations}
-          onResetToProfile={resetToProfile}
-        />
+        <div className="flex justify-between items-center mb-6">
+          <NavigationButtons 
+            currentStep={currentStep}
+            onResetToRecommendations={resetToRecommendations}
+            onResetToProfile={resetToProfile}
+          />
+          
+          <Button 
+            onClick={switchToMap}
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
+          >
+            <Map className="h-4 w-4" />
+            지도 보기
+          </Button>
+        </div>
         
         <InfoCards 
           userProfile={userProfile}
