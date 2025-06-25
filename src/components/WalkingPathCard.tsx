@@ -58,13 +58,13 @@ const WalkingPathCard = ({ path, onSelect, onCardClick }: WalkingPathCardProps) 
 
   const originalData = path.originalData;
 
-  // 코스 정보 생성 함수
-  const getCourseInfo = () => {
+  // 코스 경로 정보 생성 함수
+  const getCourseRoute = () => {
     if (originalData?.CoursRoute) {
       return originalData.CoursRoute;
     }
     
-    // 기본 코스 정보 생성
+    // 기본 코스 경로 생성
     const features = path.features;
     if (features.includes('강변') && features.includes('공원')) {
       return '강변공원 → 산책로 → 휴게공간';
@@ -83,7 +83,7 @@ const WalkingPathCard = ({ path, onSelect, onCardClick }: WalkingPathCardProps) 
         <div className="flex justify-between items-start">
           <div className="flex-1">
             <CardTitle className="text-lg">{path.name}</CardTitle>
-            <p className="text-sm text-gray-600 mt-1">{getCourseInfo()}</p>
+            <p className="text-sm text-gray-600 mt-1">🚶‍♂️ {getCourseRoute()}</p>
           </div>
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />

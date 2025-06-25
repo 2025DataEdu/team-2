@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { Button } from '@/components/ui/button';
 import WeatherInfo from '@/components/WeatherInfo';
 import LocationInfo from '@/components/LocationInfo';
 import { useHealthProfile } from '@/hooks/useHealthProfile';
@@ -67,15 +66,6 @@ const InfoCards = ({ userProfile, onEditProfile }: InfoCardsProps) => {
               )}
             </div>
           )}
-          
-          <Button 
-            onClick={onEditProfile}
-            variant="outline"
-            size="sm"
-            className="w-full mt-3"
-          >
-            프로필 수정
-          </Button>
         </div>
       </div>
     </div>
