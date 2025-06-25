@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Clock, Info, Toilet, Car, Building } from 'lucide-react';
+import { MapPin, Clock, Info, Toilet, Car, Building, Coffee, ShoppingCart } from 'lucide-react';
 import SmallMap from './SmallMap';
 
 interface RealWalkingPath {
@@ -61,10 +61,69 @@ const RealPathDetailModal = ({ path, isOpen, onClose, onSelect }: RealPathDetail
     return distance > 0 ? `약 ${Math.round(distance * 15)}분` : '정보 없음';
   };
 
+  // 편의시설 파싱 함수
+  const getAmenities = () => {
+    const amenities = [];
+    
+    // 화장실 정보
+    if (path.Toilet === 'Y' || path.Toilet === '있음' || 
+        (path.Option && (path.Option.includes('화장실') || path.Option.includes('공중화장실')))) {
+      amenities.push({ icon: Toilet, label: '화장실 이용 가능', color: 'text-blue-600' });
+    }
+    
+    // 주차장 정보
+    if (path.Option && (path.Option.includes('주차') || path.Option.includes('주차장') ||
+        path.Option.includes('주차시설'))) {
+      amenities.push({ icon: Car, label: '주차장 있음', color: 'text-green-600' });
+    }
+    
+    // 편의점 정보
+    if (path.Option && (path.Option.includes('편의점') || path.Option.includes('매점') ||
+        path.Option.includes('상점'))) {
+      amenities.push({ icon: ShoppingCart, label: '편의점', color: 'text-purple-600' });
+    }
+    
+    // 카페/음식점 정보
+    if (path.Option && (path.Option.includes('카페') || path.Option.includes('커피') ||
+        path.Option.includes('음식점') || path.Option.includes('식당') || 
+        path.Option.includes('휴게소'))) {
+      amenities.push({ icon: Coffee, label: '카페/음식점', color: 'text-orange-600' });
+    }
+    
+    // ADIT_DC에서도 편의시설 정보 추출
+    if (path.ADIT_DC) {
+      const description = path.ADIT_DC.toLowerCase();
+      
+      if (description.includes('화장실') && !amenities.some(a => a.label.includes('화장실'))) {
+        amenities.push({ icon: Toilet, label: '화장실 이용 가능', color: 'text-blue-600' });
+      }
+      
+      if ((description.includes('주차') || description.includes('주차장')) && 
+          !amenities.some(a => a.label.includes('주차장'))) {
+        amenities.push({ icon: Car, label: '주차장 있음', color: 'text-green-600' });
+      }
+      
+      if ((description.includes('편의점') || description.includes('매점')) && 
+          !amenities.some(a => a.label.includes('편의점'))) {
+        amenities.push({ icon: ShoppingCart, label: '편의점', color: 'text-purple-600' });
+      }
+      
+      if ((description.includes('카페') || description.includes('커피') || 
+           description.includes('음식점') || description.includes('식당')) && 
+          !amenities.some(a => a.label.includes('카페'))) {
+        amenities.push({ icon: Coffee, label: '카페/음식점', color: 'text-orange-600' });
+      }
+    }
+    
+    return amenities;
+  };
+
   const handleSelect = () => {
     onSelect();
     onClose();
   };
+
+  const amenities = getAmenities();
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -159,23 +218,18 @@ const RealPathDetailModal = ({ path, isOpen, onClose, onSelect }: RealPathDetail
             </div>
           )}
 
-          {/* 편의시설 */}
+          {/* 개선된 편의시설 */}
           <div>
             <h4 className="font-medium text-gray-900 mb-3">🏢 편의시설</h4>
             <div className="flex gap-2 flex-wrap">
-              {(path.Toilet === 'Y' || path.Toilet === '있음') && (
-                <Badge variant="secondary" className="text-sm flex items-center gap-1">
-                  <Toilet className="h-4 w-4" />
-                  화장실 이용 가능
-                </Badge>
-              )}
-              {path.Option?.includes('주차') && (
-                <Badge variant="secondary" className="text-sm flex items-center gap-1">
-                  <Car className="h-4 w-4" />
-                  주차장 있음
-                </Badge>
-              )}
-              {!path.Toilet && !path.Option && (
+              {amenities.length > 0 ? (
+                amenities.map((amenity, index) => (
+                  <Badge key={index} variant="secondary" className="text-sm flex items-center gap-2 px-3 py-1">
+                    <amenity.icon className={`h-4 w-4 ${amenity.color}`} />
+                    {amenity.label}
+                  </Badge>
+                ))
+              ) : (
                 <span className="text-sm text-gray-500">편의시설 정보 없음</span>
               )}
             </div>
@@ -188,7 +242,9 @@ const RealPathDetailModal = ({ path, isOpen, onClose, onSelect }: RealPathDetail
                 <Building className="h-5 w-5 text-purple-600" />
                 추가 정보
               </h4>
-              <p className="text-gray-700">{path.Option}</p>
+              <div className="bg-gray-50 p-3 rounded-lg">
+                <p className="text-gray-700 text-sm leading-relaxed">{path.Option}</p>
+              </div>
             </div>
           )}
 

@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Clock, Info, Toilet, Car } from 'lucide-react';
+import { MapPin, Clock, Info, Toilet, Car, Coffee, ShoppingCart } from 'lucide-react';
 import SmallMap from './SmallMap';
 
 interface RealWalkingPath {
@@ -53,6 +53,63 @@ const RealPathCard = ({ path, onSelect, onCardClick }: RealPathCardProps) => {
     return distance > 0 ? `약 ${Math.round(distance * 15)}분` : '시간 정보 없음';
   };
 
+  // 편의시설 파싱 함수
+  const getAmenities = () => {
+    const amenities = [];
+    
+    // 화장실 정보
+    if (path.Toilet === 'Y' || path.Toilet === '있음' || 
+        (path.Option && (path.Option.includes('화장실') || path.Option.includes('공중화장실')))) {
+      amenities.push({ icon: Toilet, label: '화장실', color: 'text-blue-600' });
+    }
+    
+    // 주차장 정보
+    if (path.Option && (path.Option.includes('주차') || path.Option.includes('주차장') ||
+        path.Option.includes('주차시설'))) {
+      amenities.push({ icon: Car, label: '주차장', color: 'text-green-600' });
+    }
+    
+    // 편의점 정보
+    if (path.Option && (path.Option.includes('편의점') || path.Option.includes('매점') ||
+        path.Option.includes('상점'))) {
+      amenities.push({ icon: ShoppingCart, label: '편의점', color: 'text-purple-600' });
+    }
+    
+    // 카페/음식점 정보
+    if (path.Option && (path.Option.includes('카페') || path.Option.includes('커피') ||
+        path.Option.includes('음식점') || path.Option.includes('식당') || 
+        path.Option.includes('휴게소'))) {
+      amenities.push({ icon: Coffee, label: '카페/음식점', color: 'text-orange-600' });
+    }
+    
+    // ADIT_DC에서도 편의시설 정보 추출
+    if (path.ADIT_DC) {
+      const description = path.ADIT_DC.toLowerCase();
+      
+      if (description.includes('화장실') && !amenities.some(a => a.label === '화장실')) {
+        amenities.push({ icon: Toilet, label: '화장실', color: 'text-blue-600' });
+      }
+      
+      if ((description.includes('주차') || description.includes('주차장')) && 
+          !amenities.some(a => a.label === '주차장')) {
+        amenities.push({ icon: Car, label: '주차장', color: 'text-green-600' });
+      }
+      
+      if ((description.includes('편의점') || description.includes('매점')) && 
+          !amenities.some(a => a.label === '편의점')) {
+        amenities.push({ icon: ShoppingCart, label: '편의점', color: 'text-purple-600' });
+      }
+      
+      if ((description.includes('카페') || description.includes('커피') || 
+           description.includes('음식점') || description.includes('식당')) && 
+          !amenities.some(a => a.label === '카페/음식점')) {
+        amenities.push({ icon: Coffee, label: '카페/음식점', color: 'text-orange-600' });
+      }
+    }
+    
+    return amenities;
+  };
+
   const handleCardClick = () => {
     onCardClick();
   };
@@ -61,6 +118,8 @@ const RealPathCard = ({ path, onSelect, onCardClick }: RealPathCardProps) => {
     e.stopPropagation();
     onSelect();
   };
+
+  const amenities = getAmenities();
 
   return (
     <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full" onClick={handleCardClick}>
@@ -123,22 +182,17 @@ const RealPathCard = ({ path, onSelect, onCardClick }: RealPathCardProps) => {
             </div>
           </div>
 
-          {(path.Toilet || path.Option) && (
+          {/* 개선된 편의시설 표시 */}
+          {amenities.length > 0 && (
             <div className="mb-4">
               <div className="text-sm font-medium text-gray-700 mb-2">편의시설</div>
               <div className="flex gap-2 flex-wrap">
-                {(path.Toilet === 'Y' || path.Toilet === '있음') && (
-                  <Badge variant="secondary" className="text-xs flex items-center gap-1">
-                    <Toilet className="h-3 w-3" />
-                    화장실
+                {amenities.map((amenity, index) => (
+                  <Badge key={index} variant="secondary" className="text-xs flex items-center gap-1">
+                    <amenity.icon className={`h-3 w-3 ${amenity.color}`} />
+                    {amenity.label}
                   </Badge>
-                )}
-                {path.Option?.includes('주차') && (
-                  <Badge variant="secondary" className="text-xs flex items-center gap-1">
-                    <Car className="h-3 w-3" />
-                    주차장
-                  </Badge>
-                )}
+                ))}
               </div>
             </div>
           )}
@@ -150,6 +204,14 @@ const RealPathCard = ({ path, onSelect, onCardClick }: RealPathCardProps) => {
                 경로 정보
               </div>
               <p className="text-sm text-gray-600 line-clamp-2">{path.CoursRoute}</p>
+            </div>
+          )}
+
+          {/* 추가 옵션 정보 표시 */}
+          {path.Option && (
+            <div className="mb-4">
+              <div className="text-sm font-medium text-gray-700 mb-2">추가 정보</div>
+              <p className="text-xs text-gray-600 line-clamp-2">{path.Option}</p>
             </div>
           )}
         </div>
