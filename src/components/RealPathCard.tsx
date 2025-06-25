@@ -284,13 +284,9 @@ const RealPathCard = ({ path, onSelect, onCardClick }: RealPathCardProps) => {
             </div>
           )}
 
-          {/* 구글 지도 기반 근처 맛집 & 디저트 (간단 버전) */}
+          {/* 사용자 위치 기반 근처 맛집 & 디저트 */}
           <div className="mb-4">
-            <NearbyRestaurants 
-              latitude={path.Latitude} 
-              longitude={path.Longitude} 
-              title="근처 맛집"
-            />
+            <NearbyRestaurants title="내 주변 맛집" />
           </div>
 
           {path.CoursRoute && (

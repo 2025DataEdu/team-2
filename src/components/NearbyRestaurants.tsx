@@ -2,20 +2,61 @@
 import React, { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Star, MapPin, Users, ChevronDown, ChevronUp } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Star, MapPin, Users, Settings } from 'lucide-react';
 import { useGooglePlaces } from '@/hooks/useGooglePlaces';
+import { useLocation } from '@/hooks/useLocation';
 
 interface NearbyRestaurantsProps {
-  latitude: number | null;
-  longitude: number | null;
   title?: string;
 }
 
-const NearbyRestaurants = ({ latitude, longitude, title = "근처 맛집 & 디저트" }: NearbyRestaurantsProps) => {
-  const [showMore, setShowMore] = useState(false);
-  const { places, loading, error } = useGooglePlaces({ latitude, longitude });
+const NearbyRestaurants = ({ title = "내 주변 맛집" }: NearbyRestaurantsProps) => {
+  const [selectedRadius, setSelectedRadius] = useState<number>(5000); // 기본 5km
+  const userLocation = useLocation();
+  
+  const { places, loading, error } = useGooglePlaces({ 
+    latitude: userLocation.latitude, 
+    longitude: userLocation.longitude,
+    radius: selectedRadius
+  });
 
-  const displayedPlaces = showMore ? places : places.slice(0, 6);
+  // 사용자 위치와의 거리 계산 함수 (Haversine formula)
+  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+    const R = 6371; // 지구 반지름 (km)
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  };
+
+  // 거리 계산 후 가까운 순으로 정렬하여 상위 3개만 선택
+  const getTopNearestPlaces = () => {
+    if (!userLocation.latitude || !userLocation.longitude || places.length === 0) {
+      return [];
+    }
+
+    const placesWithDistance = places.map(place => ({
+      ...place,
+      distance: calculateDistance(
+        userLocation.latitude,
+        userLocation.longitude,
+        place.geometry.location.lat,
+        place.geometry.location.lng
+      )
+    }));
+
+    // 거리순으로 정렬하여 상위 3개만 반환
+    return placesWithDistance
+      .sort((a, b) => a.distance - b.distance)
+      .slice(0, 3);
+  };
+
+  const nearestPlaces = getTopNearestPlaces();
 
   const getPriceLevel = (level?: number) => {
     if (!level) return '';
@@ -43,20 +84,40 @@ const NearbyRestaurants = ({ latitude, longitude, title = "근처 맛집 & 디�
         )}
         {[...Array(emptyStars)].map((_, i) => (
           <Star key={i} className="h-4 w-4 text-gray-300" />
-        ))}
+        )}
         <span className="text-sm font-medium ml-1">{rating.toFixed(1)}</span>
       </div>
     );
   };
 
+  // 위치 정보 로딩 중
+  if (userLocation.isLoading) {
+    return (
+      <div className="space-y-3">
+        <h4 className="font-medium text-gray-900">{title}</h4>
+        <div className="text-sm text-gray-500">위치 정보를 가져오는 중...</div>
+      </div>
+    );
+  }
+
+  // 위치 정보 오류
+  if (userLocation.error) {
+    return (
+      <div className="space-y-3">
+        <h4 className="font-medium text-gray-900">{title}</h4>
+        <div className="text-sm text-red-500">위치 정보를 가져올 수 없습니다: {userLocation.error}</div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="space-y-3">
         <h4 className="font-medium text-gray-900">{title}</h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
+        <div className="space-y-2">
+          {[1, 2, 3].map((i) => (
             <div key={i} className="animate-pulse">
-              <div className="bg-gray-200 rounded-lg h-20"></div>
+              <div className="bg-gray-200 rounded-lg h-16"></div>
             </div>
           ))}
         </div>
@@ -64,32 +125,73 @@ const NearbyRestaurants = ({ latitude, longitude, title = "근처 맛집 & 디�
     );
   }
 
-  if (error || places.length === 0) {
+  if (error || nearestPlaces.length === 0) {
     return (
       <div className="space-y-3">
-        <h4 className="font-medium text-gray-900">{title}</h4>
-        <p className="text-sm text-gray-500">근처 맛집 정보를 불러올 수 없습니다.</p>
+        <div className="flex items-center justify-between">
+          <h4 className="font-medium text-gray-900 flex items-center gap-2">
+            🍽️ {title}
+          </h4>
+          <Select value={selectedRadius.toString()} onValueChange={(value) => setSelectedRadius(Number(value))}>
+            <SelectTrigger className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="1000">1km</SelectItem>
+              <SelectItem value="3000">3km</SelectItem>
+              <SelectItem value="5000">5km</SelectItem>
+              <SelectItem value="10000">10km</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <p className="text-sm text-gray-500">
+          {selectedRadius / 1000}km 반경 내 맛집 정보를 찾을 수 없습니다.
+        </p>
       </div>
     );
   }
 
   return (
     <div className="space-y-3">
-      <h4 className="font-medium text-gray-900 flex items-center gap-2">
-        🍽️ {title}
-        <Badge variant="outline" className="text-xs">
-          {places.length}개 발견
-        </Badge>
-      </h4>
+      <div className="flex items-center justify-between">
+        <h4 className="font-medium text-gray-900 flex items-center gap-2">
+          🍽️ {title}
+          <Badge variant="outline" className="text-xs">
+            상위 {nearestPlaces.length}개
+          </Badge>
+        </h4>
+        <div className="flex items-center gap-2">
+          <Settings className="h-4 w-4 text-gray-400" />
+          <Select value={selectedRadius.toString()} onValueChange={(value) => setSelectedRadius(Number(value))}>
+            <SelectTrigger className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="1000">1km</SelectItem>
+              <SelectItem value="3000">3km</SelectItem>
+              <SelectItem value="5000">5km</SelectItem>
+              <SelectItem value="10000">10km</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {displayedPlaces.map((place) => (
+      <div className="space-y-3">
+        {nearestPlaces.map((place, index) => (
           <div key={place.place_id} className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
             <div className="flex justify-between items-start mb-2">
-              <h5 className="font-medium text-gray-900 line-clamp-1">{place.name}</h5>
-              <Badge variant="secondary" className="text-xs ml-2 flex-shrink-0">
-                {getPlaceType(place.types)}
-              </Badge>
+              <div className="flex items-center gap-2">
+                <span className="text-lg font-bold text-blue-600">#{index + 1}</span>
+                <h5 className="font-medium text-gray-900 line-clamp-1">{place.name}</h5>
+              </div>
+              <div className="flex gap-2 ml-2 flex-shrink-0">
+                <Badge variant="secondary" className="text-xs">
+                  {getPlaceType(place.types)}
+                </Badge>
+                <Badge variant="outline" className="text-xs font-medium text-blue-600">
+                  {place.distance.toFixed(1)}km
+                </Badge>
+              </div>
             </div>
             
             <div className="flex items-center gap-2 mb-2">
@@ -128,25 +230,9 @@ const NearbyRestaurants = ({ latitude, longitude, title = "근처 맛집 & 디�
         ))}
       </div>
       
-      {places.length > 6 && (
-        <div className="flex justify-center mt-4">
-          <Button 
-            variant="outline" 
-            onClick={() => setShowMore(!showMore)}
-            className="flex items-center gap-2"
-          >
-            {showMore ? (
-              <>
-                접기 <ChevronUp className="h-4 w-4" />
-              </>
-            ) : (
-              <>
-                더보기 ({places.length - 6}개 더) <ChevronDown className="h-4 w-4" />
-              </>
-            )}
-          </Button>
-        </div>
-      )}
+      <div className="text-xs text-gray-500 text-center">
+        📍 현재 위치: {userLocation.address}
+      </div>
     </div>
   );
 };
