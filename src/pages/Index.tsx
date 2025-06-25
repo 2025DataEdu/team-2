@@ -122,28 +122,26 @@ const Index = () => {
           </p>
         </div>
 
-        {currentStep !== 'loading' && (
-          <div className="mb-6 flex gap-2">
-            {currentStep === 'selected' && (
-              <Button 
-                onClick={resetToRecommendations}
-                variant="outline"
-                className="flex items-center gap-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                다른 경로 보기
-              </Button>
-            )}
+        <div className="mb-6 flex gap-2">
+          {currentStep === 'selected' && (
             <Button 
-              onClick={resetToProfile}
+              onClick={resetToRecommendations}
               variant="outline"
               className="flex items-center gap-2"
             >
               <ArrowLeft className="h-4 w-4" />
-              새로운 분석 시작
+              다른 경로 보기
             </Button>
-          </div>
-        )}
+          )}
+          <Button 
+            onClick={resetToProfile}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            새로운 분석 시작
+          </Button>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <WeatherInfo />
