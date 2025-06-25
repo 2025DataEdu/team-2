@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -114,7 +113,7 @@ const VoiceInterface = () => {
   }, [transcript, isListening]);
 
   return (
-    <div className="fixed bottom-6 right-6 flex flex-col items-end gap-3 z-50">
+    <div className="flex flex-col items-end gap-3">
       {transcript && (
         <div className="bg-white rounded-lg shadow-lg p-3 max-w-xs border-l-4 border-green-400">
           <Badge variant="outline" className="mb-2 text-green-700 border-green-300">음성 인식 결과</Badge>

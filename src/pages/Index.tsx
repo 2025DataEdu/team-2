@@ -134,8 +134,8 @@ const Index = () => {
           <SelectedPathDetails selectedPath={selectedPath} />
         )}
         
-        {/* 난이도 선택 버튼과 마이크 버튼을 함께 배치 */}
-        <div className="fixed bottom-8 right-8 flex items-center gap-4">
+        {/* 난이도 선택 버튼을 마이크 버튼 왼쪽으로 배치하고 겹치지 않도록 조정 */}
+        <div className="fixed bottom-8 right-8 flex items-center gap-3">
           <DifficultyPopover 
             selectedDifficulties={selectedDifficulties}
             onDifficultyChange={setSelectedDifficulties}
