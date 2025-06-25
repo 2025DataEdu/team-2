@@ -1,11 +1,13 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import UserProfileForm from '@/components/UserProfileForm';
 import WeatherInfo from '@/components/WeatherInfo';
+import LocationInfo from '@/components/LocationInfo';
 import WalkingPathRecommendations from '@/components/WalkingPathRecommendations';
 import VoiceInterface from '@/components/VoiceInterface';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import { useLocation } from '@/hooks/useLocation';
 
 interface UserProfile {
   age: number;
@@ -26,12 +28,48 @@ interface WalkingPath {
   features: string[];
   description: string;
   amenities: string[];
+  recommendationReason: string;
 }
 
 const Index = () => {
-  const [currentStep, setCurrentStep] = useState<'profile' | 'recommendations' | 'selected'>('profile');
+  const [currentStep, setCurrentStep] = useState<'loading' | 'recommendations' | 'selected'>('loading');
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [selectedPath, setSelectedPath] = useState<WalkingPath | null>(null);
+  const location = useLocation();
+
+  // 자동으로 건강 정보 로드 및 추천 생성
+  useEffect(() => {
+    if (!location.isLoading && !userProfile) {
+      // 자동으로 가상 프로필 생성
+      const autoProfiles = [
+        {
+          age: 35,
+          fitnessLevel: 'intermediate',
+          preferredDistance: [3],
+          healthConditions: '가벼운 무릎 통증',
+          walkingGoal: 'health'
+        },
+        {
+          age: 28,
+          fitnessLevel: 'beginner',
+          preferredDistance: [2],
+          healthConditions: '',
+          walkingGoal: 'stress'
+        },
+        {
+          age: 45,
+          fitnessLevel: 'advanced',
+          preferredDistance: [4.5],
+          healthConditions: '고혈압',
+          walkingGoal: 'weight'
+        }
+      ];
+      
+      const randomProfile = autoProfiles[Math.floor(Math.random() * autoProfiles.length)];
+      setUserProfile(randomProfile);
+      setCurrentStep('recommendations');
+    }
+  }, [location.isLoading, userProfile]);
 
   const handleProfileSubmit = (profile: UserProfile) => {
     setUserProfile(profile);
@@ -43,11 +81,32 @@ const Index = () => {
     setCurrentStep('selected');
   };
 
+  const resetToRecommendations = () => {
+    setCurrentStep('recommendations');
+    setSelectedPath(null);
+  };
+
   const resetToProfile = () => {
-    setCurrentStep('profile');
+    setCurrentStep('loading');
     setUserProfile(null);
     setSelectedPath(null);
   };
+
+  if (currentStep === 'loading' || location.isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            🤖 AI가 분석 중입니다...
+          </h2>
+          <p className="text-gray-600">
+            위치 정보와 건강 데이터를 바탕으로 맞춤형 산책로를 준비하고 있습니다.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100">
@@ -62,32 +121,69 @@ const Index = () => {
           </p>
         </div>
 
-        {currentStep !== 'profile' && (
-          <div className="mb-6">
+        {currentStep !== 'loading' && (
+          <div className="mb-6 flex gap-2">
+            {currentStep === 'selected' && (
+              <Button 
+                onClick={resetToRecommendations}
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                다른 경로 보기
+              </Button>
+            )}
             <Button 
               onClick={resetToProfile}
               variant="outline"
               className="flex items-center gap-2"
             >
               <ArrowLeft className="h-4 w-4" />
-              처음부터 다시하기
+              새로운 분석 시작
             </Button>
           </div>
         )}
 
-        {currentStep === 'profile' && (
-          <div className="space-y-8">
-            <WeatherInfo />
-            <UserProfileForm onProfileSubmit={handleProfileSubmit} />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <WeatherInfo />
+          <LocationInfo />
+          <div className="lg:col-span-1">
+            {userProfile && (
+              <div className="bg-white rounded-lg shadow p-4">
+                <h3 className="font-bold text-gray-900 mb-3">📋 현재 프로필</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span>나이:</span>
+                    <span>{userProfile.age}세</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>체력:</span>
+                    <span>{userProfile.fitnessLevel === 'beginner' ? '초급' : userProfile.fitnessLevel === 'intermediate' ? '중급' : '고급'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>선호 거리:</span>
+                    <span>{userProfile.preferredDistance[0]}km</span>
+                  </div>
+                </div>
+                <Button 
+                  onClick={() => setCurrentStep('loading')}
+                  variant="outline"
+                  size="sm"
+                  className="w-full mt-3"
+                >
+                  프로필 수정
+                </Button>
+              </div>
+            )}
           </div>
-        )}
+        </div>
 
         {currentStep === 'recommendations' && userProfile && (
           <div className="space-y-8">
-            <WeatherInfo />
             <WalkingPathRecommendations 
               userProfile={userProfile} 
               onPathSelect={handlePathSelect}
+              userLocation={location.error ? undefined : location}
             />
           </div>
         )}
@@ -102,6 +198,13 @@ const Index = () => {
                 <div>
                   <h3 className="text-xl font-semibold mb-2">{selectedPath.name}</h3>
                   <p className="text-gray-600 mb-4">{selectedPath.description}</p>
+                  
+                  {/* 추천 이유 표시 */}
+                  <div className="mb-4 p-3 bg-blue-50 rounded-lg border-l-3 border-blue-400">
+                    <h4 className="text-sm font-medium text-blue-800 mb-1">💡 선택 이유</h4>
+                    <p className="text-sm text-blue-700">{selectedPath.recommendationReason}</p>
+                  </div>
+                  
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span>거리:</span>

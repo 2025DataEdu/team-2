@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Clock, TrendingUp, Heart, Star } from 'lucide-react';
+import { MapPin, Clock, TrendingUp, Heart, Star, Lightbulb } from 'lucide-react';
 
 interface WalkingPath {
   id: string;
@@ -16,6 +16,7 @@ interface WalkingPath {
   features: string[];
   description: string;
   amenities: string[];
+  recommendationReason: string;
 }
 
 interface WalkingPathCardProps {
@@ -66,6 +67,17 @@ const WalkingPathCard = ({ path, onSelect }: WalkingPathCardProps) => {
       
       <CardContent>
         <p className="text-gray-600 mb-4 text-sm">{path.description}</p>
+        
+        {/* 추천 이유 섹션 추가 */}
+        <div className="mb-4 p-3 bg-blue-50 rounded-lg border-l-3 border-blue-400">
+          <div className="flex items-start gap-2">
+            <Lightbulb className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
+            <div>
+              <div className="text-sm font-medium text-blue-800 mb-1">추천 이유</div>
+              <p className="text-sm text-blue-700">{path.recommendationReason}</p>
+            </div>
+          </div>
+        </div>
         
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div className="flex items-center gap-2">
