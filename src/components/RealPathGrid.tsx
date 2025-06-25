@@ -57,7 +57,7 @@ const RealPathGrid = ({ paths, isLoading, onPathSelect }: RealPathGridProps) => 
     setSelectedPath(null);
   };
 
-  // 실제 데이터를 AI 형식으로 변환하는 함수
+  // 실제 데이터를 AI 형식으로 변환하는 강화된 함수
   const convertToAIFormat = (realPath: RealWalkingPath): WalkingPath => {
     const distance = realPath.CoursDetailLength || parseFloat(realPath.CoursLength || '0') || 2;
     const timeStr = realPath.CoursTime || '';
@@ -75,11 +75,87 @@ const RealPathGrid = ({ paths, isLoading, onPathSelect }: RealPathGridProps) => 
     if (realPath.ADIT_DC?.includes('강') || realPath.ADIT_DC?.includes('호수')) features.push('강변');
     if (realPath.Toilet === 'Y' || realPath.Toilet === '있음') features.push('화장실');
     if (realPath.Option?.includes('야경')) features.push('야경');
+    if (realPath.ADIT_DC?.includes('역사') || realPath.ADIT_DC?.includes('문화')) features.push('역사');
 
     const amenities = [];
     if (realPath.Toilet === 'Y' || realPath.Toilet === '있음') amenities.push('화장실');
     if (realPath.Option?.includes('주차')) amenities.push('주차장');
     if (realPath.Option?.includes('편의점')) amenities.push('편의점');
+    if (realPath.Option?.includes('카페') || realPath.Option?.includes('음식점')) amenities.push('카페');
+
+    // 강화된 근처 맛집/디저트 생성
+    const getNearbyFood = () => {
+      const areaFood: { [key: string]: string[] } = {
+        '강남구': ['강남 맛집거리', '압구정 로데오 카페', '청담 디저트 명소', '삼성동 브런치 카페', '역삼 치킨 맛집'],
+        '서초구': ['서초 맛집', '반포 한강 카페', '교대역 디저트', '강남역 맛집', '서초동 베이커리'],
+        '마포구': ['홍대 맛집거리', '합정 카페거리', '상수동 디저트', '망원동 맛집', '연남동 브런치'],
+        '종로구': ['인사동 전통차', '삼청동 카페', '북촌 디저트', '명동 맛집', '종로 전통음식'],
+        '중구': ['명동 맛집거리', '을지로 카페', '장충동 족발', '신당동 떡볶이', '동대문 야식'],
+        '용산구': ['이태원 세계음식', '한남동 카페', '용산 디저트', '경리단길 맛집', '해방촌 브런치'],
+        '영등포구': ['여의도 맛집', '당산 카페거리', '영등포 디저트', '문래동 맛집', '신길동 맛집'],
+        '송파구': ['잠실 맛집거리', '석촌호수 카페', '방이동 디저트', '문정동 맛집', '가락동 맛집']
+      };
+
+      const defaultFood = ['지역 맛집', '동네 카페', '전통 디저트', '베이커리', '분식집'];
+      
+      if (realPath.SIGNGU_NM && areaFood[realPath.SIGNGU_NM]) {
+        return areaFood[realPath.SIGNGU_NM];
+      }
+      
+      return defaultFood;
+    };
+
+    // 강화된 추천 이유 생성
+    const getRecommendationReason = () => {
+      const reasons = [];
+      
+      // 거리 기반 추천
+      if (distance <= 2) {
+        reasons.push('가벼운 산책에 적합한 짧은 거리');
+      } else if (distance <= 4) {
+        reasons.push('적당한 운동량의 중거리 코스');
+      } else {
+        reasons.push('충분한 운동 효과를 기대할 수 있는 장거리 코스');
+      }
+      
+      // 난이도 기반 추천
+      if (realPath.CoursLv) {
+        const level = realPath.CoursLv.toLowerCase();
+        if (level.includes('쉬움') || level.includes('초급')) {
+          reasons.push('초보자도 부담 없이 즐길 수 있는 난이도');
+        } else if (level.includes('보통') || level.includes('중급')) {
+          reasons.push('적당한 도전과 운동 효과를 제공');
+        } else if (level.includes('어려움') || level.includes('고급')) {
+          reasons.push('도전적인 코스로 높은 운동 효과');
+        }
+      }
+      
+      // 편의시설 기반 추천
+      if (realPath.Toilet === 'Y' || realPath.Toilet === '있음') {
+        reasons.push('화장실 등 편의시설 완비');
+      }
+      
+      // 지역 특성 기반 추천
+      if (realPath.SIGNGU_NM) {
+        reasons.push(`${realPath.SIGNGU_NM} 지역의 대표 산책로`);
+      }
+      
+      // 특별한 특징 기반 추천
+      if (realPath.ADIT_DC) {
+        const description = realPath.ADIT_DC.toLowerCase();
+        if (description.includes('강') || description.includes('호수')) {
+          reasons.push('아름다운 수변 풍경 감상 가능');
+        }
+        if (description.includes('숲') || description.includes('나무')) {
+          reasons.push('자연 속에서 힐링할 수 있는 숲길');
+        }
+        if (description.includes('역사') || description.includes('문화')) {
+          reasons.push('역사와 문화를 함께 체험');
+        }
+      }
+      
+      return reasons.slice(0, 2).join(', ') + '입니다.';
+    };
 
     return {
       id: realPath.CoursCode,
@@ -88,12 +164,12 @@ const RealPathGrid = ({ paths, isLoading, onPathSelect }: RealPathGridProps) => 
       duration: duration,
       difficulty,
       elevation: 10, // 기본값
-      rating: 4.0, // 기본값
+      rating: 4.2, // 기본값을 좀 더 현실적으로
       features,
-      description: realPath.ADIT_DC || realPath.CoursRoute || '아름다운 산책로입니다.',
+      description: realPath.ADIT_DC || realPath.CoursRoute || '아름다운 실제 등록 산책로입니다.',
       amenities,
-      recommendationReason: `${realPath.SIGNGU_NM || ''}에 위치한 실제 등록된 산책로입니다.`,
-      nearbyFood: ['지역 맛집', '카페']
+      recommendationReason: getRecommendationReason(),
+      nearbyFood: getNearbyFood()
     };
   };
 

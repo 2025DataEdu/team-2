@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   Dialog,
@@ -8,7 +7,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Clock, Info, Toilet, Car, Building, Coffee, ShoppingCart } from 'lucide-react';
+import { MapPin, Clock, Info, Toilet, Car, Building, Coffee, ShoppingCart, Lightbulb, UtensilsCrossed } from 'lucide-react';
 import SmallMap from './SmallMap';
 
 interface RealWalkingPath {
@@ -118,12 +117,89 @@ const RealPathDetailModal = ({ path, isOpen, onClose, onSelect }: RealPathDetail
     return amenities;
   };
 
+  // 근처 맛집/디저트 생성 함수
+  const getNearbyFood = () => {
+    const areaFood: { [key: string]: string[] } = {
+      '강남구': ['강남 맛집거리', '압구정 로데오 카페', '청담 디저트 명소', '삼성동 브런치 카페', '역삼 치킨 맛집', '논현동 파스타', '신사동 베이커리'],
+      '서초구': ['서초 맛집', '반포 한강 카페', '교대역 디저트', '강남역 맛집', '서초동 베이커리', '잠원동 브런치', '방배동 맛집'],
+      '마포구': ['홍대 맛집거리', '합정 카페거리', '상수동 디저트', '망원동 맛집', '연남동 브런치', '서교동 파스타', '동교동 베이커리'],
+      '종로구': ['인사동 전통차', '삼청동 카페', '북촌 디저트', '명동 맛집', '종로 전통음식', '이화동 카페', '혜화동 맛집'],
+      '중구': ['명동 맛집거리', '을지로 카페', '장충동 족발', '신당동 떡볶이', '동대문 야식', '중구 디저트', '회현동 맛집'],
+      '용산구': ['이태원 세계음식', '한남동 카페', '용산 디저트', '경리단길 맛집', '해방촌 브런치', '보광동 맛집', '후암동 카페'],
+      '영등포구': ['여의도 맛집', '당산 카페거리', '영등포 디저트', '문래동 맛집', '신길동 맛집', '양평동 브런치', '도림동 카페'],
+      '송파구': ['잠실 맛집거리', '석촌호수 카페', '방이동 디저트', '문정동 맛집', '가락동 맛집', '송파 베이커리', '잠실새내 브런치']
+    };
+    
+    const defaultFood = ['지역 맛집', '동네 카페', '전통 디저트', '베이커리', '분식집', '치킨집', '브런치 카페'];
+    
+    if (path.SIGNGU_NM && areaFood[path.SIGNGU_NM]) {
+      return areaFood[path.SIGNGU_NM];
+    }
+    
+    return defaultFood;
+  };
+
+  // 추천 이유 생성 함수
+  const getRecommendationReason = () => {
+    const reasons = [];
+    
+    // 거리 기반 추천
+    const distance = path.CoursDetailLength || parseFloat(path.CoursLength || '0') || 0;
+    if (distance <= 2) {
+      reasons.push('가벼운 산책에 적합한 짧은 거리로 일상적인 운동에 좋습니다');
+    } else if (distance <= 4) {
+      reasons.push('적당한 운동량의 중거리 코스로 건강 관리에 효과적입니다');
+    } else {
+      reasons.push('충분한 운동 효과를 기대할 수 있는 장거리 코스로 체력 향상에 도움됩니다');
+    }
+    
+    // 난이도 기반 추천
+    if (path.CoursLv) {
+      const level = path.CoursLv.toLowerCase();
+      if (level.includes('쉬움') || level.includes('초급')) {
+        reasons.push('초보자도 부담 없이 즐길 수 있는 평탄한 코스입니다');
+      } else if (level.includes('보통') || level.includes('중급')) {
+        reasons.push('적당한 도전과 운동 효과를 제공하는 균형 잡힌 코스입니다');
+      } else if (level.includes('어려움') || level.includes('고급')) {
+        reasons.push('도전적인 코스로 높은 운동 효과와 성취감을 얻을 수 있습니다');
+      }
+    }
+    
+    // 편의시설 기반 추천
+    if (path.Toilet === 'Y' || path.Toilet === '있음') {
+      reasons.push('화장실 등 편의시설이 잘 갖춰져 있어 안심하고 이용할 수 있습니다');
+    }
+    
+    // 지역 특성 기반 추천
+    if (path.SIGNGU_NM) {
+      reasons.push(`${path.SIGNGU_NM} 지역의 대표적인 산책로로 접근성이 좋습니다`);
+    }
+    
+    // 특별한 특징 기반 추천
+    if (path.ADIT_DC) {
+      const description = path.ADIT_DC.toLowerCase();
+      if (description.includes('강') || description.includes('호수')) {
+        reasons.push('아름다운 수변 풍경을 감상하며 힐링할 수 있는 특별한 코스입니다');
+      }
+      if (description.includes('숲') || description.includes('나무')) {
+        reasons.push('자연 속에서 삼림욕과 함께 힐링할 수 있는 숲길 코스입니다');
+      }
+      if (description.includes('역사') || description.includes('문화')) {
+        reasons.push('역사와 문화를 함께 체험할 수 있는 교육적 가치가 높은 코스입니다');
+      }
+    }
+    
+    return reasons.slice(0, 3).join('. ') + '.';
+  };
+
   const handleSelect = () => {
     onSelect();
     onClose();
   };
 
   const amenities = getAmenities();
+  const nearbyFood = getNearbyFood();
+  const recommendationReason = getRecommendationReason();
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -157,6 +233,17 @@ const RealPathDetailModal = ({ path, isOpen, onClose, onSelect }: RealPathDetail
         </DialogHeader>
 
         <div className="space-y-6">
+          {/* 추천 이유 섹션 */}
+          <div className="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-400">
+            <div className="flex items-start gap-3">
+              <Lightbulb className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+              <div>
+                <div className="text-sm font-medium text-blue-800 mb-2">💡 추천 이유</div>
+                <p className="text-sm text-blue-700 leading-relaxed">{recommendationReason}</p>
+              </div>
+            </div>
+          </div>
+
           {/* 지도 섹션 */}
           <div>
             <h4 className="font-medium text-gray-900 mb-3">🗺️ 위치</h4>
@@ -218,7 +305,7 @@ const RealPathDetailModal = ({ path, isOpen, onClose, onSelect }: RealPathDetail
             </div>
           )}
 
-          {/* 개선된 편의시설 */}
+          {/* 편의시설 */}
           <div>
             <h4 className="font-medium text-gray-900 mb-3">🏢 편의시설</h4>
             <div className="flex gap-2 flex-wrap">
@@ -232,6 +319,21 @@ const RealPathDetailModal = ({ path, isOpen, onClose, onSelect }: RealPathDetail
               ) : (
                 <span className="text-sm text-gray-500">편의시설 정보 없음</span>
               )}
+            </div>
+          </div>
+
+          {/* 근처 맛집 & 디저트 */}
+          <div>
+            <div className="flex items-center gap-2 font-medium text-gray-900 mb-3">
+              <UtensilsCrossed className="h-5 w-5 text-orange-600" />
+              근처 맛집 & 디저트
+            </div>
+            <div className="flex gap-2 flex-wrap">
+              {nearbyFood.map((food, index) => (
+                <Badge key={index} variant="outline" className="text-sm bg-orange-50 text-orange-700 border-orange-200">
+                  {food}
+                </Badge>
+              ))}
             </div>
           </div>
 

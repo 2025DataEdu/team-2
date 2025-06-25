@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Clock, Info, Toilet, Car, Coffee, ShoppingCart } from 'lucide-react';
+import { MapPin, Clock, Info, Toilet, Car, Coffee, ShoppingCart, Lightbulb, UtensilsCrossed } from 'lucide-react';
 import SmallMap from './SmallMap';
 
 interface RealWalkingPath {
@@ -110,6 +109,81 @@ const RealPathCard = ({ path, onSelect, onCardClick }: RealPathCardProps) => {
     return amenities;
   };
 
+  // 근처 맛집/디저트 생성 함수
+  const getNearbyFood = () => {
+    const areaFood: { [key: string]: string[] } = {
+      '강남구': ['강남 맛집거리', '압구정 카페', '청담 디저트', '삼성동 브런치', '역삼 치킨'],
+      '서초구': ['서초 맛집', '반포 한강 카페', '교대 디저트', '강남역 맛집', '서초동 베이커리'],
+      '마포구': ['홍대 맛집', '합정 카페', '상수 디저트', '망원동 맛집', '연남동 브런치'],
+      '종로구': ['인사동 전통차', '삼청동 카페', '북촌 디저트', '명동 맛집', '종로 전통음식'],
+      '중구': ['명동 맛집', '을지로 카페', '장충동 족발', '신당동 떡볶이', '동대문 야식'],
+      '용산구': ['이태원 맛집', '한남동 카페', '용산 디저트', '경리단길 맛집', '해방촌 브런치'],
+      '영등포구': ['여의도 맛집', '당산 카페', '영등포 디저트', '문래동 맛집', '신길동 맛집'],
+      '송파구': ['잠실 맛집', '석촌호수 카페', '방이동 디저트', '문정동 맛집', '가락동 맛집']
+    };
+    
+    const defaultFood = ['지역 맛집', '동네 카페', '전통 디저트', '베이커리', '분식집'];
+    
+    if (path.SIGNGU_NM && areaFood[path.SIGNGU_NM]) {
+      return areaFood[path.SIGNGU_NM];
+    }
+    
+    return defaultFood;
+  };
+
+  // 추천 이유 생성 함수
+  const getRecommendationReason = () => {
+    const reasons = [];
+    
+    // 거리 기반 추천
+    const distance = path.CoursDetailLength || parseFloat(path.CoursLength || '0') || 0;
+    if (distance <= 2) {
+      reasons.push('가벼운 산책에 적합한 짧은 거리');
+    } else if (distance <= 4) {
+      reasons.push('적당한 운동량의 중거리 코스');
+    } else {
+      reasons.push('충분한 운동 효과를 기대할 수 있는 장거리 코스');
+    }
+    
+    // 난이도 기반 추천
+    if (path.CoursLv) {
+      const level = path.CoursLv.toLowerCase();
+      if (level.includes('쉬움') || level.includes('초급')) {
+        reasons.push('초보자도 부담 없이 즐길 수 있는 난이도');
+      } else if (level.includes('보통') || level.includes('중급')) {
+        reasons.push('적당한 도전과 운동 효과를 제공하는 코스');
+      } else if (level.includes('어려움') || level.includes('고급')) {
+        reasons.push('도전적인 코스로 높은 운동 효과 기대');
+      }
+    }
+    
+    // 편의시설 기반 추천
+    if (path.Toilet === 'Y' || path.Toilet === '있음') {
+      reasons.push('화장실 등 편의시설이 잘 갖춰진 코스');
+    }
+    
+    // 지역 특성 기반 추천
+    if (path.SIGNGU_NM) {
+      reasons.push(`${path.SIGNGU_NM} 지역의 대표적인 산책로`);
+    }
+    
+    // 특별한 특징 기반 추천
+    if (path.ADIT_DC) {
+      const description = path.ADIT_DC.toLowerCase();
+      if (description.includes('강') || description.includes('호수')) {
+        reasons.push('아름다운 수변 풍경을 감상할 수 있는 코스');
+      }
+      if (description.includes('숲') || description.includes('나무')) {
+        reasons.push('자연 속에서 힐링할 수 있는 숲길 코스');
+      }
+      if (description.includes('역사') || description.includes('문화')) {
+        reasons.push('역사와 문화를 함께 체험할 수 있는 코스');
+      }
+    }
+    
+    return reasons.slice(0, 2).join(', ') + '입니다.';
+  };
+
   const handleCardClick = () => {
     onCardClick();
   };
@@ -120,6 +194,8 @@ const RealPathCard = ({ path, onSelect, onCardClick }: RealPathCardProps) => {
   };
 
   const amenities = getAmenities();
+  const nearbyFood = getNearbyFood();
+  const recommendationReason = getRecommendationReason();
 
   return (
     <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full" onClick={handleCardClick}>
@@ -149,7 +225,7 @@ const RealPathCard = ({ path, onSelect, onCardClick }: RealPathCardProps) => {
       
       <CardContent className="flex flex-col h-full">
         <div className="flex-grow">
-          {/* 작은 지도 추가 */}
+          {/* 작은 지도 */}
           <div className="mb-4">
             <SmallMap 
               latitude={path.Latitude} 
@@ -164,6 +240,17 @@ const RealPathCard = ({ path, onSelect, onCardClick }: RealPathCardProps) => {
               📍 {path.Address}
             </p>
           )}
+
+          {/* 추천 이유 섹션 */}
+          <div className="mb-4 p-3 bg-blue-50 rounded-lg border-l-4 border-blue-400">
+            <div className="flex items-start gap-2">
+              <Lightbulb className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
+              <div>
+                <div className="text-xs font-medium text-blue-800 mb-1">💡 추천 이유</div>
+                <p className="text-xs text-blue-700 line-clamp-2">{recommendationReason}</p>
+              </div>
+            </div>
+          </div>
           
           {path.ADIT_DC && (
             <p className="text-sm text-gray-700 mb-4 line-clamp-3">
@@ -182,7 +269,7 @@ const RealPathCard = ({ path, onSelect, onCardClick }: RealPathCardProps) => {
             </div>
           </div>
 
-          {/* 개선된 편의시설 표시 */}
+          {/* 편의시설 표시 */}
           {amenities.length > 0 && (
             <div className="mb-4">
               <div className="text-sm font-medium text-gray-700 mb-2">편의시설</div>
@@ -196,6 +283,21 @@ const RealPathCard = ({ path, onSelect, onCardClick }: RealPathCardProps) => {
               </div>
             </div>
           )}
+
+          {/* 근처 맛집 & 디저트 */}
+          <div className="mb-4">
+            <div className="flex items-center gap-1 text-sm font-medium text-gray-700 mb-2">
+              <UtensilsCrossed className="h-4 w-4 text-orange-600" />
+              근처 맛집 & 디저트
+            </div>
+            <div className="flex gap-1 flex-wrap">
+              {nearbyFood.slice(0, 3).map((food, index) => (
+                <Badge key={index} variant="outline" className="text-xs bg-orange-50 text-orange-700 border-orange-200">
+                  {food}
+                </Badge>
+              ))}
+            </div>
+          </div>
 
           {path.CoursRoute && (
             <div className="mb-4">
