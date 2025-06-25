@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import WalkingPathCard from './WalkingPathCard';
+import PathDetailModal from './PathDetailModal';
 import DifficultyFilter from './DifficultyFilter';
 import { Button } from '@/components/ui/button';
 
@@ -28,6 +29,8 @@ interface PathGridProps {
 const PathGrid = ({ paths, isLoading, onPathSelect }: PathGridProps) => {
   const [filteredPaths, setFilteredPaths] = useState<WalkingPath[]>([]);
   const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>([]);
+  const [selectedPath, setSelectedPath] = useState<WalkingPath | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // 난이도 필터링 적용
   useEffect(() => {
@@ -39,6 +42,16 @@ const PathGrid = ({ paths, isLoading, onPathSelect }: PathGridProps) => {
       ));
     }
   }, [paths, selectedDifficulties]);
+
+  const handleCardClick = (path: WalkingPath) => {
+    setSelectedPath(path);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedPath(null);
+  };
 
   if (isLoading) {
     return (
@@ -53,38 +66,48 @@ const PathGrid = ({ paths, isLoading, onPathSelect }: PathGridProps) => {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-      <div className="lg:col-span-1">
-        <DifficultyFilter 
-          selectedDifficulties={selectedDifficulties}
-          onDifficultyChange={setSelectedDifficulties}
-        />
-      </div>
-      
-      <div className="lg:col-span-3">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {filteredPaths.map((path) => (
-            <WalkingPathCard 
-              key={path.id} 
-              path={path} 
-              onSelect={onPathSelect}
-            />
-          ))}
-          {filteredPaths.length === 0 && selectedDifficulties.length > 0 && (
-            <div className="col-span-full text-center py-8">
-              <p className="text-gray-500">선택한 난이도에 맞는 경로가 없습니다.</p>
-              <Button 
-                onClick={() => setSelectedDifficulties([])}
-                variant="outline"
-                className="mt-2"
-              >
-                필터 초기화
-              </Button>
-            </div>
-          )}
+    <>
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="lg:col-span-1">
+          <DifficultyFilter 
+            selectedDifficulties={selectedDifficulties}
+            onDifficultyChange={setSelectedDifficulties}
+          />
+        </div>
+        
+        <div className="lg:col-span-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {filteredPaths.map((path) => (
+              <WalkingPathCard 
+                key={path.id} 
+                path={path} 
+                onSelect={onPathSelect}
+                onCardClick={handleCardClick}
+              />
+            ))}
+            {filteredPaths.length === 0 && selectedDifficulties.length > 0 && (
+              <div className="col-span-full text-center py-8">
+                <p className="text-gray-500">선택한 난이도에 맞는 경로가 없습니다.</p>
+                <Button 
+                  onClick={() => setSelectedDifficulties([])}
+                  variant="outline"
+                  className="mt-2"
+                >
+                  필터 초기화
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+
+      <PathDetailModal
+        path={selectedPath}
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        onSelect={onPathSelect}
+      />
+    </>
   );
 };
 

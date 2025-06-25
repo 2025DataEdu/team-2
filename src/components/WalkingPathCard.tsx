@@ -23,9 +23,10 @@ interface WalkingPath {
 interface WalkingPathCardProps {
   path: WalkingPath;
   onSelect: (path: WalkingPath) => void;
+  onCardClick: (path: WalkingPath) => void;
 }
 
-const WalkingPathCard = ({ path, onSelect }: WalkingPathCardProps) => {
+const WalkingPathCard = ({ path, onSelect, onCardClick }: WalkingPathCardProps) => {
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case 'easy': return 'bg-green-100 text-green-800';
@@ -44,8 +45,17 @@ const WalkingPathCard = ({ path, onSelect }: WalkingPathCardProps) => {
     }
   };
 
+  const handleCardClick = () => {
+    onCardClick(path);
+  };
+
+  const handleSelectClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onSelect(path);
+  };
+
   return (
-    <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+    <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={handleCardClick}>
       <CardHeader>
         <div className="flex justify-between items-start">
           <CardTitle className="text-lg">{path.name}</CardTitle>
@@ -87,7 +97,7 @@ const WalkingPathCard = ({ path, onSelect }: WalkingPathCardProps) => {
           </div>
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4 text-green-600" />
-            <span className="text-sm">{path.duration.toFixed(0)}분</span>
+            <span className="text-sm">{Math.round(path.duration)}분</span>
           </div>
           <div className="flex items-center gap-2">
             <TrendingUp className="h-4 w-4 text-orange-600" />
@@ -95,7 +105,7 @@ const WalkingPathCard = ({ path, onSelect }: WalkingPathCardProps) => {
           </div>
           <div className="flex items-center gap-2">
             <Heart className="h-4 w-4 text-red-600" />
-            <span className="text-sm">칼로리 {(path.distance * 50).toFixed(0)}kcal</span>
+            <span className="text-sm">칼로리 {Math.round(path.distance * 50)}kcal</span>
           </div>
         </div>
 
@@ -126,7 +136,7 @@ const WalkingPathCard = ({ path, onSelect }: WalkingPathCardProps) => {
         </div>
 
         <Button 
-          onClick={() => onSelect(path)}
+          onClick={handleSelectClick}
           className="w-full bg-green-600 hover:bg-green-700"
         >
           이 경로 선택하기
