@@ -7,8 +7,9 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Clock, Info, Toilet, Car, Building, Coffee, ShoppingCart, Lightbulb, UtensilsCrossed } from 'lucide-react';
+import { MapPin, Clock, Info, Toilet, Car, Building, Coffee, ShoppingCart, Lightbulb } from 'lucide-react';
 import SmallMap from './SmallMap';
+import NearbyRestaurants from './NearbyRestaurants';
 
 interface RealWalkingPath {
   CoursCode: string;
@@ -117,28 +118,6 @@ const RealPathDetailModal = ({ path, isOpen, onClose, onSelect }: RealPathDetail
     return amenities;
   };
 
-  // 근처 맛집/디저트 생성 함수
-  const getNearbyFood = () => {
-    const areaFood: { [key: string]: string[] } = {
-      '강남구': ['강남 맛집거리', '압구정 로데오 카페', '청담 디저트 명소', '삼성동 브런치 카페', '역삼 치킨 맛집', '논현동 파스타', '신사동 베이커리'],
-      '서초구': ['서초 맛집', '반포 한강 카페', '교대역 디저트', '강남역 맛집', '서초동 베이커리', '잠원동 브런치', '방배동 맛집'],
-      '마포구': ['홍대 맛집거리', '합정 카페거리', '상수동 디저트', '망원동 맛집', '연남동 브런치', '서교동 파스타', '동교동 베이커리'],
-      '종로구': ['인사동 전통차', '삼청동 카페', '북촌 디저트', '명동 맛집', '종로 전통음식', '이화동 카페', '혜화동 맛집'],
-      '중구': ['명동 맛집거리', '을지로 카페', '장충동 족발', '신당동 떡볶이', '동대문 야식', '중구 디저트', '회현동 맛집'],
-      '용산구': ['이태원 세계음식', '한남동 카페', '용산 디저트', '경리단길 맛집', '해방촌 브런치', '보광동 맛집', '후암동 카페'],
-      '영등포구': ['여의도 맛집', '당산 카페거리', '영등포 디저트', '문래동 맛집', '신길동 맛집', '양평동 브런치', '도림동 카페'],
-      '송파구': ['잠실 맛집거리', '석촌호수 카페', '방이동 디저트', '문정동 맛집', '가락동 맛집', '송파 베이커리', '잠실새내 브런치']
-    };
-    
-    const defaultFood = ['지역 맛집', '동네 카페', '전통 디저트', '베이커리', '분식집', '치킨집', '브런치 카페'];
-    
-    if (path.SIGNGU_NM && areaFood[path.SIGNGU_NM]) {
-      return areaFood[path.SIGNGU_NM];
-    }
-    
-    return defaultFood;
-  };
-
   // 추천 이유 생성 함수
   const getRecommendationReason = () => {
     const reasons = [];
@@ -198,7 +177,6 @@ const RealPathDetailModal = ({ path, isOpen, onClose, onSelect }: RealPathDetail
   };
 
   const amenities = getAmenities();
-  const nearbyFood = getNearbyFood();
   const recommendationReason = getRecommendationReason();
 
   return (
@@ -322,20 +300,11 @@ const RealPathDetailModal = ({ path, isOpen, onClose, onSelect }: RealPathDetail
             </div>
           </div>
 
-          {/* 근처 맛집 & 디저트 */}
-          <div>
-            <div className="flex items-center gap-2 font-medium text-gray-900 mb-3">
-              <UtensilsCrossed className="h-5 w-5 text-orange-600" />
-              근처 맛집 & 디저트
-            </div>
-            <div className="flex gap-2 flex-wrap">
-              {nearbyFood.map((food, index) => (
-                <Badge key={index} variant="outline" className="text-sm bg-orange-50 text-orange-700 border-orange-200">
-                  {food}
-                </Badge>
-              ))}
-            </div>
-          </div>
+          {/* 구글 지도 기반 근처 맛집 & 디저트 */}
+          <NearbyRestaurants 
+            latitude={path.Latitude} 
+            longitude={path.Longitude} 
+          />
 
           {/* 추가 옵션 */}
           {path.Option && (

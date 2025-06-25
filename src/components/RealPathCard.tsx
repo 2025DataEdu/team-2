@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MapPin, Clock, Info, Toilet, Car, Coffee, ShoppingCart, Lightbulb, UtensilsCrossed } from 'lucide-react';
 import SmallMap from './SmallMap';
+import NearbyRestaurants from './NearbyRestaurants';
 
 interface RealWalkingPath {
   CoursCode: string;
@@ -194,7 +195,6 @@ const RealPathCard = ({ path, onSelect, onCardClick }: RealPathCardProps) => {
   };
 
   const amenities = getAmenities();
-  const nearbyFood = getNearbyFood();
   const recommendationReason = getRecommendationReason();
 
   return (
@@ -284,19 +284,13 @@ const RealPathCard = ({ path, onSelect, onCardClick }: RealPathCardProps) => {
             </div>
           )}
 
-          {/* 근처 맛집 & 디저트 */}
+          {/* 구글 지도 기반 근처 맛집 & 디저트 (간단 버전) */}
           <div className="mb-4">
-            <div className="flex items-center gap-1 text-sm font-medium text-gray-700 mb-2">
-              <UtensilsCrossed className="h-4 w-4 text-orange-600" />
-              근처 맛집 & 디저트
-            </div>
-            <div className="flex gap-1 flex-wrap">
-              {nearbyFood.slice(0, 3).map((food, index) => (
-                <Badge key={index} variant="outline" className="text-xs bg-orange-50 text-orange-700 border-orange-200">
-                  {food}
-                </Badge>
-              ))}
-            </div>
+            <NearbyRestaurants 
+              latitude={path.Latitude} 
+              longitude={path.Longitude} 
+              title="근처 맛집"
+            />
           </div>
 
           {path.CoursRoute && (
