@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 
 interface WalkingPath {
@@ -13,9 +14,6 @@ interface WalkingPath {
   amenities: string[];
   recommendationReason: string;
   nearbyFood: string[];
-  nearbyMarkets?: string[]; // 전통시장 정보 추가
-  latitude?: number; // 위치 정보 추가
-  longitude?: number;
 }
 
 interface UserProfile {
@@ -40,7 +38,7 @@ export const usePathRecommendations = ({ userProfile, userLocation }: UsePathRec
     
     // AI 기반 맞춤형 추천 로직 (실제 환경에서는 백엔드 AI 서비스 연동)
     setTimeout(() => {
-      const basePaths: Omit<WalkingPath, 'recommendationReason' | 'nearbyFood' | 'nearbyMarkets'>[] = [
+      const basePaths: Omit<WalkingPath, 'recommendationReason' | 'nearbyFood'>[] = [
         {
           id: '1',
           name: '한강공원 여의도 코스',
@@ -51,9 +49,7 @@ export const usePathRecommendations = ({ userProfile, userLocation }: UsePathRec
           rating: 4.5,
           features: ['강변', '야경', '자전거도로'],
           description: '한강을 따라 걷는 평평한 코스로 초보자에게 적합합니다. 아름다운 강변 풍경을 감상할 수 있습니다.',
-          amenities: ['화장실', '편의점', '카페', '주차장'],
-          latitude: 37.5219,
-          longitude: 126.9245
+          amenities: ['화장실', '편의점', '카페', '주차장']
         },
         {
           id: '2',
@@ -65,9 +61,7 @@ export const usePathRecommendations = ({ userProfile, userLocation }: UsePathRec
           rating: 4.7,
           features: ['숲길', '역사', '전망대'],
           description: '서울의 중심에서 자연을 만끽할 수 있는 숲길 코스입니다. 약간의 경사가 있어 운동 효과가 좋습니다.',
-          amenities: ['화장실', '휴게소', '전망대', '문화시설'],
-          latitude: 37.5512,
-          longitude: 126.9882
+          amenities: ['화장실', '휴게소', '전망대', '문화시설']
         },
         {
           id: '3',
@@ -79,9 +73,7 @@ export const usePathRecommendations = ({ userProfile, userLocation }: UsePathRec
           rating: 4.2,
           features: ['도심', '야경', '문화'],
           description: '도심 속 시원한 물길을 따라 걷는 편안한 코스입니다. 접근성이 좋고 다양한 볼거리가 있습니다.',
-          amenities: ['화장일', '음료수', '벤치', '조명'],
-          latitude: 37.5694,
-          longitude: 126.9784
+          amenities: ['화장일', '음료수', '벤치', '조명']
         }
       ];
 
@@ -90,13 +82,6 @@ export const usePathRecommendations = ({ userProfile, userLocation }: UsePathRec
         '1': ['여의도 파크카페', '한강 브런치', '아이스크림 트럭', '치킨&맥주', '피자헤븐'],
         '2': ['남산골 한옥마을 찻집', '케이크하우스', '전통 팥빙수', '산채정식', '커피 로스터리'],
         '3': ['청계천 떡볶이', '호떡가게', '브런치카페', '김밥천국', '아이스크림바']
-      };
-
-      // 근처 전통시장 정보 생성
-      const marketOptions = {
-        '1': ['여의도시장', '국회의사당 전통시장'],
-        '2': ['남대문시장', '명동 전통시장', '회현시장'],
-        '3': ['광장시장', '동대문시장', '청계상가']
       };
 
       // 사용자 프로필에 따른 맞춤형 필터링 및 추천 이유 생성
@@ -125,7 +110,6 @@ export const usePathRecommendations = ({ userProfile, userLocation }: UsePathRec
           ...path,
           recommendationReason: reason,
           nearbyFood: foodOptions[path.id as keyof typeof foodOptions] || [],
-          nearbyMarkets: marketOptions[path.id as keyof typeof marketOptions] || [],
           features: userProfile.walkingGoal === 'stress' 
             ? [...path.features, '힐링'] 
             : userProfile.walkingGoal === 'weight' 
@@ -146,6 +130,6 @@ export const usePathRecommendations = ({ userProfile, userLocation }: UsePathRec
   return {
     recommendedPaths,
     isLoading,
-    refetch: generateRecommendations
+    generateRecommendations
   };
 };

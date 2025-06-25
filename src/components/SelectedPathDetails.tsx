@@ -1,7 +1,5 @@
 
 import React from 'react';
-import { MapPin } from 'lucide-react';
-import MiniMap from './MiniMap';
 
 interface WalkingPath {
   id: string;
@@ -16,9 +14,6 @@ interface WalkingPath {
   amenities: string[];
   recommendationReason: string;
   nearbyFood: string[];
-  nearbyMarkets?: string[]; // 전통시장 정보 추가
-  latitude?: number; // 위치 정보 추가
-  longitude?: number;
 }
 
 interface SelectedPathDetailsProps {
@@ -32,18 +27,6 @@ const SelectedPathDetails = ({ selectedPath }: SelectedPathDetailsProps) => {
         <h2 className="text-2xl font-bold text-green-700 mb-4">
           🎉 선택된 산책로
         </h2>
-        
-        {/* 지도 섹션 추가 */}
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold mb-3">📍 위치</h3>
-          <MiniMap 
-            latitude={selectedPath.latitude} 
-            longitude={selectedPath.longitude} 
-            pathName={selectedPath.name}
-            className="w-full h-48"
-          />
-        </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <h3 className="text-xl font-semibold mb-2">{selectedPath.name}</h3>
@@ -79,23 +62,6 @@ const SelectedPathDetails = ({ selectedPath }: SelectedPathDetailsProps) => {
                 </span>
               ))}
             </div>
-
-            {/* 근처 전통시장 정보 추가 */}
-            {selectedPath.nearbyMarkets && selectedPath.nearbyMarkets.length > 0 && (
-              <>
-                <h4 className="font-semibold mb-2 flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-orange-600" />
-                  🏪 근처 전통시장
-                </h4>
-                <div className="flex gap-2 flex-wrap mb-4">
-                  {selectedPath.nearbyMarkets.map((market, index) => (
-                    <span key={index} className="bg-orange-100 text-orange-800 px-2 py-1 rounded text-sm">
-                      {market}
-                    </span>
-                  ))}
-                </div>
-              </>
-            )}
             
             <h4 className="font-semibold mb-2">🍰 근처 맛집 & 디저트</h4>
             <div className="flex gap-2 flex-wrap">
