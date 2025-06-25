@@ -21,12 +21,13 @@ interface UserProfileFormProps {
 }
 
 const UserProfileForm = ({ onProfileSubmit }: UserProfileFormProps) => {
+  // 가상 데이터로 초기값 설정
   const [profile, setProfile] = useState<UserProfile>({
-    age: 30,
-    fitnessLevel: '',
-    preferredDistance: [2],
-    healthConditions: '',
-    walkingGoal: ''
+    age: 35,
+    fitnessLevel: 'intermediate',
+    preferredDistance: [3],
+    healthConditions: '가벼운 무릎 통증',
+    walkingGoal: 'health'
   });
   const { toast } = useToast();
 
@@ -47,12 +48,62 @@ const UserProfileForm = ({ onProfileSubmit }: UserProfileFormProps) => {
     });
   };
 
+  const loadMockData = () => {
+    const mockProfiles = [
+      {
+        age: 28,
+        fitnessLevel: 'beginner',
+        preferredDistance: [1.5],
+        healthConditions: '',
+        walkingGoal: 'stress'
+      },
+      {
+        age: 45,
+        fitnessLevel: 'advanced',
+        preferredDistance: [5],
+        healthConditions: '고혈압',
+        walkingGoal: 'weight'
+      },
+      {
+        age: 52,
+        fitnessLevel: 'intermediate',
+        preferredDistance: [2.5],
+        healthConditions: '당뇨병',
+        walkingGoal: 'health'
+      },
+      {
+        age: 32,
+        fitnessLevel: 'advanced',
+        preferredDistance: [4],
+        healthConditions: '',
+        walkingGoal: 'leisure'
+      }
+    ];
+    
+    const randomProfile = mockProfiles[Math.floor(Math.random() * mockProfiles.length)];
+    setProfile(randomProfile);
+    
+    toast({
+      title: "가상 데이터 로드 완료",
+      description: "임의의 건강 정보가 입력되었습니다.",
+    });
+  };
+
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle className="text-2xl text-center text-green-700">
           개인 건강 정보 입력
         </CardTitle>
+        <div className="text-center">
+          <Button 
+            onClick={loadMockData}
+            variant="outline"
+            className="text-sm"
+          >
+            🎲 가상 데이터 불러오기
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -71,7 +122,7 @@ const UserProfileForm = ({ onProfileSubmit }: UserProfileFormProps) => {
             
             <div>
               <Label htmlFor="fitnessLevel">체력 수준</Label>
-              <Select onValueChange={(value) => setProfile(prev => ({ ...prev, fitnessLevel: value }))}>
+              <Select value={profile.fitnessLevel} onValueChange={(value) => setProfile(prev => ({ ...prev, fitnessLevel: value }))}>
                 <SelectTrigger>
                   <SelectValue placeholder="체력 수준을 선택하세요" />
                 </SelectTrigger>
@@ -98,7 +149,7 @@ const UserProfileForm = ({ onProfileSubmit }: UserProfileFormProps) => {
 
           <div>
             <Label htmlFor="walkingGoal">산책 목표</Label>
-            <Select onValueChange={(value) => setProfile(prev => ({ ...prev, walkingGoal: value }))}>
+            <Select value={profile.walkingGoal} onValueChange={(value) => setProfile(prev => ({ ...prev, walkingGoal: value }))}>
               <SelectTrigger>
                 <SelectValue placeholder="산책 목표를 선택하세요" />
               </SelectTrigger>
