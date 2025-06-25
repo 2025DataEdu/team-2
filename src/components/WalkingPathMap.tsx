@@ -1,5 +1,4 @@
-
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { WalkingPathData, TraditionalMarketData } from '@/hooks/useWalkingPaths';
@@ -20,6 +19,18 @@ const WalkingPathMap = ({
   className = "w-full h-96" 
 }: WalkingPathMapProps) => {
   
+  // Fix leaflet icon issue
+  useEffect(() => {
+    // This fixes the default marker icon issue with webpack
+    const L = require('leaflet');
+    delete L.Icon.Default.prototype._getIconUrl;
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+      iconUrl: require('leaflet/dist/images/marker-icon.png'),
+      shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+    });
+  }, []);
+
   // 거리 계산 함수 (Haversine formula)
   const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
     const R = 6371; // 지구 반지름 (km)
