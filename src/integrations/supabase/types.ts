@@ -95,27 +95,60 @@ export type Database = {
         }
         Relationships: []
       }
-      구구단: {
+      내주변산책로: {
         Row: {
-          id: number
-          결과: number
-          생성일시: string
-          승수: number
-          피승수: number
+          Address: string | null
+          ADIT_DC: string | null
+          CorusDetailName: string | null
+          CoursCode: string
+          CoursDetailLength: number | null
+          CoursLength: string | null
+          CoursLv: string | null
+          CoursName: string | null
+          CoursRoute: string | null
+          CoursTime: string | null
+          CVNTL_NM: string | null
+          Latitude: number | null
+          Longitude: number | null
+          Option: string | null
+          SIGNGU_NM: string | null
+          Toilet: string | null
         }
         Insert: {
-          id?: number
-          결과: number
-          생성일시?: string
-          승수: number
-          피승수: number
+          Address?: string | null
+          ADIT_DC?: string | null
+          CorusDetailName?: string | null
+          CoursCode: string
+          CoursDetailLength?: number | null
+          CoursLength?: string | null
+          CoursLv?: string | null
+          CoursName?: string | null
+          CoursRoute?: string | null
+          CoursTime?: string | null
+          CVNTL_NM?: string | null
+          Latitude?: number | null
+          Longitude?: number | null
+          Option?: string | null
+          SIGNGU_NM?: string | null
+          Toilet?: string | null
         }
         Update: {
-          id?: number
-          결과?: number
-          생성일시?: string
-          승수?: number
-          피승수?: number
+          Address?: string | null
+          ADIT_DC?: string | null
+          CorusDetailName?: string | null
+          CoursCode?: string
+          CoursDetailLength?: number | null
+          CoursLength?: string | null
+          CoursLv?: string | null
+          CoursName?: string | null
+          CoursRoute?: string | null
+          CoursTime?: string | null
+          CVNTL_NM?: string | null
+          Latitude?: number | null
+          Longitude?: number | null
+          Option?: string | null
+          SIGNGU_NM?: string | null
+          Toilet?: string | null
         }
         Relationships: []
       }

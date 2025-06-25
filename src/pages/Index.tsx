@@ -1,24 +1,24 @@
 
+import React from 'react';
+import ProblemDefinitionForm from '@/components/ProblemDefinitionForm';
+import VoiceInterface from '@/components/VoiceInterface';
+
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
-      <div className="text-center space-y-6 p-8">
-        <div className="space-y-4">
-          <h1 className="text-4xl font-bold text-gray-900 tracking-tight">
-            새 프로젝트
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+      <div className="container mx-auto py-8 px-4">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            문제정의 템플릿 도구
           </h1>
-          <p className="text-lg text-gray-600 max-w-md mx-auto">
-            여기서 새로운 아이디어를 시작해보세요
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            체계적인 문제 분석과 해결책 도출을 위한 템플릿입니다. 
+            음성으로도 입력하고 안내를 받을 수 있습니다.
           </p>
         </div>
         
-        <div className="flex items-center justify-center">
-          <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full"></div>
-        </div>
-        
-        <div className="text-sm text-gray-500">
-          준비가 완료되었습니다
-        </div>
+        <ProblemDefinitionForm />
+        <VoiceInterface />
       </div>
     </div>
   );
