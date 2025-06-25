@@ -40,6 +40,7 @@ const TopRecommendedPaths = ({ title = "내 주변 추천 산책로 TOP 3" }: To
         userLatitude={latitude}
         userLongitude={longitude}
         maxDistance={5}
+        limit={3}
         title={title}
       />
     </div>

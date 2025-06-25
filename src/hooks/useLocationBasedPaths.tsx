@@ -25,7 +25,7 @@ interface LocationBasedPathsProps {
   userLatitude: number;
   userLongitude: number;
   maxDistance: number; // km
-  limit?: number;
+  limit: number;
 }
 
 // 두 지점 간의 거리를 계산하는 함수 (Haversine formula)
@@ -42,7 +42,7 @@ const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: numbe
   return distance;
 };
 
-export const useLocationBasedPaths = ({ userLatitude, userLongitude, maxDistance, limit = 3 }: LocationBasedPathsProps) => {
+export const useLocationBasedPaths = ({ userLatitude, userLongitude, maxDistance, limit }: LocationBasedPathsProps) => {
   const [allPaths, setAllPaths] = useState<RealWalkingPath[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -95,10 +95,9 @@ export const useLocationBasedPaths = ({ userLatitude, userLongitude, maxDistance
       path !== null && path.distance <= maxDistance
     );
 
-    // 거리순으로 정렬하고 상위 limit개만 반환
-    return pathsWithDistance
-      .sort((a, b) => a.distance - b.distance)
-      .slice(0, limit);
+    // 거리순으로 정렬하고 정확히 limit개만 반환
+    const sortedPaths = pathsWithDistance.sort((a, b) => a.distance - b.distance);
+    return sortedPaths.slice(0, limit);
   }, [allPaths, userLatitude, userLongitude, maxDistance, limit]);
 
   return { nearbyPaths, isLoading, error };
