@@ -3,7 +3,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import WeatherInfo from '@/components/WeatherInfo';
 import LocationInfo from '@/components/LocationInfo';
-import DifficultyFilter from '@/components/DifficultyFilter';
+import DifficultyPopover from '@/components/DifficultyPopover';
 import { useHealthProfile } from '@/hooks/useHealthProfile';
 
 interface UserProfile {
@@ -81,8 +81,8 @@ const InfoCards = ({ userProfile, onEditProfile, selectedDifficulties, onDifficu
           </Button>
         </div>
       </div>
-      <div className="lg:col-span-1">
-        <DifficultyFilter 
+      <div className="lg:col-span-1 flex justify-center items-start pt-4">
+        <DifficultyPopover 
           selectedDifficulties={selectedDifficulties}
           onDifficultyChange={onDifficultyChange}
         />
