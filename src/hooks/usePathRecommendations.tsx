@@ -42,8 +42,8 @@ export const usePathRecommendations = ({ userProfile, userLocation }: UsePathRec
         {
           id: '1',
           name: '한강공원 여의도 코스',
-          distance: parseFloat(userProfile.preferredDistance[0].toFixed(2)),
-          duration: parseFloat((userProfile.preferredDistance[0] * 15).toFixed(2)),
+          distance: Number(userProfile.preferredDistance[0].toFixed(2)),
+          duration: Number((userProfile.preferredDistance[0] * 15).toFixed(2)),
           difficulty: userProfile.fitnessLevel === 'beginner' ? 'easy' : 'medium',
           elevation: 5.00,
           rating: 4.50,
@@ -54,8 +54,8 @@ export const usePathRecommendations = ({ userProfile, userLocation }: UsePathRec
         {
           id: '2',
           name: '남산 둘레길',
-          distance: parseFloat((userProfile.preferredDistance[0] * 1.2).toFixed(2)),
-          duration: parseFloat((userProfile.preferredDistance[0] * 18).toFixed(2)),
+          distance: Number((userProfile.preferredDistance[0] * 1.2).toFixed(2)),
+          duration: Number((userProfile.preferredDistance[0] * 18).toFixed(2)),
           difficulty: userProfile.fitnessLevel === 'advanced' ? 'medium' : 'hard',
           elevation: 45.00,
           rating: 4.70,
@@ -66,8 +66,8 @@ export const usePathRecommendations = ({ userProfile, userLocation }: UsePathRec
         {
           id: '3',
           name: '청계천 산책로',
-          distance: parseFloat((userProfile.preferredDistance[0] * 0.8).toFixed(2)),
-          duration: parseFloat((userProfile.preferredDistance[0] * 12).toFixed(2)),
+          distance: Number((userProfile.preferredDistance[0] * 0.8).toFixed(2)),
+          duration: Number((userProfile.preferredDistance[0] * 12).toFixed(2)),
           difficulty: 'easy',
           elevation: 0.00,
           rating: 4.20,

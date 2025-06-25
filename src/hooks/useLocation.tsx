@@ -37,8 +37,8 @@ export const useLocation = () => {
           const mockAddress = `서울시 ${latitude > 37.55 ? '강북구' : '강남구'} ${longitude > 127.0 ? '동쪽' : '서쪽'} 지역`;
           
           setLocation({
-            latitude,
-            longitude,
+            latitude: Number(latitude.toFixed(2)),
+            longitude: Number(longitude.toFixed(2)),
             address: mockAddress,
             isLoading: false,
             error: null
@@ -67,8 +67,8 @@ export const useLocation = () => {
         
         // 에러 시 기본 위치 (서울 시청) 사용
         setLocation({
-          latitude: 37.5665,
-          longitude: 126.9780,
+          latitude: Number((37.5665).toFixed(2)),
+          longitude: Number((126.9780).toFixed(2)),
           address: '서울특별시 중구 (기본 위치)',
           isLoading: false,
           error: errorMessage

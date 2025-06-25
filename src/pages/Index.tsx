@@ -44,23 +44,23 @@ const Index = () => {
       // 자동으로 가상 프로필 생성
       const autoProfiles = [
         {
-          age: 35,
+          age: Number((35).toFixed(2)),
           fitnessLevel: 'intermediate',
-          preferredDistance: [3],
+          preferredDistance: [Number((3).toFixed(2))],
           healthConditions: '가벼운 무릎 통증',
           walkingGoal: 'health'
         },
         {
-          age: 28,
+          age: Number((28).toFixed(2)),
           fitnessLevel: 'beginner',
-          preferredDistance: [2],
+          preferredDistance: [Number((2).toFixed(2))],
           healthConditions: '',
           walkingGoal: 'stress'
         },
         {
-          age: 45,
+          age: Number((45).toFixed(2)),
           fitnessLevel: 'advanced',
-          preferredDistance: [4.5],
+          preferredDistance: [Number((4.5).toFixed(2))],
           healthConditions: '고혈압',
           walkingGoal: 'weight'
         }
