@@ -95,6 +95,51 @@ export type Database = {
         }
         Relationships: []
       }
+      건강정보: {
+        Row: {
+          birth_year: number | null
+          blood_pressure_dia: number | null
+          blood_pressure_sys: number | null
+          cholesterol_total: number | null
+          diagnosis_code: string | null
+          exercise_frequency: string | null
+          gender: string | null
+          height_cm: number | null
+          patient_id: string
+          smoking_status: string | null
+          visit_date: string | null
+          weight_kg: number | null
+        }
+        Insert: {
+          birth_year?: number | null
+          blood_pressure_dia?: number | null
+          blood_pressure_sys?: number | null
+          cholesterol_total?: number | null
+          diagnosis_code?: string | null
+          exercise_frequency?: string | null
+          gender?: string | null
+          height_cm?: number | null
+          patient_id: string
+          smoking_status?: string | null
+          visit_date?: string | null
+          weight_kg?: number | null
+        }
+        Update: {
+          birth_year?: number | null
+          blood_pressure_dia?: number | null
+          blood_pressure_sys?: number | null
+          cholesterol_total?: number | null
+          diagnosis_code?: string | null
+          exercise_frequency?: string | null
+          gender?: string | null
+          height_cm?: number | null
+          patient_id?: string
+          smoking_status?: string | null
+          visit_date?: string | null
+          weight_kg?: number | null
+        }
+        Relationships: []
+      }
       내주변산책로: {
         Row: {
           Address: string | null

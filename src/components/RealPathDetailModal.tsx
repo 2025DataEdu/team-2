@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { MapPin, Clock, Info, Toilet, Car, Building, Coffee, ShoppingCart, Lightbulb } from 'lucide-react';
 import SmallMap from './SmallMap';
 import TopRecommendedPaths from './TopRecommendedPaths';
+import VirtualNearbyFood from './VirtualNearbyFood';
 
 interface RealWalkingPath {
   CoursCode: string;
@@ -61,36 +62,30 @@ const RealPathDetailModal = ({ path, isOpen, onClose, onSelect }: RealPathDetail
     return distance > 0 ? `약 ${Math.round(distance * 15)}분` : '정보 없음';
   };
 
-  // 편의시설 파싱 함수
   const getAmenities = () => {
     const amenities = [];
     
-    // 화장실 정보
     if (path.Toilet === 'Y' || path.Toilet === '있음' || 
         (path.Option && (path.Option.includes('화장실') || path.Option.includes('공중화장실')))) {
       amenities.push({ icon: Toilet, label: '화장실 이용 가능', color: 'text-blue-600' });
     }
     
-    // 주차장 정보
     if (path.Option && (path.Option.includes('주차') || path.Option.includes('주차장') ||
         path.Option.includes('주차시설'))) {
       amenities.push({ icon: Car, label: '주차장 있음', color: 'text-green-600' });
     }
     
-    // 편의점 정보
     if (path.Option && (path.Option.includes('편의점') || path.Option.includes('매점') ||
         path.Option.includes('상점'))) {
       amenities.push({ icon: ShoppingCart, label: '편의점', color: 'text-purple-600' });
     }
     
-    // 카페/음식점 정보
     if (path.Option && (path.Option.includes('카페') || path.Option.includes('커피') ||
         path.Option.includes('음식점') || path.Option.includes('식당') || 
         path.Option.includes('휴게소'))) {
       amenities.push({ icon: Coffee, label: '카페/음식점', color: 'text-orange-600' });
     }
     
-    // ADIT_DC에서도 편의시설 정보 추출
     if (path.ADIT_DC) {
       const description = path.ADIT_DC.toLowerCase();
       
@@ -118,11 +113,9 @@ const RealPathDetailModal = ({ path, isOpen, onClose, onSelect }: RealPathDetail
     return amenities;
   };
 
-  // 추천 이유 생성 함수
   const getRecommendationReason = () => {
     const reasons = [];
     
-    // 거리 기반 추천
     const distance = path.CoursDetailLength || parseFloat(path.CoursLength || '0') || 0;
     if (distance <= 2) {
       reasons.push('가벼운 산책에 적합한 짧은 거리로 일상적인 운동에 좋습니다');
@@ -132,7 +125,6 @@ const RealPathDetailModal = ({ path, isOpen, onClose, onSelect }: RealPathDetail
       reasons.push('충분한 운동 효과를 기대할 수 있는 장거리 코스로 체력 향상에 도움됩니다');
     }
     
-    // 난이도 기반 추천
     if (path.CoursLv) {
       const level = path.CoursLv.toLowerCase();
       if (level.includes('쉬움') || level.includes('초급')) {
@@ -144,17 +136,14 @@ const RealPathDetailModal = ({ path, isOpen, onClose, onSelect }: RealPathDetail
       }
     }
     
-    // 편의시설 기반 추천
     if (path.Toilet === 'Y' || path.Toilet === '있음') {
       reasons.push('화장실 등 편의시설이 잘 갖춰져 있어 안심하고 이용할 수 있습니다');
     }
     
-    // 지역 특성 기반 추천
     if (path.SIGNGU_NM) {
       reasons.push(`${path.SIGNGU_NM} 지역의 대표적인 산책로로 접근성이 좋습니다`);
     }
     
-    // 특별한 특징 기반 추천
     if (path.ADIT_DC) {
       const description = path.ADIT_DC.toLowerCase();
       if (description.includes('강') || description.includes('호수')) {
@@ -299,6 +288,12 @@ const RealPathDetailModal = ({ path, isOpen, onClose, onSelect }: RealPathDetail
               )}
             </div>
           </div>
+
+          {/* 가상 맛집 정보 */}
+          <VirtualNearbyFood 
+            pathLocation={path.SIGNGU_NM || path.Address}
+            pathName={path.CoursName || path.CorusDetailName}
+          />
 
           {/* 추천 산책로 TOP 3 */}
           <TopRecommendedPaths title="비슷한 추천 산책로 TOP 3" />
