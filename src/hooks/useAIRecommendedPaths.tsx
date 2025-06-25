@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -113,8 +112,8 @@ export const useAIRecommendedPaths = ({ userProfile, userLocation }: UseAIRecomm
         return true;
       });
 
-      // 상위 9개만 선택 (3x3 그리드)
-      const selectedPaths = userPreferredPaths.slice(0, 9).map((path, index) => {
+      // 상위 3개만 선택 (정확히 3개만)
+      const selectedPaths = userPreferredPaths.slice(0, 3).map((path, index) => {
         // WalkingPath 인터페이스에 맞게 변환
         const convertedPath = {
           id: path.CoursCode,
@@ -220,13 +219,7 @@ export const useAIRecommendedPaths = ({ userProfile, userLocation }: UseAIRecomm
     const foodOptions = [
       ['카페 드롭탑', '한식당 미락', '치킨집 굽네'],
       ['이탈리안 파스타', '돈까스 전문점', '분식 마당'],
-      ['커피빈', '순두부찌개', '족발보쌈'],
-      ['중국집 만리장성', '김밥천국', '아이스크림'],
-      ['베이커리', '갈비탕', '피자'],
-      ['디저트카페', '냉면집', '햄버거'],
-      ['전통찻집', '제육볶음', '떡볶이'],
-      ['브런치카페', '비빔밥', '호떡'],
-      ['로스터리', '삼겹살', '붕어빵']
+      ['커피빈', '순두부찌개', '족발보쌈']
     ];
     return foodOptions[index % foodOptions.length];
   };
