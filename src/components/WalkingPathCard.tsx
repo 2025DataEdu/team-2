@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Clock, TrendingUp, Heart, Star, Lightbulb } from 'lucide-react';
+import { MapPin, Clock, TrendingUp, Heart, Star, Lightbulb, UtensilsCrossed } from 'lucide-react';
 
 interface WalkingPath {
   id: string;
@@ -17,6 +17,7 @@ interface WalkingPath {
   description: string;
   amenities: string[];
   recommendationReason: string;
+  nearbyFood: string[]; // 근처 맛집/디저트 정보 추가
 }
 
 interface WalkingPathCardProps {
@@ -68,7 +69,7 @@ const WalkingPathCard = ({ path, onSelect }: WalkingPathCardProps) => {
       <CardContent>
         <p className="text-gray-600 mb-4 text-sm">{path.description}</p>
         
-        {/* 추천 이유 섹션 추가 */}
+        {/* 추천 이유 섹션 */}
         <div className="mb-4 p-3 bg-blue-50 rounded-lg border-l-3 border-blue-400">
           <div className="flex items-start gap-2">
             <Lightbulb className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
@@ -104,6 +105,21 @@ const WalkingPathCard = ({ path, onSelect }: WalkingPathCardProps) => {
             {path.amenities.map((amenity, index) => (
               <Badge key={index} variant="secondary" className="text-xs">
                 {amenity}
+              </Badge>
+            ))}
+          </div>
+        </div>
+
+        {/* 근처 맛집/디저트 정보 추가 */}
+        <div className="mb-4">
+          <div className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+            <UtensilsCrossed className="h-4 w-4 text-orange-600" />
+            근처 맛집 & 디저트
+          </div>
+          <div className="flex gap-2 flex-wrap">
+            {path.nearbyFood.map((food, index) => (
+              <Badge key={index} variant="outline" className="text-xs bg-orange-50 text-orange-700 border-orange-200">
+                {food}
               </Badge>
             ))}
           </div>

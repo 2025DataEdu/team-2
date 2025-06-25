@@ -95,6 +95,63 @@ export type Database = {
         }
         Relationships: []
       }
+      내주변산책로: {
+        Row: {
+          Address: string | null
+          ADIT_DC: string | null
+          CorusDetailName: string | null
+          CoursCode: string
+          CoursDetailLength: number | null
+          CoursLength: string | null
+          CoursLv: string | null
+          CoursName: string | null
+          CoursRoute: string | null
+          CoursTime: string | null
+          CVNTL_NM: string | null
+          Latitude: number | null
+          Longitude: number | null
+          Option: string | null
+          SIGNGU_NM: string | null
+          Toilet: string | null
+        }
+        Insert: {
+          Address?: string | null
+          ADIT_DC?: string | null
+          CorusDetailName?: string | null
+          CoursCode: string
+          CoursDetailLength?: number | null
+          CoursLength?: string | null
+          CoursLv?: string | null
+          CoursName?: string | null
+          CoursRoute?: string | null
+          CoursTime?: string | null
+          CVNTL_NM?: string | null
+          Latitude?: number | null
+          Longitude?: number | null
+          Option?: string | null
+          SIGNGU_NM?: string | null
+          Toilet?: string | null
+        }
+        Update: {
+          Address?: string | null
+          ADIT_DC?: string | null
+          CorusDetailName?: string | null
+          CoursCode?: string
+          CoursDetailLength?: number | null
+          CoursLength?: string | null
+          CoursLv?: string | null
+          CoursName?: string | null
+          CoursRoute?: string | null
+          CoursTime?: string | null
+          CVNTL_NM?: string | null
+          Latitude?: number | null
+          Longitude?: number | null
+          Option?: string | null
+          SIGNGU_NM?: string | null
+          Toilet?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import WalkingPathCard from './WalkingPathCard';
+import DifficultyFilter from './DifficultyFilter';
 import { Button } from '@/components/ui/button';
 import { RefreshCw } from 'lucide-react';
 
@@ -15,7 +16,8 @@ interface WalkingPath {
   features: string[];
   description: string;
   amenities: string[];
-  recommendationReason: string; // 추천 이유 추가
+  recommendationReason: string;
+  nearbyFood: string[]; // 근처 맛집/디저트 정보 추가
 }
 
 interface UserProfile {
@@ -34,6 +36,8 @@ interface WalkingPathRecommendationsProps {
 
 const WalkingPathRecommendations = ({ userProfile, onPathSelect, userLocation }: WalkingPathRecommendationsProps) => {
   const [recommendedPaths, setRecommendedPaths] = useState<WalkingPath[]>([]);
+  const [filteredPaths, setFilteredPaths] = useState<WalkingPath[]>([]);
+  const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const generateRecommendations = () => {
@@ -41,7 +45,7 @@ const WalkingPathRecommendations = ({ userProfile, onPathSelect, userLocation }:
     
     // AI 기반 맞춤형 추천 로직 (실제 환경에서는 백엔드 AI 서비스 연동)
     setTimeout(() => {
-      const basePaths: Omit<WalkingPath, 'recommendationReason'>[] = [
+      const basePaths: Omit<WalkingPath, 'recommendationReason' | 'nearbyFood'>[] = [
         {
           id: '1',
           name: '한강공원 여의도 코스',
@@ -80,6 +84,13 @@ const WalkingPathRecommendations = ({ userProfile, onPathSelect, userLocation }:
         }
       ];
 
+      // 근처 맛집/디저트 정보 생성
+      const foodOptions = {
+        '1': ['여의도 파크카페', '한강 브런치', '아이스크림 트럭', '치킨&맥주', '피자헤븐'],
+        '2': ['남산골 한옥마을 찻집', '케이크하우스', '전통 팥빙수', '산채정식', '커피 로스터리'],
+        '3': ['청계천 떡볶이', '호떡가게', '브런치카페', '김밥천국', '아이스크림바']
+      };
+
       // 사용자 프로필에 따른 맞춤형 필터링 및 추천 이유 생성
       let filteredPaths = basePaths.filter(path => {
         if (userProfile.healthConditions.includes('무릎') && path.elevation > 30) return false;
@@ -105,6 +116,7 @@ const WalkingPathRecommendations = ({ userProfile, onPathSelect, userLocation }:
         return {
           ...path,
           recommendationReason: reason,
+          nearbyFood: foodOptions[path.id as keyof typeof foodOptions] || [],
           features: userProfile.walkingGoal === 'stress' 
             ? [...path.features, '힐링'] 
             : userProfile.walkingGoal === 'weight' 
@@ -117,6 +129,17 @@ const WalkingPathRecommendations = ({ userProfile, onPathSelect, userLocation }:
       setIsLoading(false);
     }, 1500);
   };
+
+  // 난이도 필터링 적용
+  useEffect(() => {
+    if (selectedDifficulties.length === 0) {
+      setFilteredPaths(recommendedPaths);
+    } else {
+      setFilteredPaths(recommendedPaths.filter(path => 
+        selectedDifficulties.includes(path.difficulty)
+      ));
+    }
+  }, [recommendedPaths, selectedDifficulties]);
 
   useEffect(() => {
     generateRecommendations();
@@ -153,25 +176,49 @@ const WalkingPathRecommendations = ({ userProfile, onPathSelect, userLocation }:
         </div>
       </div>
 
-      {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="animate-pulse">
-              <div className="bg-gray-200 rounded-lg h-64"></div>
+      {/* 난이도 필터 추가 */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="lg:col-span-1">
+          <DifficultyFilter 
+            selectedDifficulties={selectedDifficulties}
+            onDifficultyChange={setSelectedDifficulties}
+          />
+        </div>
+        
+        <div className="lg:col-span-3">
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="bg-gray-200 rounded-lg h-64"></div>
+                </div>
+              ))}
             </div>
-          ))}
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {filteredPaths.map((path) => (
+                <WalkingPathCard 
+                  key={path.id} 
+                  path={path} 
+                  onSelect={onPathSelect}
+                />
+              ))}
+              {filteredPaths.length === 0 && selectedDifficulties.length > 0 && (
+                <div className="col-span-full text-center py-8">
+                  <p className="text-gray-500">선택한 난이도에 맞는 경로가 없습니다.</p>
+                  <Button 
+                    onClick={() => setSelectedDifficulties([])}
+                    variant="outline"
+                    className="mt-2"
+                  >
+                    필터 초기화
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {recommendedPaths.map((path) => (
-            <WalkingPathCard 
-              key={path.id} 
-              path={path} 
-              onSelect={onPathSelect}
-            />
-          ))}
-        </div>
-      )}
+      </div>
     </div>
   );
 };
