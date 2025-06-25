@@ -61,7 +61,7 @@ export const useGooglePlaces = ({ latitude, longitude, radius = 1000, type = 're
       } catch (err) {
         console.error('Error fetching places:', err);
         setError('맛집 정보를 불러오는데 실패했습니다.');
-        // 임시 더미 데이터로 대체
+        // 임시 더미 데이터로 대체 - 정확히 3개만 생성
         setPlaces(generateDummyPlaces(latitude, longitude));
       } finally {
         setLoading(false);
@@ -74,13 +74,12 @@ export const useGooglePlaces = ({ latitude, longitude, radius = 1000, type = 're
   return { places, loading, error };
 };
 
-// 임시 더미 데이터 생성 함수
+// 임시 더미 데이터 생성 함수 - 정확히 3개만 반환
 const generateDummyPlaces = (lat: number, lng: number): GooglePlace[] => {
   const restaurantNames = [
-    '맛있는 한식당', '이탈리아 파스타', '일식 전문점', '카페 로스팅',
-    '디저트 하우스', '브런치 카페', '치킨 전문점', '분식 맛집',
-    '베이커리 카페', '아이스크림 가게', '떡볶이 명가', '피자 레스토랑',
-    '중식당', '태국 음식점', '버거 하우스', '도넛 전문점'
+    '맛있는 한식당',
+    '이탈리아 파스타', 
+    '카페 로스팅'
   ];
 
   return restaurantNames.map((name, index) => ({
