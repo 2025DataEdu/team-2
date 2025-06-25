@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import WalkingPathCard from './WalkingPathCard';
 import PathDetailModal from './PathDetailModal';
-import DifficultyFilter from './DifficultyFilter';
 
 interface WalkingPath {
   id: string;
@@ -23,12 +22,12 @@ interface AIRecommendedPathGridProps {
   paths: WalkingPath[];
   isLoading: boolean;
   onPathSelect: (path: WalkingPath) => void;
+  selectedDifficulties: string[];
 }
 
-const AIRecommendedPathGrid = ({ paths, isLoading, onPathSelect }: AIRecommendedPathGridProps) => {
+const AIRecommendedPathGrid = ({ paths, isLoading, onPathSelect, selectedDifficulties }: AIRecommendedPathGridProps) => {
   const [selectedPath, setSelectedPath] = useState<WalkingPath | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>([]);
 
   const handleCardClick = (path: WalkingPath) => {
     setSelectedPath(path);
@@ -48,14 +47,6 @@ const AIRecommendedPathGrid = ({ paths, isLoading, onPathSelect }: AIRecommended
   if (isLoading) {
     return (
       <div className="space-y-4">
-        {/* 난이도 필터 */}
-        <div className="w-full max-w-sm">
-          <DifficultyFilter 
-            selectedDifficulties={selectedDifficulties}
-            onDifficultyChange={setSelectedDifficulties}
-          />
-        </div>
-        
         {/* 로딩 그리드 - 3개만 */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3].map((i) => (
@@ -71,14 +62,6 @@ const AIRecommendedPathGrid = ({ paths, isLoading, onPathSelect }: AIRecommended
   return (
     <>
       <div className="space-y-4">
-        {/* 난이도 필터를 상단에 배치 */}
-        <div className="w-full max-w-sm">
-          <DifficultyFilter 
-            selectedDifficulties={selectedDifficulties}
-            onDifficultyChange={setSelectedDifficulties}
-          />
-        </div>
-        
         {/* 3개 한 줄에 표시되는 그리드 */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredPaths.map((path) => (
@@ -93,13 +76,7 @@ const AIRecommendedPathGrid = ({ paths, isLoading, onPathSelect }: AIRecommended
 
         {filteredPaths.length === 0 && selectedDifficulties.length > 0 && (
           <div className="text-center py-8">
-            <p className="text-gray-500 mb-2">선택한 난이도에 맞는 경로가 없습니다.</p>
-            <button 
-              onClick={() => setSelectedDifficulties([])}
-              className="px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors"
-            >
-              필터 초기화
-            </button>
+            <p className="text-gray-500">선택한 난이도에 맞는 경로가 없습니다.</p>
           </div>
         )}
 

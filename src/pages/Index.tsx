@@ -36,6 +36,7 @@ const Index = () => {
   const [currentStep, setCurrentStep] = useState<'loading' | 'recommendations' | 'selected'>('loading');
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [selectedPath, setSelectedPath] = useState<WalkingPath | null>(null);
+  const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>([]);
   const location = useLocation();
 
   // 자동으로 건강 정보 로드 및 추천 생성
@@ -115,6 +116,8 @@ const Index = () => {
         <InfoCards 
           userProfile={userProfile}
           onEditProfile={handleEditProfile}
+          selectedDifficulties={selectedDifficulties}
+          onDifficultyChange={setSelectedDifficulties}
         />
 
         {currentStep === 'recommendations' && userProfile && (
@@ -123,6 +126,7 @@ const Index = () => {
               userProfile={userProfile} 
               onPathSelect={handlePathSelect}
               userLocation={location.error ? undefined : location}
+              selectedDifficulties={selectedDifficulties}
             />
           </div>
         )}

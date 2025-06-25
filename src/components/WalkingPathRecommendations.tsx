@@ -32,9 +32,10 @@ interface WalkingPathRecommendationsProps {
   userProfile: UserProfile;
   onPathSelect: (path: WalkingPath) => void;
   userLocation?: { latitude: number; longitude: number; address: string };
+  selectedDifficulties: string[];
 }
 
-const WalkingPathRecommendations = ({ userProfile, onPathSelect, userLocation }: WalkingPathRecommendationsProps) => {
+const WalkingPathRecommendations = ({ userProfile, onPathSelect, userLocation, selectedDifficulties }: WalkingPathRecommendationsProps) => {
   const { recommendedPaths, isLoading, generateRecommendations } = useAIRecommendedPaths({
     userProfile,
     userLocation
@@ -59,6 +60,7 @@ const WalkingPathRecommendations = ({ userProfile, onPathSelect, userLocation }:
           paths={recommendedPaths}
           isLoading={isLoading}
           onPathSelect={onPathSelect}
+          selectedDifficulties={selectedDifficulties}
         />
       </div>
     </div>
