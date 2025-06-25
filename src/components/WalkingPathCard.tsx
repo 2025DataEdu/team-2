@@ -1,8 +1,9 @@
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Route, Clock, TrendingUp, Heart, Star, Lightbulb, UtensilsCrossed, Navigation, Building } from 'lucide-react';
+import { Route, Clock, TrendingUp, Heart, Star, Lightbulb, UtensilsCrossed, Navigation, Building, MapPin } from 'lucide-react';
 
 interface WalkingPath {
   id: string;
@@ -57,29 +58,49 @@ const WalkingPathCard = ({ path, onSelect, onCardClick }: WalkingPathCardProps) 
 
   const originalData = path.originalData;
 
-  // 코스 타입을 단어 하나로 생성하는 함수
-  const getCourseType = () => {
-    // 실제 데이터에서 코스 이름이나 특성을 기반으로 단어 생성
-    if (originalData?.CoursName) {
-      const coursName = originalData.CoursName;
-      if (coursName.includes('강변') || coursName.includes('하천')) return '강변';
-      if (coursName.includes('산') || coursName.includes('등산')) return '산길';
-      if (coursName.includes('공원')) return '공원';
-      if (coursName.includes('둘레') || coursName.includes('순환')) return '둘레';
-      if (coursName.includes('해안') || coursName.includes('바다')) return '해안';
-      if (coursName.includes('도심') || coursName.includes('시내')) return '도심';
+  // 경로 태그 생성 함수 (지역, 코스 타입, 특성 기반)
+  const getPathTags = () => {
+    const tags = [];
+    
+    // 지역 태그 (시군구 정보 활용)
+    if (originalData?.SIGNGU_NM) {
+      tags.push({
+        label: originalData.SIGNGU_NM,
+        color: 'bg-blue-100 text-blue-800',
+        icon: <MapPin className="h-3 w-3" />
+      });
     }
     
-    // 특성을 기반으로 코스 타입 결정
-    const features = path.features;
-    if (features.includes('강변')) return '강변';
-    if (features.includes('산길')) return '산길';
-    if (features.includes('공원')) return '공원';
-    if (features.includes('해안')) return '해안';
-    if (features.includes('도심')) return '도심';
+    // 코스 타입 태그
+    if (originalData?.CoursName) {
+      const coursName = originalData.CoursName;
+      if (coursName.includes('강변') || coursName.includes('하천')) {
+        tags.push({ label: '강변', color: 'bg-cyan-100 text-cyan-800' });
+      } else if (coursName.includes('산') || coursName.includes('등산')) {
+        tags.push({ label: '산길', color: 'bg-green-100 text-green-800' });
+      } else if (coursName.includes('공원')) {
+        tags.push({ label: '공원', color: 'bg-emerald-100 text-emerald-800' });
+      } else if (coursName.includes('둘레') || coursName.includes('순환')) {
+        tags.push({ label: '둘레길', color: 'bg-purple-100 text-purple-800' });
+      } else if (coursName.includes('해안') || coursName.includes('바다')) {
+        tags.push({ label: '해안', color: 'bg-teal-100 text-teal-800' });
+      } else if (coursName.includes('도심') || coursName.includes('시내')) {
+        tags.push({ label: '도심', color: 'bg-gray-100 text-gray-800' });
+      }
+    }
     
-    return '산책';
+    // 코스 레벨 태그
+    if (originalData?.CoursLv) {
+      tags.push({
+        label: `레벨 ${originalData.CoursLv}`,
+        color: 'bg-orange-100 text-orange-800'
+      });
+    }
+    
+    return tags.slice(0, 3); // 최대 3개까지만 표시
   };
+
+  const pathTags = getPathTags();
 
   return (
     <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={handleCardClick}>
@@ -87,7 +108,15 @@ const WalkingPathCard = ({ path, onSelect, onCardClick }: WalkingPathCardProps) 
         <div className="flex justify-between items-start">
           <div className="flex-1">
             <CardTitle className="text-lg">{path.name}</CardTitle>
-            <p className="text-sm text-gray-600 mt-1">🚶‍♂️ {getCourseType()}</p>
+            {/* 경로 태그 표시 */}
+            <div className="flex gap-1 flex-wrap mt-2">
+              {pathTags.map((tag, index) => (
+                <Badge key={index} className={`text-xs ${tag.color} flex items-center gap-1`}>
+                  {tag.icon}
+                  {tag.label}
+                </Badge>
+              ))}
+            </div>
           </div>
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
