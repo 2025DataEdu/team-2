@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Clock, TrendingUp, Heart, Star, Lightbulb, UtensilsCrossed, Navigation, Building } from 'lucide-react';
+import { Route, Clock, TrendingUp, Heart, Star, Lightbulb, UtensilsCrossed, Navigation, Building } from 'lucide-react';
 
 interface WalkingPath {
   id: string;
@@ -58,11 +58,33 @@ const WalkingPathCard = ({ path, onSelect, onCardClick }: WalkingPathCardProps) 
 
   const originalData = path.originalData;
 
+  // 코스 정보 생성 함수
+  const getCourseInfo = () => {
+    if (originalData?.CoursRoute) {
+      return originalData.CoursRoute;
+    }
+    
+    // 기본 코스 정보 생성
+    const features = path.features;
+    if (features.includes('강변') && features.includes('공원')) {
+      return '강변공원 → 산책로 → 휴게공간';
+    } else if (features.includes('산길')) {
+      return '등산로입구 → 산길 → 전망대';
+    } else if (features.includes('공원')) {
+      return '공원입구 → 산책로 → 쉼터';
+    } else {
+      return '출발지 → 산책로 → 도착지';
+    }
+  };
+
   return (
     <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={handleCardClick}>
       <CardHeader>
         <div className="flex justify-between items-start">
-          <CardTitle className="text-lg">{path.name}</CardTitle>
+          <div className="flex-1">
+            <CardTitle className="text-lg">{path.name}</CardTitle>
+            <p className="text-sm text-gray-600 mt-1">{getCourseInfo()}</p>
+          </div>
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
             <span className="text-sm font-medium">{path.rating.toFixed(1)}</span>
@@ -97,7 +119,7 @@ const WalkingPathCard = ({ path, onSelect, onCardClick }: WalkingPathCardProps) 
         {/* 산책에 필수적인 정보만 표시 */}
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div className="flex items-center gap-2">
-            <MapPin className="h-4 w-4 text-blue-600" />
+            <Route className="h-4 w-4 text-blue-600" />
             <span className="text-sm">{path.distance.toFixed(1)}km</span>
           </div>
           <div className="flex items-center gap-2">
