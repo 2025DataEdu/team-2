@@ -41,11 +41,11 @@ const LocationInfo = () => {
           </div>
           <div className="flex justify-between items-center">
             <span className="text-gray-600">위도:</span>
-            <span className="font-medium">{latitude.toFixed(6)}</span>
+            <span className="font-medium">{latitude.toFixed(2)}</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-gray-600">경도:</span>
-            <span className="font-medium">{longitude.toFixed(6)}</span>
+            <span className="font-medium">{longitude.toFixed(2)}</span>
           </div>
           {error && (
             <div className="flex items-center gap-2 text-amber-700 bg-amber-50 p-2 rounded">

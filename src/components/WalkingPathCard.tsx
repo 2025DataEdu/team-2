@@ -17,7 +17,7 @@ interface WalkingPath {
   description: string;
   amenities: string[];
   recommendationReason: string;
-  nearbyFood: string[]; // 근처 맛집/디저트 정보 추가
+  nearbyFood: string[];
 }
 
 interface WalkingPathCardProps {
@@ -51,7 +51,7 @@ const WalkingPathCard = ({ path, onSelect }: WalkingPathCardProps) => {
           <CardTitle className="text-lg">{path.name}</CardTitle>
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-            <span className="text-sm font-medium">{path.rating}</span>
+            <span className="text-sm font-medium">{path.rating.toFixed(2)}</span>
           </div>
         </div>
         <div className="flex gap-2 flex-wrap">
@@ -83,19 +83,19 @@ const WalkingPathCard = ({ path, onSelect }: WalkingPathCardProps) => {
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div className="flex items-center gap-2">
             <MapPin className="h-4 w-4 text-blue-600" />
-            <span className="text-sm">{path.distance}km</span>
+            <span className="text-sm">{path.distance.toFixed(2)}km</span>
           </div>
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4 text-green-600" />
-            <span className="text-sm">{path.duration}분</span>
+            <span className="text-sm">{path.duration.toFixed(2)}분</span>
           </div>
           <div className="flex items-center gap-2">
             <TrendingUp className="h-4 w-4 text-orange-600" />
-            <span className="text-sm">경사 {path.elevation}m</span>
+            <span className="text-sm">경사 {path.elevation.toFixed(2)}m</span>
           </div>
           <div className="flex items-center gap-2">
             <Heart className="h-4 w-4 text-red-600" />
-            <span className="text-sm">칼로리 {Math.round(path.distance * 50)}kcal</span>
+            <span className="text-sm">칼로리 {(path.distance * 50).toFixed(2)}kcal</span>
           </div>
         </div>
 

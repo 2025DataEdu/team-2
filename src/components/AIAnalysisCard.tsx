@@ -19,7 +19,7 @@ const AIAnalysisCard = ({ userProfile, userLocation }: AIAnalysisCardProps) => {
     <div className="bg-green-50 p-4 rounded-lg border-l-4 border-green-400">
       <div className="text-sm text-green-800">
         <strong>🤖 AI 분석 결과:</strong> {userProfile.fitnessLevel === 'beginner' ? '초급자' : userProfile.fitnessLevel === 'intermediate' ? '중급자' : '고급자'} 수준의 
-        {userProfile.preferredDistance[0]}km 코스를 선호하시는 분께 
+        {userProfile.preferredDistance[0].toFixed(2)}km 코스를 선호하시는 분께 
         {userProfile.walkingGoal === 'health' ? '건강 증진' : 
          userProfile.walkingGoal === 'weight' ? '체중 관리' : 
          userProfile.walkingGoal === 'stress' ? '스트레스 해소' : '여가 활동'} 목적의 

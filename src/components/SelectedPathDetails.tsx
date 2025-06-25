@@ -41,15 +41,15 @@ const SelectedPathDetails = ({ selectedPath }: SelectedPathDetailsProps) => {
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span>거리:</span>
-                <span className="font-medium">{selectedPath.distance}km</span>
+                <span className="font-medium">{selectedPath.distance.toFixed(2)}km</span>
               </div>
               <div className="flex justify-between">
                 <span>예상 시간:</span>
-                <span className="font-medium">{selectedPath.duration}분</span>
+                <span className="font-medium">{selectedPath.duration.toFixed(2)}분</span>
               </div>
               <div className="flex justify-between">
                 <span>예상 칼로리:</span>
-                <span className="font-medium">{Math.round(selectedPath.distance * 50)}kcal</span>
+                <span className="font-medium">{(selectedPath.distance * 50).toFixed(2)}kcal</span>
               </div>
             </div>
           </div>

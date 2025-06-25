@@ -65,19 +65,19 @@ const WeatherInfo = () => {
       <CardContent>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="text-center">
-            <div className="text-2xl font-bold text-blue-600">{weather.temperature}°C</div>
+            <div className="text-2xl font-bold text-blue-600">{weather.temperature.toFixed(2)}°C</div>
             <div className="text-sm text-gray-600">기온</div>
           </div>
           
           <div className="text-center">
-            <div className="text-2xl font-bold text-purple-600">{weather.humidity}%</div>
+            <div className="text-2xl font-bold text-purple-600">{weather.humidity.toFixed(2)}%</div>
             <div className="text-sm text-gray-600">습도</div>
           </div>
           
           <div className="text-center">
             <div className="flex items-center justify-center gap-1">
               <Wind className="h-4 w-4" />
-              <span className="text-xl font-bold text-gray-700">{weather.windSpeed}km/h</span>
+              <span className="text-xl font-bold text-gray-700">{weather.windSpeed.toFixed(2)}km/h</span>
             </div>
             <div className="text-sm text-gray-600">풍속</div>
           </div>

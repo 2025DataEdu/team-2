@@ -42,11 +42,11 @@ export const usePathRecommendations = ({ userProfile, userLocation }: UsePathRec
         {
           id: '1',
           name: '한강공원 여의도 코스',
-          distance: userProfile.preferredDistance[0],
-          duration: Math.round(userProfile.preferredDistance[0] * 15),
+          distance: parseFloat(userProfile.preferredDistance[0].toFixed(2)),
+          duration: parseFloat((userProfile.preferredDistance[0] * 15).toFixed(2)),
           difficulty: userProfile.fitnessLevel === 'beginner' ? 'easy' : 'medium',
-          elevation: 5,
-          rating: 4.5,
+          elevation: 5.00,
+          rating: 4.50,
           features: ['강변', '야경', '자전거도로'],
           description: '한강을 따라 걷는 평평한 코스로 초보자에게 적합합니다. 아름다운 강변 풍경을 감상할 수 있습니다.',
           amenities: ['화장실', '편의점', '카페', '주차장']
@@ -54,11 +54,11 @@ export const usePathRecommendations = ({ userProfile, userLocation }: UsePathRec
         {
           id: '2',
           name: '남산 둘레길',
-          distance: userProfile.preferredDistance[0] * 1.2,
-          duration: Math.round(userProfile.preferredDistance[0] * 18),
+          distance: parseFloat((userProfile.preferredDistance[0] * 1.2).toFixed(2)),
+          duration: parseFloat((userProfile.preferredDistance[0] * 18).toFixed(2)),
           difficulty: userProfile.fitnessLevel === 'advanced' ? 'medium' : 'hard',
-          elevation: 45,
-          rating: 4.7,
+          elevation: 45.00,
+          rating: 4.70,
           features: ['숲길', '역사', '전망대'],
           description: '서울의 중심에서 자연을 만끽할 수 있는 숲길 코스입니다. 약간의 경사가 있어 운동 효과가 좋습니다.',
           amenities: ['화장실', '휴게소', '전망대', '문화시설']
@@ -66,11 +66,11 @@ export const usePathRecommendations = ({ userProfile, userLocation }: UsePathRec
         {
           id: '3',
           name: '청계천 산책로',
-          distance: userProfile.preferredDistance[0] * 0.8,
-          duration: Math.round(userProfile.preferredDistance[0] * 12),
+          distance: parseFloat((userProfile.preferredDistance[0] * 0.8).toFixed(2)),
+          duration: parseFloat((userProfile.preferredDistance[0] * 12).toFixed(2)),
           difficulty: 'easy',
-          elevation: 0,
-          rating: 4.2,
+          elevation: 0.00,
+          rating: 4.20,
           features: ['도심', '야경', '문화'],
           description: '도심 속 시원한 물길을 따라 걷는 편안한 코스입니다. 접근성이 좋고 다양한 볼거리가 있습니다.',
           amenities: ['화장일', '음료수', '벤치', '조명']
