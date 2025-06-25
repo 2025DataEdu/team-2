@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 
 interface WalkingPath {
@@ -147,6 +146,6 @@ export const usePathRecommendations = ({ userProfile, userLocation }: UsePathRec
   return {
     recommendedPaths,
     isLoading,
-    generateRecommendations
+    refetch: generateRecommendations
   };
 };
