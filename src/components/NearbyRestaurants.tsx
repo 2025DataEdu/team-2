@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -84,7 +83,7 @@ const NearbyRestaurants = ({ title = "내 주변 맛집" }: NearbyRestaurantsPro
         )}
         {[...Array(emptyStars)].map((_, i) => (
           <Star key={i} className="h-4 w-4 text-gray-300" />
-        )}
+        ))}
         <span className="text-sm font-medium ml-1">{rating.toFixed(1)}</span>
       </div>
     );
