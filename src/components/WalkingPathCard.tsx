@@ -1,9 +1,9 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Route, Clock, TrendingUp, Heart, Star, Lightbulb, UtensilsCrossed, Navigation, Building, MapPin } from 'lucide-react';
+import SmallMap from './SmallMap';
 
 interface WalkingPath {
   id: string;
@@ -102,6 +102,15 @@ const WalkingPathCard = ({ path, onSelect, onCardClick }: WalkingPathCardProps) 
 
   const pathTags = getPathTags();
 
+  // 경사를 퍼센트로 계산하는 함수
+  const getElevationPercentage = () => {
+    if (path.elevation <= 0) return 0;
+    // 거리 대비 고도차를 퍼센트로 계산 (거리를 미터로 변환)
+    const distanceInMeters = path.distance * 1000;
+    const percentage = (path.elevation / distanceInMeters) * 100;
+    return percentage.toFixed(1);
+  };
+
   return (
     <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={handleCardClick}>
       <CardHeader>
@@ -149,6 +158,22 @@ const WalkingPathCard = ({ path, onSelect, onCardClick }: WalkingPathCardProps) 
           </div>
         </div>
 
+        {/* 작은 지도 추가 */}
+        {originalData?.Latitude && originalData?.Longitude && (
+          <div className="mb-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+              <MapPin className="h-4 w-4 text-blue-600" />
+              위치
+            </div>
+            <SmallMap 
+              latitude={originalData.Latitude} 
+              longitude={originalData.Longitude} 
+              height="120px"
+              className="w-full"
+            />
+          </div>
+        )}
+
         {/* 산책에 필수적인 정보만 표시 */}
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div className="flex items-center gap-2">
@@ -161,7 +186,7 @@ const WalkingPathCard = ({ path, onSelect, onCardClick }: WalkingPathCardProps) 
           </div>
           <div className="flex items-center gap-2">
             <TrendingUp className="h-4 w-4 text-orange-600" />
-            <span className="text-sm">경사 {path.elevation.toFixed(1)}m</span>
+            <span className="text-sm">경사 {getElevationPercentage()}%</span>
           </div>
           <div className="flex items-center gap-2">
             <Heart className="h-4 w-4 text-red-600" />

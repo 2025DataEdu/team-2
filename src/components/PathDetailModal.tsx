@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   Dialog,
@@ -9,6 +8,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Clock, TrendingUp, Heart, Star, Lightbulb, UtensilsCrossed, Navigation, Building, Route } from 'lucide-react';
+import SmallMap from './SmallMap';
 
 interface WalkingPath {
   id: string;
@@ -60,6 +60,15 @@ const PathDetailModal = ({ path, isOpen, onClose, onSelect }: PathDetailModalPro
     onClose();
   };
 
+  // 경사를 퍼센트로 계산하는 함수
+  const getElevationPercentage = () => {
+    if (path.elevation <= 0) return 0;
+    // 거리 대비 고도차를 퍼센트로 계산 (거리를 미터로 변환)
+    const distanceInMeters = path.distance * 1000;
+    const percentage = (path.elevation / distanceInMeters) * 100;
+    return percentage.toFixed(1);
+  };
+
   const originalData = path.originalData;
 
   return (
@@ -98,6 +107,19 @@ const PathDetailModal = ({ path, isOpen, onClose, onSelect }: PathDetailModalPro
               </div>
             </div>
           </div>
+
+          {/* 큰 지도 섹션 */}
+          {originalData?.Latitude && originalData?.Longitude && (
+            <div>
+              <h4 className="font-medium text-gray-900 mb-3">🗺️ 위치</h4>
+              <SmallMap 
+                latitude={originalData.Latitude} 
+                longitude={originalData.Longitude} 
+                height="300px"
+                className="w-full"
+              />
+            </div>
+          )}
 
           {/* 실제 산책로 데이터의 모든 정보 표시 */}
           {originalData && (
@@ -253,7 +275,7 @@ const PathDetailModal = ({ path, isOpen, onClose, onSelect }: PathDetailModalPro
               <TrendingUp className="h-5 w-5 text-orange-600" />
               <div>
                 <div className="text-sm text-gray-600">경사</div>
-                <div className="font-medium">{path.elevation.toFixed(1)}m</div>
+                <div className="font-medium">{getElevationPercentage()}%</div>
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
