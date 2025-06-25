@@ -38,10 +38,10 @@ const WeatherInfo = () => {
 
   const getWeatherIcon = (condition: string) => {
     switch (condition) {
-      case 'sunny': return <Sun className="h-6 w-6 text-yellow-500" />;
-      case 'cloudy': return <Cloud className="h-6 w-6 text-gray-500" />;
-      case 'rainy': return <CloudRain className="h-6 w-6 text-blue-500" />;
-      default: return <Sun className="h-6 w-6 text-yellow-500" />;
+      case 'sunny': return <Sun className="h-5 w-5 text-yellow-500" />;
+      case 'cloudy': return <Cloud className="h-5 w-5 text-gray-500" />;
+      case 'rainy': return <CloudRain className="h-5 w-5 text-blue-500" />;
+      default: return <Sun className="h-5 w-5 text-yellow-500" />;
     }
   };
 
@@ -56,43 +56,43 @@ const WeatherInfo = () => {
 
   return (
     <Card className="w-full">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+      <CardHeader className="pb-4">
+        <CardTitle className="flex items-center gap-2 text-lg">
           {getWeatherIcon(weather.condition)}
           실시간 환경 정보
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <div className="text-center">
-            <div className="text-2xl font-bold text-blue-600">{weather.temperature}°C</div>
-            <div className="text-sm text-gray-600">기온</div>
+            <div className="text-xl font-bold text-blue-600">{weather.temperature}°C</div>
+            <div className="text-xs text-gray-600">기온</div>
           </div>
           
           <div className="text-center">
-            <div className="text-2xl font-bold text-purple-600">{weather.humidity}%</div>
-            <div className="text-sm text-gray-600">습도</div>
+            <div className="text-xl font-bold text-purple-600">{weather.humidity}%</div>
+            <div className="text-xs text-gray-600">습도</div>
           </div>
           
           <div className="text-center">
             <div className="flex items-center justify-center gap-1">
-              <Wind className="h-4 w-4" />
-              <span className="text-xl font-bold text-gray-700">{weather.windSpeed}km/h</span>
+              <Wind className="h-3 w-3" />
+              <span className="text-lg font-bold text-gray-700">{weather.windSpeed}km/h</span>
             </div>
-            <div className="text-sm text-gray-600">풍속</div>
+            <div className="text-xs text-gray-600">풍속</div>
           </div>
           
           <div className="text-center">
-            <Badge className={getAirQualityColor(weather.airQuality)}>
+            <Badge className={`${getAirQualityColor(weather.airQuality)} text-xs`}>
               {weather.airQuality === 'good' ? '좋음' : 
                weather.airQuality === 'moderate' ? '보통' : '나쁨'}
             </Badge>
-            <div className="text-sm text-gray-600 mt-1">대기질</div>
+            <div className="text-xs text-gray-600 mt-1">대기질</div>
           </div>
         </div>
         
-        <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-          <div className="text-sm text-blue-800">
+        <div className="mt-3 p-2 bg-blue-50 rounded-lg">
+          <div className="text-xs text-blue-800">
             🌤️ 산책하기 {weather.temperature > 15 && weather.temperature < 25 && weather.airQuality === 'good' ? '좋은' : '보통인'} 날씨입니다
           </div>
         </div>
