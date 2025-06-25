@@ -51,7 +51,7 @@ const WalkingPathCard = ({ path, onSelect }: WalkingPathCardProps) => {
           <CardTitle className="text-lg">{path.name}</CardTitle>
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-            <span className="text-sm font-medium">{path.rating.toFixed(2)}</span>
+            <span className="text-sm font-medium">{path.rating.toFixed(1)}</span>
           </div>
         </div>
         <div className="flex gap-2 flex-wrap">
@@ -87,15 +87,15 @@ const WalkingPathCard = ({ path, onSelect }: WalkingPathCardProps) => {
           </div>
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4 text-green-600" />
-            <span className="text-sm">{path.duration.toFixed(2)}분</span>
+            <span className="text-sm">{path.duration.toFixed(0)}분</span>
           </div>
           <div className="flex items-center gap-2">
             <TrendingUp className="h-4 w-4 text-orange-600" />
-            <span className="text-sm">경사 {path.elevation.toFixed(2)}m</span>
+            <span className="text-sm">경사 {path.elevation.toFixed(1)}m</span>
           </div>
           <div className="flex items-center gap-2">
             <Heart className="h-4 w-4 text-red-600" />
-            <span className="text-sm">칼로리 {(path.distance * 50).toFixed(2)}kcal</span>
+            <span className="text-sm">칼로리 {(path.distance * 50).toFixed(0)}kcal</span>
           </div>
         </div>
 

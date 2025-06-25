@@ -29,7 +29,7 @@ const InfoCards = ({ userProfile, onEditProfile }: InfoCardsProps) => {
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span>나이:</span>
-                <span>{userProfile.age.toFixed(2)}세</span>
+                <span>{userProfile.age}세</span>
               </div>
               <div className="flex justify-between">
                 <span>체력:</span>
