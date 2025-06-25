@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { usePathRecommendations } from '@/hooks/usePathRecommendations';
 import { useWalkingPaths } from '@/hooks/useWalkingPaths';
@@ -42,11 +41,11 @@ interface WalkingPathRecommendationsProps {
 }
 
 const WalkingPathRecommendations = ({ userProfile, onPathSelect, userLocation }: WalkingPathRecommendationsProps) => {
-  const { recommendedPaths, isLoading } = usePathRecommendations({ userProfile, userLocation });
+  const { recommendedPaths, isLoading, refetch } = usePathRecommendations({ userProfile, userLocation });
   const { traditionalMarkets } = useWalkingPaths(userLocation);
   const [selectedPath, setSelectedPath] = useState<WalkingPath | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [difficultyFilter, setDifficultyFilter] = useState<string>('all');
+  const [difficultyFilter, setDifficultyFilter] = useState<string[]>([]);
 
   // 거리 계산 함수
   const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
@@ -88,8 +87,8 @@ const WalkingPathRecommendations = ({ userProfile, onPathSelect, userLocation }:
   });
 
   const filteredPaths = enhancedPaths.filter(path => {
-    if (difficultyFilter === 'all') return true;
-    return path.difficulty === difficultyFilter;
+    if (difficultyFilter.length === 0) return true;
+    return difficultyFilter.includes(path.difficulty);
   });
 
   const handleCardClick = (path: WalkingPath) => {
@@ -112,10 +111,10 @@ const WalkingPathRecommendations = ({ userProfile, onPathSelect, userLocation }:
 
   return (
     <div className="space-y-6">
-      <PathRecommendationHeader />
+      <PathRecommendationHeader onRefresh={refetch} isLoading={isLoading} />
       
       <DifficultyFilter 
-        selectedDifficulty={difficultyFilter}
+        selectedDifficulties={difficultyFilter}
         onDifficultyChange={setDifficultyFilter}
       />
 
