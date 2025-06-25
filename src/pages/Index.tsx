@@ -6,6 +6,7 @@ import NavigationButtons from '@/components/NavigationButtons';
 import InfoCards from '@/components/InfoCards';
 import SelectedPathDetails from '@/components/SelectedPathDetails';
 import WalkingPathRecommendations from '@/components/WalkingPathRecommendations';
+import NearbyMarketRecommendation from '@/components/NearbyMarketRecommendation';
 import VoiceInterface from '@/components/VoiceInterface';
 import { useLocation } from '@/hooks/useLocation';
 
@@ -116,6 +117,13 @@ const Index = () => {
           userProfile={userProfile}
           onEditProfile={handleEditProfile}
         />
+
+        {/* 근처 전통시장 추천 섹션 추가 */}
+        {!location.error && (
+          <div className="mb-8">
+            <NearbyMarketRecommendation userLocation={location} />
+          </div>
+        )}
 
         {currentStep === 'recommendations' && userProfile && (
           <div className="space-y-8">
