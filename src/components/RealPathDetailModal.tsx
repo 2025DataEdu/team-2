@@ -301,10 +301,7 @@ const RealPathDetailModal = ({ path, isOpen, onClose, onSelect }: RealPathDetail
           </div>
 
           {/* 구글 지도 기반 근처 맛집 & 디저트 */}
-          <NearbyRestaurants 
-            latitude={path.Latitude} 
-            longitude={path.Longitude} 
-          />
+          <NearbyRestaurants title="근처 맛집 & 디저트" />
 
           {/* 추가 옵션 */}
           {path.Option && (
