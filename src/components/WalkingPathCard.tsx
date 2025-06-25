@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -58,23 +57,28 @@ const WalkingPathCard = ({ path, onSelect, onCardClick }: WalkingPathCardProps) 
 
   const originalData = path.originalData;
 
-  // 코스 경로 정보 생성 함수
-  const getCourseRoute = () => {
-    if (originalData?.CoursRoute) {
-      return originalData.CoursRoute;
+  // 코스 타입을 단어 하나로 생성하는 함수
+  const getCourseType = () => {
+    // 실제 데이터에서 코스 이름이나 특성을 기반으로 단어 생성
+    if (originalData?.CoursName) {
+      const coursName = originalData.CoursName;
+      if (coursName.includes('강변') || coursName.includes('하천')) return '강변';
+      if (coursName.includes('산') || coursName.includes('등산')) return '산길';
+      if (coursName.includes('공원')) return '공원';
+      if (coursName.includes('둘레') || coursName.includes('순환')) return '둘레';
+      if (coursName.includes('해안') || coursName.includes('바다')) return '해안';
+      if (coursName.includes('도심') || coursName.includes('시내')) return '도심';
     }
     
-    // 기본 코스 경로 생성
+    // 특성을 기반으로 코스 타입 결정
     const features = path.features;
-    if (features.includes('강변') && features.includes('공원')) {
-      return '강변공원 → 산책로 → 휴게공간';
-    } else if (features.includes('산길')) {
-      return '등산로입구 → 산길 → 전망대';
-    } else if (features.includes('공원')) {
-      return '공원입구 → 산책로 → 쉼터';
-    } else {
-      return '출발지 → 산책로 → 도착지';
-    }
+    if (features.includes('강변')) return '강변';
+    if (features.includes('산길')) return '산길';
+    if (features.includes('공원')) return '공원';
+    if (features.includes('해안')) return '해안';
+    if (features.includes('도심')) return '도심';
+    
+    return '산책';
   };
 
   return (
@@ -83,7 +87,7 @@ const WalkingPathCard = ({ path, onSelect, onCardClick }: WalkingPathCardProps) 
         <div className="flex justify-between items-start">
           <div className="flex-1">
             <CardTitle className="text-lg">{path.name}</CardTitle>
-            <p className="text-sm text-gray-600 mt-1">🚶‍♂️ {getCourseRoute()}</p>
+            <p className="text-sm text-gray-600 mt-1">🚶‍♂️ {getCourseType()}</p>
           </div>
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
