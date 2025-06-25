@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MapPin, Clock, Info, Toilet, Car } from 'lucide-react';
+import SmallMap from './SmallMap';
 
 interface RealWalkingPath {
   CoursCode: string;
@@ -89,6 +90,16 @@ const RealPathCard = ({ path, onSelect, onCardClick }: RealPathCardProps) => {
       
       <CardContent className="flex flex-col h-full">
         <div className="flex-grow">
+          {/* 작은 지도 추가 */}
+          <div className="mb-4">
+            <SmallMap 
+              latitude={path.Latitude} 
+              longitude={path.Longitude} 
+              height="150px"
+              className="w-full"
+            />
+          </div>
+
           {path.Address && (
             <p className="text-sm text-gray-600 mb-3 line-clamp-2">
               📍 {path.Address}

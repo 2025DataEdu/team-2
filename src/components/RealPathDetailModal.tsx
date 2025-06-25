@@ -9,6 +9,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Clock, Info, Toilet, Car, Building } from 'lucide-react';
+import SmallMap from './SmallMap';
 
 interface RealWalkingPath {
   CoursCode: string;
@@ -97,6 +98,17 @@ const RealPathDetailModal = ({ path, isOpen, onClose, onSelect }: RealPathDetail
         </DialogHeader>
 
         <div className="space-y-6">
+          {/* 지도 섹션 */}
+          <div>
+            <h4 className="font-medium text-gray-900 mb-3">🗺️ 위치</h4>
+            <SmallMap 
+              latitude={path.Latitude} 
+              longitude={path.Longitude} 
+              height="250px"
+              className="w-full"
+            />
+          </div>
+
           {/* 주소 정보 */}
           {path.Address && (
             <div className="p-4 bg-gray-50 rounded-lg">
