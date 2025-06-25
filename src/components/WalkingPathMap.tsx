@@ -1,17 +1,8 @@
 
 import React, { useMemo } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { WalkingPathData, TraditionalMarketData } from '@/hooks/useWalkingPaths';
-
-// Leaflet 기본 아이콘 설정
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-});
 
 interface WalkingPathMapProps {
   walkingPaths: WalkingPathData[];
@@ -77,30 +68,6 @@ const WalkingPathMap = ({
     return [37.5665, 126.9780] as [number, number]; // 서울 기본 좌표
   }, [walkingPaths, userLocation]);
 
-  // 산책로 아이콘
-  const walkingPathIcon = new L.Icon({
-    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-    iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  });
-
-  // 사용자 위치 아이콘 (파란색)
-  const userLocationIcon = new L.Icon({
-    iconUrl: 'data:image/svg+xml;base64,' + btoa(`
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 41">
-        <path fill="#3b82f6" stroke="#fff" stroke-width="2" d="M12.5,0C5.6,0,0,5.6,0,12.5c0,12.5,12.5,28.5,12.5,28.5s12.5-16,12.5-28.5C25,5.6,19.4,0,12.5,0z"/>
-        <circle fill="#fff" cx="12.5" cy="12.5" r="6"/>
-      </svg>
-    `),
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34]
-  });
-
   if (walkingPaths.length === 0) {
     return (
       <div className={`${className} bg-gray-100 border border-gray-300 rounded-lg flex items-center justify-center`}>
@@ -124,8 +91,7 @@ const WalkingPathMap = ({
         {/* 사용자 위치 마커 */}
         {userLocation && (
           <Marker 
-            position={[userLocation.latitude, userLocation.longitude]} 
-            icon={userLocationIcon}
+            position={[userLocation.latitude, userLocation.longitude]}
           >
             <Popup>
               <strong>현재 위치</strong>
@@ -141,7 +107,6 @@ const WalkingPathMap = ({
             <Marker
               key={path.CoursCode}
               position={[path.Latitude, path.Longitude]}
-              icon={walkingPathIcon}
               eventHandlers={{
                 click: () => {
                   const nearbyMarkets = findNearbyMarkets(path.Latitude!, path.Longitude!);
