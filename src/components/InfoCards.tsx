@@ -3,7 +3,6 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import WeatherInfo from '@/components/WeatherInfo';
 import LocationInfo from '@/components/LocationInfo';
-import DifficultyPopover from '@/components/DifficultyPopover';
 import { useHealthProfile } from '@/hooks/useHealthProfile';
 
 interface UserProfile {
@@ -17,15 +16,13 @@ interface UserProfile {
 interface InfoCardsProps {
   userProfile: UserProfile | null;
   onEditProfile: () => void;
-  selectedDifficulties: string[];
-  onDifficultyChange: (difficulties: string[]) => void;
 }
 
-const InfoCards = ({ userProfile, onEditProfile, selectedDifficulties, onDifficultyChange }: InfoCardsProps) => {
+const InfoCards = ({ userProfile, onEditProfile }: InfoCardsProps) => {
   const { healthProfile, isLoading: healthLoading, error: healthError } = useHealthProfile();
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
       <WeatherInfo />
       <LocationInfo />
       <div className="lg:col-span-1">
@@ -80,12 +77,6 @@ const InfoCards = ({ userProfile, onEditProfile, selectedDifficulties, onDifficu
             프로필 수정
           </Button>
         </div>
-      </div>
-      <div className="lg:col-span-1 flex justify-center items-start pt-4">
-        <DifficultyPopover 
-          selectedDifficulties={selectedDifficulties}
-          onDifficultyChange={onDifficultyChange}
-        />
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import InfoCards from '@/components/InfoCards';
 import SelectedPathDetails from '@/components/SelectedPathDetails';
 import WalkingPathRecommendations from '@/components/WalkingPathRecommendations';
 import VoiceInterface from '@/components/VoiceInterface';
+import DifficultyPopover from '@/components/DifficultyPopover';
 import { useLocation } from '@/hooks/useLocation';
 
 interface UserProfile {
@@ -116,8 +117,6 @@ const Index = () => {
         <InfoCards 
           userProfile={userProfile}
           onEditProfile={handleEditProfile}
-          selectedDifficulties={selectedDifficulties}
-          onDifficultyChange={setSelectedDifficulties}
         />
 
         {currentStep === 'recommendations' && userProfile && (
@@ -135,7 +134,14 @@ const Index = () => {
           <SelectedPathDetails selectedPath={selectedPath} />
         )}
         
-        <VoiceInterface />
+        {/* 난이도 선택 버튼과 마이크 버튼을 함께 배치 */}
+        <div className="fixed bottom-8 right-8 flex items-center gap-4">
+          <DifficultyPopover 
+            selectedDifficulties={selectedDifficulties}
+            onDifficultyChange={setSelectedDifficulties}
+          />
+          <VoiceInterface />
+        </div>
       </div>
     </div>
   );

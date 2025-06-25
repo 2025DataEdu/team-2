@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Clock, TrendingUp, Heart, Star, Lightbulb, UtensilsCrossed } from 'lucide-react';
+import { MapPin, Clock, TrendingUp, Heart, Star, Lightbulb, UtensilsCrossed, Navigation, Building, Route } from 'lucide-react';
 
 interface WalkingPath {
   id: string;
@@ -18,6 +18,8 @@ interface WalkingPath {
   amenities: string[];
   recommendationReason: string;
   nearbyFood: string[];
+  realPath?: boolean;
+  originalData?: any;
 }
 
 interface WalkingPathCardProps {
@@ -54,6 +56,9 @@ const WalkingPathCard = ({ path, onSelect, onCardClick }: WalkingPathCardProps) 
     onSelect(path);
   };
 
+  // 실제 데이터가 있는 경우 원본 데이터 활용
+  const originalData = path.originalData;
+
   return (
     <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={handleCardClick}>
       <CardHeader>
@@ -89,7 +94,139 @@ const WalkingPathCard = ({ path, onSelect, onCardClick }: WalkingPathCardProps) 
             </div>
           </div>
         </div>
+
+        {/* 실제 산책로 데이터의 모든 정보 표시 */}
+        {originalData && (
+          <div className="mb-4 space-y-3">
+            <div className="text-sm font-medium text-gray-700 mb-2">📋 상세 정보</div>
+            
+            {/* 기본 산책로 정보 */}
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              {originalData.CoursCode && (
+                <div className="flex justify-between">
+                  <span className="text-gray-600">코스 코드:</span>
+                  <span className="font-medium">{originalData.CoursCode}</span>
+                </div>
+              )}
+              {originalData.CoursName && (
+                <div className="flex justify-between">
+                  <span className="text-gray-600">코스명:</span>
+                  <span className="font-medium">{originalData.CoursName}</span>
+                </div>
+              )}
+              {originalData.CoursLength && (
+                <div className="flex justify-between">
+                  <span className="text-gray-600">총 거리:</span>
+                  <span className="font-medium">{originalData.CoursLength}</span>
+                </div>
+              )}
+              {originalData.CoursTime && (
+                <div className="flex justify-between">
+                  <span className="text-gray-600">소요시간:</span>
+                  <span className="font-medium">{originalData.CoursTime}</span>
+                </div>
+              )}
+              {originalData.CoursLv && (
+                <div className="flex justify-between">
+                  <span className="text-gray-600">난이도:</span>
+                  <span className="font-medium">{originalData.CoursLv}</span>
+                </div>
+              )}
+              {originalData.SIGNGU_NM && (
+                <div className="flex justify-between">
+                  <span className="text-gray-600">지역:</span>
+                  <span className="font-medium">{originalData.SIGNGU_NM}</span>
+                </div>
+              )}
+            </div>
+
+            {/* 위치 정보 */}
+            {(originalData.Address || originalData.Latitude) && (
+              <div className="border-t pt-2">
+                <div className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                  <Navigation className="h-4 w-4 text-blue-600" />
+                  위치 정보
+                </div>
+                <div className="space-y-1 text-xs">
+                  {originalData.Address && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">주소:</span>
+                      <span className="font-medium text-right">{originalData.Address}</span>
+                    </div>
+                  )}
+                  {originalData.Latitude && originalData.Longitude && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">좌표:</span>
+                      <span className="font-medium">{originalData.Latitude.toFixed(4)}, {originalData.Longitude.toFixed(4)}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* 편의시설 정보 */}
+            {(originalData.Option || originalData.Toilet || originalData.CVNTL_NM) && (
+              <div className="border-t pt-2">
+                <div className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                  <Building className="h-4 w-4 text-green-600" />
+                  편의시설
+                </div>
+                <div className="space-y-1 text-xs">
+                  {originalData.Toilet && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">화장실:</span>
+                      <span className="font-medium">{originalData.Toilet === 'Y' ? '있음' : '없음'}</span>
+                    </div>
+                  )}
+                  {originalData.Option && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">기타 옵션:</span>
+                      <span className="font-medium text-right">{originalData.Option}</span>
+                    </div>
+                  )}
+                  {originalData.CVNTL_NM && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">편의시설:</span>
+                      <span className="font-medium text-right">{originalData.CVNTL_NM}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* 코스 상세 정보 */}
+            {(originalData.CorusDetailName || originalData.CoursRoute || originalData.ADIT_DC) && (
+              <div className="border-t pt-2">
+                <div className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                  <Route className="h-4 w-4 text-purple-600" />
+                  코스 상세
+                </div>
+                <div className="space-y-1 text-xs">
+                  {originalData.CorusDetailName && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">상세명:</span>
+                      <span className="font-medium text-right">{originalData.CorusDetailName}</span>
+                    </div>
+                  )}
+                  {originalData.CoursRoute && (
+                    <div>
+                      <span className="text-gray-600">경로:</span>
+                      <p className="font-medium text-xs mt-1 text-right">{originalData.CoursRoute}</p>
+                    </div>
+                  )}
+                  {originalData.ADIT_DC && (
+                    <div>
+                      <span className="text-gray-600">추가 설명:</span>
+                      <p className="font-medium text-xs mt-1 text-right">{originalData.ADIT_DC}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
         
+        {/* 기본 정보 그리드 */}
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div className="flex items-center gap-2">
             <MapPin className="h-4 w-4 text-blue-600" />
