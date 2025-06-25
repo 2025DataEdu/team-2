@@ -108,8 +108,8 @@ export type Database = {
           CoursRoute: string | null
           CoursTime: string | null
           CVNTL_NM: string | null
-          Latitude: number | null
-          Longitude: number | null
+          Latitude: string | null
+          Longitude: string | null
           Option: string | null
           SIGNGU_NM: string | null
           Toilet: string | null
@@ -126,8 +126,8 @@ export type Database = {
           CoursRoute?: string | null
           CoursTime?: string | null
           CVNTL_NM?: string | null
-          Latitude?: number | null
-          Longitude?: number | null
+          Latitude?: string | null
+          Longitude?: string | null
           Option?: string | null
           SIGNGU_NM?: string | null
           Toilet?: string | null
@@ -144,8 +144,8 @@ export type Database = {
           CoursRoute?: string | null
           CoursTime?: string | null
           CVNTL_NM?: string | null
-          Latitude?: number | null
-          Longitude?: number | null
+          Latitude?: string | null
+          Longitude?: string | null
           Option?: string | null
           SIGNGU_NM?: string | null
           Toilet?: string | null
