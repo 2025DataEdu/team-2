@@ -73,9 +73,14 @@ export const useLocationBasedPaths = ({ userLatitude, userLongitude, maxDistance
     fetchPaths();
   }, []);
 
-  // 위치 기반으로 필터링하고 정렬된 산책로
+  // 위치 기반으로 필터링하고 정렬된 산책로 - 정확히 3개만
   const nearbyPaths = useMemo(() => {
     if (!allPaths.length || !userLatitude || !userLongitude) return [];
+
+    console.log('Processing paths for TOP 3 recommendation...');
+    console.log('Total paths available:', allPaths.length);
+    console.log('User location:', { userLatitude, userLongitude });
+    console.log('Max distance:', maxDistance);
 
     const pathsWithDistance = allPaths.map(path => {
       if (!path.Latitude || !path.Longitude) return null;
@@ -95,10 +100,20 @@ export const useLocationBasedPaths = ({ userLatitude, userLongitude, maxDistance
       path !== null && path.distance <= maxDistance
     );
 
-    // 거리순으로 정렬하고 정확히 limit개만 반환
+    console.log('Paths within distance:', pathsWithDistance.length);
+
+    // 거리순으로 정렬하고 정확히 3개만 반환
     const sortedPaths = pathsWithDistance.sort((a, b) => a.distance - b.distance);
-    return sortedPaths.slice(0, limit);
-  }, [allPaths, userLatitude, userLongitude, maxDistance, limit]);
+    const top3Paths = sortedPaths.slice(0, 3);
+    
+    console.log('Final TOP 3 paths:', top3Paths.length);
+    console.log('TOP 3 paths details:', top3Paths.map(p => ({ 
+      name: p.CoursName, 
+      distance: p.distance 
+    })));
+
+    return top3Paths;
+  }, [allPaths, userLatitude, userLongitude, maxDistance]);
 
   return { nearbyPaths, isLoading, error };
 };

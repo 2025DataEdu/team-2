@@ -24,7 +24,7 @@ const LocationBasedRecommendedPaths = ({
     userLatitude,
     userLongitude,
     maxDistance,
-    limit
+    limit: 3 // 무조건 3개로 고정
   });
 
   // 가상 맛집 데이터
@@ -87,10 +87,10 @@ const LocationBasedRecommendedPaths = ({
     );
   }
 
-  // 정확히 3개만 표시
-  const displayPaths = nearbyPaths.slice(0, 3);
+  // 강제로 정확히 3개만 자르기
+  const exactlyThreePaths = nearbyPaths.slice(0, 3);
 
-  if (!displayPaths.length) {
+  if (!exactlyThreePaths.length) {
     return (
       <div>
         <h4 className="font-medium text-gray-900 mb-4 flex items-center gap-2">
@@ -106,15 +106,15 @@ const LocationBasedRecommendedPaths = ({
   return (
     <div>
       <h4 className="font-medium text-gray-900 mb-4 flex items-center gap-2">
-        🚶‍♂️ {title} (5km 이내, 가까운 순)
+        🚶‍♂️ 내 주변 추천 산책로 TOP 3 (5km 이내, 가까운 순) - 총 {exactlyThreePaths.length}개
       </h4>
       
       <div className="space-y-3">
-        {displayPaths.map((path, index) => {
+        {exactlyThreePaths.map((path, index) => {
           const virtualRestaurants = getVirtualRestaurants(index);
           
           return (
-            <Card key={path.CoursCode} className="hover:shadow-md transition-shadow cursor-pointer">
+            <Card key={`${path.CoursCode}-${index}`} className="hover:shadow-md transition-shadow cursor-pointer">
               <CardContent className="p-4">
                 <div className="flex justify-between items-start mb-2">
                   <div className="flex-1">
@@ -183,7 +183,7 @@ const LocationBasedRecommendedPaths = ({
 
       <div className="mt-4 p-3 bg-blue-50 rounded-lg">
         <p className="text-sm text-blue-700">
-          💡 현재 위치에서 5km 이내, 가까운 순서대로 정렬된 실제 등록 산책로 3개입니다.
+          💡 현재 위치에서 5km 이내, 가까운 순서대로 정렬된 실제 등록 산책로 정확히 3개입니다.
         </p>
       </div>
     </div>
