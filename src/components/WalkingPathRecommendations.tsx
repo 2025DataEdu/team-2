@@ -2,8 +2,8 @@
 import React from 'react';
 import PathRecommendationHeader from './PathRecommendationHeader';
 import AIAnalysisCard from './AIAnalysisCard';
-import PathGrid from './PathGrid';
-import { usePathRecommendations } from '@/hooks/usePathRecommendations';
+import AIRecommendedPathGrid from './AIRecommendedPathGrid';
+import { useAIRecommendedPaths } from '@/hooks/useAIRecommendedPaths';
 
 interface WalkingPath {
   id: string;
@@ -35,7 +35,7 @@ interface WalkingPathRecommendationsProps {
 }
 
 const WalkingPathRecommendations = ({ userProfile, onPathSelect, userLocation }: WalkingPathRecommendationsProps) => {
-  const { recommendedPaths, isLoading, generateRecommendations } = usePathRecommendations({
+  const { recommendedPaths, isLoading, generateRecommendations } = useAIRecommendedPaths({
     userProfile,
     userLocation
   });
@@ -54,8 +54,8 @@ const WalkingPathRecommendations = ({ userProfile, onPathSelect, userLocation }:
 
       {/* AI 추천 경로 */}
       <div>
-        <h3 className="text-xl font-semibold mb-4 text-green-700">🤖 AI 맞춤 추천 경로</h3>
-        <PathGrid 
+        <h3 className="text-xl font-semibold mb-4 text-green-700">🤖 AI 맞춤 추천 경로 (실제 데이터)</h3>
+        <AIRecommendedPathGrid 
           paths={recommendedPaths}
           isLoading={isLoading}
           onPathSelect={onPathSelect}
