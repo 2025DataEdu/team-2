@@ -12,6 +12,9 @@ export const useElevenLabsTTS = () => {
       // 5살 여자아이에게 가장 적합한 목소리 - Lily 사용 (더 어리고 순수한 느낌)
       const voiceId = 'pFZP5JQG7iQjIQuC4Bku'; // Lily voice - 진짜 5살 여자아이 목소리
       
+      // 5살 여자아이 목소리를 위한 프롬프트를 텍스트에 추가
+      const enhancedText = `Please generate speech in the voice of a 5-year-old girl. Her voice should be high-pitched, soft, and cheerful. The tone should be innocent, curious, and playful—like a child discovering something for the first time. Speak slowly and clearly, with slightly exaggerated expressions. Add subtle giggles, rising intonation at the end of questions, and natural childlike rhythm. The pronunciation should be slightly imperfect, as a real young child might speak, but still understandable. Here's what to say: ${text}`;
+      
       const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
         method: 'POST',
         headers: {
@@ -20,7 +23,7 @@ export const useElevenLabsTTS = () => {
           'xi-api-key': apiKey,
         },
         body: JSON.stringify({
-          text: text,
+          text: enhancedText,
           model_id: 'eleven_turbo_v2_5',
           voice_settings: {
             stability: 0.25, // 더 불안정하게 해서 5살 아이의 천진난만함
