@@ -64,13 +64,13 @@ const WalkingPathRecommendations = ({
   // 건강정보 기반 걷기 속도 계산
   const walkingSpeed = healthProfile ? getWalkingSpeed(healthProfile) : null;
 
-  // 위치 정보가 변경될 때마다 추천 새로고침
+  // 위치 정보가 변경될 때마다 추천 새로고침 - generateRecommendations 의존성 제거
   useEffect(() => {
     if (userLocation) {
       console.log('위치 정보 변경됨, 산책로 추천 새로고침:', userLocation);
       generateRecommendations();
     }
-  }, [userLocation?.latitude, userLocation?.longitude, generateRecommendations]);
+  }, [userLocation?.latitude, userLocation?.longitude]); // generateRecommendations 제거
   
   return (
     <div className="w-full space-y-6">
