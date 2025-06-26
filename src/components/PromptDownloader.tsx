@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Download, Database, Loader2, FileArchive } from 'lucide-react';
@@ -211,7 +210,7 @@ COLUMNS:
 // Supabase 프로젝트 정보
 PROJECT_ID: mjnldbefvzmqwzljkgzu
 SUPABASE_URL: https://mjnldbefvzmqwzljkgzu.supabase.co
-SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qbmxkYmVmdnptcXd6bGprZ3p1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA3MjU1NDgsImV4cCI6MjA2NjMwMTU0OH0.oRZpwXVMeOfTbV8ylWBYIdIBQyUTVnkwf1SAIZUiN2w
+SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qbmxkYmVmdnptcXd6bGprZ3p1Iiwicm9zZSI6ImFub24iLCJpYXQiOjE3NTA3MjU1NDgsImV4cCI6MjA2NjMwMTU0OH0.oRZpwXVMeOfTbV8ylWBYIdIBQyUTVnkwf1SAIZUiN2w
 
 // 클라이언트 설정
 import { createClient } from '@supabase/supabase-js';
@@ -278,38 +277,6 @@ const { paths, isLoading, error } = useRealPathData();
 
 이 프롬프트를 바탕으로 건강 중심의 개인화된 AI 산책로 추천 애플리케이션을 개발해주세요.`;
 
-  // 소스코드 파일 목록 (현재 허용된 파일들 기준)
-  const sourceFiles = [
-    // 컴포넌트
-    { path: 'src/components/PromptDownloader.tsx', type: 'component' },
-    { path: 'src/components/ui/button.tsx', type: 'ui' },
-    { path: 'src/pages/Index.tsx', type: 'page' },
-    { path: 'src/lib/utils.ts', type: 'utility' },
-    
-    // 설정 파일들
-    { path: 'package.json', type: 'config' },
-    { path: 'tailwind.config.ts', type: 'config' },
-    { path: 'vite.config.ts', type: 'config' },
-    { path: 'tsconfig.json', type: 'config' },
-    { path: 'components.json', type: 'config' },
-    
-    // 정적 파일
-    { path: 'index.html', type: 'static' },
-    { path: 'README.md', type: 'doc' }
-  ];
-
-  const downloadPrompt = () => {
-    const blob = new Blob([promptContent], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'AI_건강_산책로_추천앱_프롬프트_v3_with_supabase.txt';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
-
   const convertToCSV = (data: any[], headers: string[]) => {
     const csvHeaders = headers.join(',');
     const csvRows = data.map(row => {
@@ -326,6 +293,18 @@ const { paths, isLoading, error } = useRealPathData();
     });
     
     return [csvHeaders, ...csvRows].join('\n');
+  };
+
+  const downloadPrompt = () => {
+    const blob = new Blob([promptContent], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'AI_건강_산책로_추천앱_프롬프트_v3_with_supabase.txt';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const exportSupabaseTables = async () => {
@@ -422,51 +401,12 @@ const { paths, isLoading, error } = useRealPathData();
     try {
       const zip = new JSZip();
 
-      // 가상의 소스코드 내용 (실제 프로젝트에서는 현재 컴포넌트들의 실제 내용)
-      const sourceCodeSamples = {
-        'src/components/PromptDownloader.tsx': `import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Download, Database, Loader2, FileArchive } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
-import JSZip from 'jszip';
-
-const PromptDownloader = () => {
-  // 컴포넌트 로직
-  // ... (현재 파일의 내용)
-};
-
-export default PromptDownloader;`,
-        
-        'src/pages/Index.tsx': `import React, { useState, useEffect } from 'react';
-import LoadingScreen from '@/components/LoadingScreen';
-import AppHeader from '@/components/AppHeader';
-// ... 기타 imports
-
-const Index = () => {
-  // 메인 페이지 로직
-  // ... (Index 페이지의 내용)
-};
-
-export default Index;`,
-
-        'src/components/ui/button.tsx': `import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
-import { cva, type VariantProps } from "class-variance-authority"
-
-// Button 컴포넌트 정의
-// ... (Button 컴포넌트의 내용)`,
-
-        'src/lib/utils.ts': `import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}`,
-
+      // 실제 프로젝트 파일들을 ZIP에 추가
+      const actualSourceFiles = {
         'package.json': `{
   "name": "ai-walking-path-app",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -475,38 +415,190 @@ export function cn(...inputs: ClassValue[]) {
     "preview": "vite preview"
   },
   "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "@11labs/react": "^0.1.4",
+    "@hookform/resolvers": "^3.9.0",
+    "@radix-ui/react-accordion": "^1.2.0",
+    "@radix-ui/react-alert-dialog": "^1.1.1",
+    "@radix-ui/react-aspect-ratio": "^1.1.0",
+    "@radix-ui/react-avatar": "^1.1.0",
+    "@radix-ui/react-checkbox": "^1.1.1",
+    "@radix-ui/react-collapsible": "^1.1.0",
+    "@radix-ui/react-context-menu": "^2.2.1",
+    "@radix-ui/react-dialog": "^1.1.2",
+    "@radix-ui/react-dropdown-menu": "^2.1.1",
+    "@radix-ui/react-hover-card": "^1.1.1",
+    "@radix-ui/react-label": "^2.1.0",
+    "@radix-ui/react-menubar": "^1.1.1",
+    "@radix-ui/react-navigation-menu": "^1.2.0",
+    "@radix-ui/react-popover": "^1.1.1",
+    "@radix-ui/react-progress": "^1.1.0",
+    "@radix-ui/react-radio-group": "^1.2.0",
+    "@radix-ui/react-scroll-area": "^1.1.0",
+    "@radix-ui/react-select": "^2.2.5",
+    "@radix-ui/react-separator": "^1.1.0",
+    "@radix-ui/react-slider": "^1.3.5",
+    "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-switch": "^1.1.0",
+    "@radix-ui/react-tabs": "^1.1.0",
+    "@radix-ui/react-toast": "^1.2.1",
+    "@radix-ui/react-toggle": "^1.1.0",
+    "@radix-ui/react-toggle-group": "^1.1.0",
+    "@radix-ui/react-tooltip": "^1.1.4",
     "@supabase/supabase-js": "^2.50.1",
     "@tanstack/react-query": "^5.56.2",
-    "tailwindcss": "latest",
-    "typescript": "^5.0.0"
+    "@types/leaflet": "^1.9.19",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cmdk": "^1.0.0",
+    "date-fns": "^3.6.0",
+    "embla-carousel-react": "^8.3.0",
+    "input-otp": "^1.2.4",
+    "jszip": "^3.10.1",
+    "leaflet": "^1.9.4",
+    "lucide-react": "^0.462.0",
+    "next-themes": "^0.3.0",
+    "react": "^18.3.1",
+    "react-day-picker": "^8.10.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.53.0",
+    "react-resizable-panels": "^2.1.3",
+    "react-router-dom": "^6.26.2",
+    "recharts": "^2.12.7",
+    "sonner": "^1.5.0",
+    "tailwind-merge": "^2.5.2",
+    "tailwindcss-animate": "^1.0.7",
+    "vaul": "^0.9.3",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^7.15.0",
+    "@typescript-eslint/parser": "^7.15.0",
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    "autoprefixer": "^10.4.19",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-refresh": "^0.4.7",
+    "postcss": "^8.4.39",
+    "tailwindcss": "^3.4.4",
+    "typescript": "^5.2.2",
+    "vite": "^5.3.4"
   }
 }`,
 
-        'README.md': `# AI 건강 맞춤형 산책로 추천 앱
+        'vite.config.ts': `import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react-swc";
+import path from "path";
+import { componentTagger } from "lovable-tagger";
 
-건강 정보와 위치 기반으로 개인화된 산책로를 추천하는 웹 애플리케이션입니다.
+export default defineConfig(({ mode }) => ({
+  server: {
+    host: "::",
+    port: 8080,
+  },
+  plugins: [
+    react(),
+    mode === 'development' &&
+    componentTagger(),
+  ].filter(Boolean),
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
+}));`,
 
-## 주요 기능
-- 건강 프로필 기반 맞춤 추천
-- 위치 기반 산책로 검색
-- AI 기반 운동 강도 계산
-- 실시간 지도 시각화
-- Supabase 데이터베이스 연동
+        'tsconfig.json': `{
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
+}`,
 
-## 기술 스택
-- React + TypeScript
-- Tailwind CSS
-- Supabase
-- Leaflet 지도
-- TanStack Query
+        'tailwind.config.ts': `import type { Config } from "tailwindcss";
 
-## 설치 및 실행
-\`\`\`bash
-npm install
-npm run dev
-\`\`\``,
+export default {
+  darkMode: ["class"],
+  content: [
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
+  prefix: "",
+  theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
+    },
+    extend: {
+      colors: {
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
+      },
+      keyframes: {
+        "accordion-down": {
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+      },
+    },
+  },
+  plugins: [require("tailwindcss-animate")],
+} satisfies Config;`,
 
         'index.html': `<!doctype html>
 <html lang="ko">
@@ -515,6 +607,8 @@ npm run dev
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI 건강 맞춤형 산책로 추천</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   </head>
   <body>
     <div id="root"></div>
@@ -522,43 +616,249 @@ npm run dev
   </body>
 </html>`,
 
-        'tailwind.config.ts': `import type { Config } from "tailwindcss"
+        'src/main.tsx': `import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import App from "./App.tsx";
+import "./index.css";
 
-const config: Config = {
-  content: [
-    "./pages/**/*.{ts,tsx}",
-    "./components/**/*.{ts,tsx}",
-    "./app/**/*.{ts,tsx}",
-    "./src/**/*.{ts,tsx}",
-  ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+);`,
+
+        'src/App.tsx': `import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Index from "./pages/Index";
+import NotFound from "./pages/NotFound";
+
+const queryClient = new QueryClient();
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
+
+export default App;`,
+
+        'src/index.css': `@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+  }
 }
 
-export default config`,
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground font-inter;
+  }
+}
 
-        'vite.config.ts': `import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
-import path from "path"
+.leaflet-container {
+  font-family: inherit;
+}
 
-export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
-  },
-})`
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.leaflet-popup-content {
+  font-family: inherit;
+  margin: 8px 12px;
+}
+
+.leaflet-control-zoom a {
+  border-radius: 4px;
+}
+
+.font-inter {
+  font-family: 'Inter', sans-serif;
+}`,
+
+        'src/integrations/supabase/client.ts': `import { createClient } from '@supabase/supabase-js'
+import type { Database } from './types'
+
+const SUPABASE_URL = "https://mjnldbefvzmqwzljkgzu.supabase.co"
+const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qbmxkYmVmdnptcXd6bGprZ3p1Iiwicm9zZSI6ImFub24iLCJpYXQiOjE3NTA3MjU1NDgsImV4cCI6MjA2NjMwMTU0OH0.oRZpwXVMeOfTbV8ylWBYIdIBQyUTVnkwf1SAIZUiN2w"
+
+export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)`,
+
+        'src/lib/utils.ts': `import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}`,
+
+        'README.md': `# AI 건강 맞춤형 산책로 추천 앱
+
+건강 정보와 위치 기반으로 개인화된 산책로를 추천하는 React 웹 애플리케이션입니다.
+
+## 🌟 주요 기능
+
+### 🏥 건강 프로필 기반 추천
+- 나이, 체력 수준, 건강 상태, 운동 목표 분석
+- Supabase 건강정보 데이터베이스 연동
+- AI 기반 맞춤형 산책로 추천
+
+### 📍 위치 기반 서비스
+- 현재 위치 자동 감지
+- 주변 산책로 실시간 검색
+- 거리별 난이도 필터링
+
+### 🗺️ 인터랙티브 지도
+- Leaflet 기반 지도 시각화
+- 실시간 경로 표시
+- 상세 정보 모달
+
+### 🎯 스마트 추천 시스템
+- 건강 상태별 운동 강도 계산
+- 개인별 심박수 목표 범위 설정
+- 질병별 운동 주의사항 반영
+
+## 🛠️ 기술 스택
+
+- **Frontend**: React 18 + TypeScript
+- **UI Framework**: Tailwind CSS + Shadcn/ui
+- **상태 관리**: TanStack Query
+- **지도**: Leaflet
+- **백엔드**: Supabase
+- **빌드 도구**: Vite
+- **아이콘**: Lucide React
+
+## 📦 설치 및 실행
+
+\`\`\`bash
+# 의존성 설치
+npm install
+
+# 개발 서버 실행
+npm run dev
+
+# 빌드
+npm run build
+
+# 미리보기
+npm run preview
+\`\`\`
+
+## 🗄️ 데이터베이스 구조
+
+### Supabase 테이블
+- **건강정보**: 사용자 건강 프로필 데이터
+- **내주변산책로**: 실제 산책로 위치 및 정보
+- **전통시장현황**: 주변 편의시설 정보
+
+## 🎨 주요 컴포넌트
+
+### 페이지
+- \`Index.tsx\`: 메인 페이지
+- \`LoadingScreen\`: 로딩 화면
+- \`NotFound\`: 404 페이지
+
+### 핵심 기능
+- \`WalkingPathRecommendations\`: AI 추천 산책로
+- \`SmallMap\`: 지도 컴포넌트
+- \`PathDetailModal\`: 경로 상세 정보
+
+### UI 컴포넌트
+- \`AppHeader\`: 앱 헤더
+- \`NavigationButtons\`: 네비게이션
+- \`VoiceInterface\`: 음성 인터페이스
+
+## 🎯 AI 추천 로직
+
+1. 사용자 프로필 분석
+2. 건강 상태별 경로 필터링
+3. 체력 수준별 난이도 조정
+4. 위치 기반 접근성 고려
+5. 맞춤형 추천 이유 생성
+
+## 🌐 배포
+
+이 앱은 Lovable 플랫폼에서 개발되었으며, 원클릭 배포를 지원합니다.
+
+## 📱 반응형 디자인
+
+모든 화면 크기에서 최적화된 사용자 경험을 제공합니다.
+
+## 🔧 개발 참고사항
+
+- 모든 인터페이스는 한국어로 제공
+- 접근성을 고려한 UI/UX 설계
+- 성능 최적화된 컴포넌트 구조
+
+## 📄 라이선스
+
+이 프로젝트는 개인 프로젝트용으로 개발되었습니다.`
       };
 
       // 파일들을 ZIP에 추가
-      sourceFiles.forEach(file => {
-        const content = sourceCodeSamples[file.path] || `// ${file.path} 파일\n// 이 파일의 내용은 실제 프로젝트에서 확인하세요.`;
-        
-        // 폴더 구조 유지
-        zip.file(file.path, content);
+      Object.entries(actualSourceFiles).forEach(([filePath, content]) => {
+        zip.file(filePath, content);
       });
 
       // 프로젝트 설명 파일 추가
