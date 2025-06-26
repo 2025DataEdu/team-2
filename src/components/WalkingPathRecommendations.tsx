@@ -1,4 +1,3 @@
-
 import React from 'react';
 import PathRecommendationHeader from './PathRecommendationHeader';
 import AIAnalysisCard from './AIAnalysisCard';
@@ -66,12 +65,7 @@ const WalkingPathRecommendations = ({
   
   return (
     <div className="w-full space-y-6">
-      <PathRecommendationHeader 
-        onRefresh={generateRecommendations} 
-        isLoading={isLoading}
-        userProfile={userProfile}
-        userLocation={userLocation}
-      />
+      <PathRecommendationHeader onRefresh={generateRecommendations} isLoading={isLoading} />
 
       <AIAnalysisCard userProfile={userProfile} userLocation={userLocation} />
 

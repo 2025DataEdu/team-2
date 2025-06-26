@@ -10,11 +10,8 @@ export const useElevenLabsTTS = () => {
 
   const generateSpeech = async (text: string, apiKey: string) => {
     try {
-      // 5살 여자아이에게 가장 적합한 목소리 - Lily 사용 (더 어리고 순수한 느낌)
-      const voiceId = 'pFZP5JQG7iQjIQuC4Bku'; // Lily voice - 진짜 5살 여자아이 목소리
-      
-      // 5살 여자아이 목소리를 위한 한국어 프롬프트를 텍스트에 추가
-      const enhancedText = `당신은 5살 여자아이입니다. 높고 부드럽고 귀여운 목소리로 말해주세요. 목소리는 순수하고 호기심 많고 장난스러워야 합니다 - 마치 처음 뭔가를 발견한 어린아이처럼요. 천천히 그리고 명확하게 말하되, 살짝 과장된 표현을 사용하세요. 자연스러운 어린아이 특유의 웃음소리나 의문문 끝의 올라가는 억양, 그리고 자연스러운 어린이 리듬을 추가해주세요. 발음은 진짜 어린 아이처럼 살짝 부정확하되, 여전히 알아들을 수 있게 해주세요. 다음 내용을 한국어로 말해주세요: ${text}`;
+      // 5살 여자아이에게 가장 적합한 목소리 - Charlotte 사용 (더 어리고 귀여운 느낌)
+      const voiceId = 'XB0fDUnXU5powFXDhCwa'; // Charlotte voice - 5살 여자아이 목소리
       
       const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
         method: 'POST',
@@ -24,12 +21,12 @@ export const useElevenLabsTTS = () => {
           'xi-api-key': apiKey,
         },
         body: JSON.stringify({
-          text: enhancedText,
-          model_id: 'eleven_turbo_v2_5',
+          text: text,
+          model_id: 'eleven_turbo_v2_5', // 더 빠른 모델로 변경
           voice_settings: {
-            stability: 0.25, // 더 불안정하게 해서 5살 아이의 천진난만함
-            similarity_boost: 0.75, // 더 변화무쌍하게
-            style: 1.0, // 최대 감정 표현
+            stability: 0.35, // 더 불안정하게 해서 5살 아이의 자연스러운 느낌
+            similarity_boost: 0.85, // 조금 낮춰서 더 변화무쌍하게
+            style: 1.0, // 최대 감정적 표현력
             use_speaker_boost: true
           }
         })
@@ -64,8 +61,8 @@ export const useElevenLabsTTS = () => {
       setIsPaused(false);
       
       toast({
-        title: "🎀 헤헷! 5살 여아 목소리 만드는 중...",
-        description: "진짜진짜 귀여운 목소리로 바꿔줄게! 짠!",
+        title: "🎀 5살 여아 목소리 만드는 중...",
+        description: "진짜진짜 귀여운 목소리로 바꿔줄게! 빨리빨리!",
       });
 
       const audioUrl = await generateSpeech(text, apiKey);
@@ -78,12 +75,14 @@ export const useElevenLabsTTS = () => {
 
       const audio = new Audio(audioUrl);
       audioRef.current = audio;
+
+      // 오디오 로딩 최적화
       audio.preload = 'auto';
 
       audio.onplay = () => {
         toast({
-          title: "🎵 우와~ 들어봐!",
-          description: "5살 여자아이 목소리쪄! 귀엽지? 헤헷!",
+          title: "🎵 야호! 들어봐봐~",
+          description: "5살 여자아이 목소리야! 진짜 귀엽지? 히히히~",
         });
       };
 
@@ -92,8 +91,8 @@ export const useElevenLabsTTS = () => {
         setIsPaused(false);
         URL.revokeObjectURL(audioUrl);
         toast({
-          title: "✨ 다 말했어~",
-          description: "어땠어? 귀여웠지? 또 들을래? 짠!",
+          title: "✨ 어땠어어땠어?",
+          description: "진짜 귀여웠지? 또 들을래? 헤헤헤헷~",
         });
       };
 
@@ -102,7 +101,7 @@ export const useElevenLabsTTS = () => {
         setIsPaused(false);
         toast({
           title: "앗! 안 돼!",
-          description: "괜찮쪄~ 다시 해볼게! 걱정 마!",
+          description: "괜찮아괜찮아! 다시 해볼게~ 걱정 마!",
           variant: "destructive",
         });
       };
@@ -113,7 +112,7 @@ export const useElevenLabsTTS = () => {
       setIsPaused(false);
       toast({
         title: "목소리 만들기 실패했어ㅠㅠ",
-        description: "또 해볼게! 진짜 귀여운 목소리로 만들어줄게쪄!",
+        description: "또 해볼게! 진짜 귀여운 목소리로 만들어줄게!",
         variant: "destructive",
       });
     }

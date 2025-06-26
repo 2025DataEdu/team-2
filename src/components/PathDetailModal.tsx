@@ -10,8 +10,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Clock, TrendingUp, Heart, Star, Lightbulb, UtensilsCrossed, Navigation, Building, Route } from 'lucide-react';
 import SmallMap from './SmallMap';
-import SpeechControls from './SpeechControls';
-import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
 
 interface WalkingPath {
   id: string;
@@ -38,15 +36,6 @@ interface PathDetailModalProps {
 }
 
 const PathDetailModal = ({ path, isOpen, onClose, onSelect }: PathDetailModalProps) => {
-  const { 
-    isPlaying, 
-    isPaused, 
-    useElevenLabs,
-    speakText, 
-    pauseResumeSpeech, 
-    stopSpeech
-  } = useSpeechSynthesis();
-
   if (!path) return null;
 
   const getDifficultyColor = (difficulty: string) => {
@@ -72,37 +61,6 @@ const PathDetailModal = ({ path, isOpen, onClose, onSelect }: PathDetailModalPro
     onClose();
   };
 
-  const handleSpeakPathDetails = () => {
-    const difficultyKr = getDifficultyText(path.difficulty);
-    const elevationPercentage = getElevationPercentage();
-    const estimatedCalories = Math.round(path.distance * 50);
-
-    const textToSpeak = `
-      ${path.name} 산책로에 대해서 자세히 말해줄게!
-      
-      ${path.description}
-      
-      기본 정보부터 말해볼게~
-      거리는 ${path.distance.toFixed(2)}킬로미터야!
-      걸리는 시간은 대략 ${Math.round(path.duration)}분 정도!
-      난이도는 ${difficultyKr}이고~
-      경사는 ${elevationPercentage}퍼센트야!
-      별점은 ${path.rating.toFixed(1)}점이야! 꽤 좋지?
-      
-      추천 이유는~ ${path.recommendationReason}
-      
-      주변 편의시설로는 ${path.amenities.join(', ')}가 있어!
-      
-      근처 맛집이랑 디저트로는 ${path.nearbyFood.join(', ')}를 추천할게!
-      
-      운동 효과는 약 ${estimatedCalories}칼로리 정도 태울 수 있어!
-      
-      어때? 이 산책로 마음에 들어? 정말 좋은 곳이야!
-    `;
-    
-    speakText(textToSpeak);
-  };
-
   // 경사를 퍼센트로 계산하는 함수
   const getElevationPercentage = () => {
     if (path.elevation <= 0) return 0;
@@ -120,19 +78,9 @@ const PathDetailModal = ({ path, isOpen, onClose, onSelect }: PathDetailModalPro
         <DialogHeader>
           <div className="flex justify-between items-start">
             <DialogTitle className="text-xl">{path.name}</DialogTitle>
-            <div className="flex items-center gap-2">
-              <SpeechControls
-                isPlaying={isPlaying}
-                isPaused={isPaused}
-                useElevenLabs={useElevenLabs}
-                onSpeak={handleSpeakPathDetails}
-                onPauseResume={pauseResumeSpeech}
-                onStop={stopSpeech}
-              />
-              <div className="flex items-center gap-1">
-                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                <span className="text-sm font-medium">{path.rating.toFixed(1)}</span>
-              </div>
+            <div className="flex items-center gap-1">
+              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+              <span className="text-sm font-medium">{path.rating.toFixed(1)}</span>
             </div>
           </div>
           <div className="flex gap-2 flex-wrap mt-2">
