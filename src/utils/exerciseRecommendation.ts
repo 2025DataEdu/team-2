@@ -1,4 +1,3 @@
-
 // 의학적 근거에 기반한 운동강도 추천 유틸리티
 // 참고: ACSM Guidelines, Korean Society of Cardiology, Korean Diabetes Association
 
@@ -11,6 +10,14 @@ export interface ExerciseRecommendation {
   precautions: string[];
   reasoning: string;
   medicalBasis: string;
+}
+
+export interface WalkingSpeed {
+  walkingSpeed: string;
+  joggingSpeed: string;
+  heartRateRange: { min: number; max: number };
+  intensityKr: string;
+  recommendedPace: string;
 }
 
 interface HealthProfile {
@@ -198,6 +205,63 @@ export const getExerciseRecommendation = (healthProfile: HealthProfile): Exercis
   }
 
   return recommendation;
+};
+
+// 걷기/조깅 속도 계산 함수
+export const getWalkingSpeed = (healthProfile: HealthProfile, exerciseRecommendation?: ExerciseRecommendation | null): WalkingSpeed => {
+  const age = healthProfile.나이 || 40;
+  const diagnosis = healthProfile['진단 질병'] || '';
+  
+  // 기본 추천 가져오기
+  const recommendation = exerciseRecommendation || getExerciseRecommendation(healthProfile);
+  
+  let walkingSpeed: string;
+  let joggingSpeed: string;
+  let recommendedPace: string;
+
+  // 운동강도별 속도 설정
+  switch (recommendation.intensity) {
+    case 'low':
+      walkingSpeed = '3.5-4.5 km/h';
+      joggingSpeed = '5.0-6.0 km/h';
+      recommendedPace = '천천히 걷기 위주';
+      break;
+    case 'moderate':
+      walkingSpeed = '4.5-6.0 km/h';
+      joggingSpeed = '6.0-8.0 km/h';
+      recommendedPace = '빠른 걷기 + 가벼운 조깅';
+      break;
+    case 'high':
+      walkingSpeed = '5.5-7.0 km/h';
+      joggingSpeed = '7.0-10.0 km/h';
+      recommendedPace = '조깅 위주 + 일부 달리기';
+      break;
+    default:
+      walkingSpeed = '4.0-5.0 km/h';
+      joggingSpeed = '6.0-7.0 km/h';
+      recommendedPace = '보통 속도 걷기';
+  }
+
+  // 특수 상황 조정
+  if (age >= 65) {
+    walkingSpeed = '3.0-4.0 km/h';
+    joggingSpeed = '4.5-5.5 km/h';
+    recommendedPace = '안전한 속도로 천천히';
+  }
+
+  if (diagnosis.includes('무릎') || diagnosis.includes('관절')) {
+    walkingSpeed = '3.0-4.5 km/h';
+    joggingSpeed = '5.0-6.5 km/h';
+    recommendedPace = '관절에 무리가 가지 않는 속도';
+  }
+
+  return {
+    walkingSpeed,
+    joggingSpeed,
+    heartRateRange: recommendation.heartRateRange,
+    intensityKr: recommendation.intensityKr,
+    recommendedPace
+  };
 };
 
 // 운동강도별 색상 반환
