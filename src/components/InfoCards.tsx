@@ -2,9 +2,7 @@
 import React from 'react';
 import WeatherInfo from '@/components/WeatherInfo';
 import LocationInfo from '@/components/LocationInfo';
-import ExerciseRecommendationCard from '@/components/ExerciseRecommendationCard';
 import { useHealthProfile } from '@/hooks/useHealthProfile';
-import { getExerciseRecommendation } from '@/utils/exerciseRecommendation';
 
 interface UserProfile {
   age: number;
@@ -21,9 +19,6 @@ interface InfoCardsProps {
 
 const InfoCards = ({ userProfile, onEditProfile }: InfoCardsProps) => {
   const { healthProfile, isLoading: healthLoading, error: healthError } = useHealthProfile();
-
-  // 운동강도 추천 생성
-  const exerciseRecommendation = healthProfile ? getExerciseRecommendation(healthProfile) : null;
 
   return (
     <div className="space-y-6 mb-8">
@@ -85,11 +80,6 @@ const InfoCards = ({ userProfile, onEditProfile }: InfoCardsProps) => {
           </div>
         </div>
       </div>
-
-      {/* 운동강도 추천 카드 */}
-      {exerciseRecommendation && (
-        <ExerciseRecommendationCard recommendation={exerciseRecommendation} />
-      )}
     </div>
   );
 };
