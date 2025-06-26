@@ -18,6 +18,50 @@ export const useLocation = () => {
     error: null
   });
 
+  // 주소로 위치 변경하는 함수
+  const changeLocationByAddress = async (address: string) => {
+    setLocation(prev => ({ ...prev, isLoading: true, error: null }));
+    
+    try {
+      // 실제 환경에서는 Google Geocoding API나 다른 지오코딩 서비스 사용
+      // 여기서는 mock 데이터로 처리
+      const mockCoordinates = getMockCoordinates(address);
+      
+      setLocation({
+        latitude: mockCoordinates.lat,
+        longitude: mockCoordinates.lng,
+        address: address,
+        isLoading: false,
+        error: null
+      });
+    } catch (error) {
+      setLocation(prev => ({
+        ...prev,
+        isLoading: false,
+        error: '주소를 찾을 수 없습니다.'
+      }));
+    }
+  };
+
+  // Mock 좌표 생성 함수 (실제로는 지오코딩 API 사용)
+  const getMockCoordinates = (address: string) => {
+    // 서울 지역별 대략적인 좌표
+    if (address.includes('강남')) {
+      return { lat: 37.4979, lng: 127.0276 };
+    } else if (address.includes('홍대') || address.includes('마포')) {
+      return { lat: 37.5563, lng: 126.9233 };
+    } else if (address.includes('명동') || address.includes('중구')) {
+      return { lat: 37.5636, lng: 126.9832 };
+    } else if (address.includes('부산')) {
+      return { lat: 35.1796, lng: 129.0756 };
+    } else if (address.includes('대구')) {
+      return { lat: 35.8714, lng: 128.6014 };
+    } else {
+      // 기본값: 서울 시청
+      return { lat: 37.5665, lng: 126.9780 };
+    }
+  };
+
   useEffect(() => {
     if (!navigator.geolocation) {
       setLocation(prev => ({
@@ -77,5 +121,8 @@ export const useLocation = () => {
     );
   }, []);
 
-  return location;
+  return {
+    ...location,
+    changeLocationByAddress
+  };
 };
