@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, useRef } from 'react';
 import LoadingScreen from '@/components/LoadingScreen';
 import AppHeader from '@/components/AppHeader';
 import NavigationButtons from '@/components/NavigationButtons';
@@ -39,11 +40,20 @@ const Index = () => {
   const [selectedPath, setSelectedPath] = useState<WalkingPath | null>(null);
   const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>([]);
   
+  // 추천 경로 강제 갱신을 위한 ref
+  const recommendationRefreshRef = useRef<(() => void) | null>(null);
+  
   // 위치 변경 시 추천 경로 자동 업데이트를 위한 콜백
   const location = useLocation({
     onLocationChange: (newLocation) => {
       console.log('위치가 변경되었습니다:', newLocation);
-      // 추천 경로가 자동으로 재생성됩니다
+      console.log('추천 경로 갱신 시작');
+      
+      // 추천 경로 강제 갱신
+      if (recommendationRefreshRef.current) {
+        console.log('recommendationRefreshRef.current 호출');
+        recommendationRefreshRef.current();
+      }
     }
   });
 
@@ -152,6 +162,9 @@ const Index = () => {
                   address: location.address
                 }}
                 selectedDifficulties={selectedDifficulties}
+                onRefreshRef={(refreshFn) => {
+                  recommendationRefreshRef.current = refreshFn;
+                }}
               />
             </div>
           )}

@@ -4,6 +4,7 @@ import PathRecommendationHeader from './PathRecommendationHeader';
 import AIAnalysisCard from './AIAnalysisCard';
 import AIRecommendedPathGrid from './AIRecommendedPathGrid';
 import { useAIRecommendedPaths } from '@/hooks/useAIRecommendedPaths';
+import { usePathRecommendations } from '@/hooks/usePathRecommendations';
 import { useHealthProfile } from '@/hooks/useHealthProfile';
 import { getWalkingSpeed } from '@/utils/exerciseRecommendation';
 
@@ -39,19 +40,31 @@ interface WalkingPathRecommendationsProps {
     address: string;
   };
   selectedDifficulties: string[];
+  onRefreshRef?: (refreshFn: () => void) => void;
 }
 
 const WalkingPathRecommendations = ({
   userProfile,
   onPathSelect,
   userLocation,
-  selectedDifficulties
+  selectedDifficulties,
+  onRefreshRef
 }: WalkingPathRecommendationsProps) => {
   const {
     recommendedPaths,
     isLoading,
     generateRecommendations
   } = useAIRecommendedPaths({
+    userProfile,
+    userLocation
+  });
+
+  // usePathRecommendations 훅 추가
+  const {
+    recommendedPaths: pathRecommendations,
+    isLoading: isPathLoading,
+    generateRecommendations: generatePathRecommendations
+  } = usePathRecommendations({
     userProfile,
     userLocation
   });
@@ -64,6 +77,20 @@ const WalkingPathRecommendations = ({
   // 건강정보 기반 걷기 속도 계산
   const walkingSpeed = healthProfile ? getWalkingSpeed(healthProfile) : null;
 
+  // 통합 새로고침 함수
+  const handleRefresh = () => {
+    console.log('통합 새로고침 함수 호출');
+    generateRecommendations();
+    generatePathRecommendations();
+  };
+
+  // 부모 컴포넌트에 새로고침 함수 전달
+  useEffect(() => {
+    if (onRefreshRef) {
+      onRefreshRef(handleRefresh);
+    }
+  }, [onRefreshRef, handleRefresh]);
+
   // 위치 변경 감지 및 강제 새로고침
   useEffect(() => {
     console.log('WalkingPathRecommendations: 위치 변경 감지됨', {
@@ -74,13 +101,13 @@ const WalkingPathRecommendations = ({
     // 위치 정보가 있을 때만 새로고침
     if (userLocation && userLocation.latitude && userLocation.longitude) {
       console.log('위치 기반 추천 경로 강제 새로고침 실행');
-      generateRecommendations();
+      handleRefresh();
     }
-  }, [userLocation?.latitude, userLocation?.longitude, userLocation?.address, generateRecommendations]);
+  }, [userLocation?.latitude, userLocation?.longitude, userLocation?.address]);
   
   return (
     <div className="w-full space-y-6">
-      <PathRecommendationHeader onRefresh={generateRecommendations} isLoading={isLoading} />
+      <PathRecommendationHeader onRefresh={handleRefresh} isLoading={isLoading || isPathLoading} />
 
       <AIAnalysisCard userProfile={userProfile} userLocation={userLocation} />
 

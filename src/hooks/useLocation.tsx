@@ -33,6 +33,7 @@ export const useLocation = (options?: UseLocationOptions) => {
     
     // 위치 변경 콜백 호출
     if (options?.onLocationChange) {
+      console.log('위치 변경 콜백 호출:', newLocation);
       options.onLocationChange(newLocation);
     }
   };
@@ -57,11 +58,14 @@ export const useLocation = (options?: UseLocationOptions) => {
         try {
           const mockAddress = `서울시 ${latitude > 37.55 ? '강북구' : '강남구'} ${longitude > 127.0 ? '동쪽' : '서쪽'} 지역`;
           
-          updateLocation({
+          const newLocation = {
             latitude: Number(latitude.toFixed(6)),
             longitude: Number(longitude.toFixed(6)),
             address: mockAddress
-          });
+          };
+          
+          console.log('getCurrentLocation 완료:', newLocation);
+          updateLocation(newLocation);
         } catch (error) {
           setLocation(prev => ({
             ...prev,
@@ -110,11 +114,14 @@ export const useLocation = (options?: UseLocationOptions) => {
       
       if (result) {
         console.log('주소 검색 결과:', result);
-        updateLocation({
+        const newLocation = {
           latitude: Number(result.latitude.toFixed(6)),
           longitude: Number(result.longitude.toFixed(6)),
           address: result.formattedAddress
-        });
+        };
+        
+        console.log('searchByAddress 완료:', newLocation);
+        updateLocation(newLocation);
       } else {
         setLocation(prev => ({
           ...prev,
