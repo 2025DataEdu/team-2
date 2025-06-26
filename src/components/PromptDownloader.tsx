@@ -1,9 +1,12 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Download } from 'lucide-react';
+import { Download, Database, Loader2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const PromptDownloader = () => {
+  const [isExporting, setIsExporting] = useState(false);
+
   const promptContent = `# AI 건강 맞춤형 산책로 추천 앱 생성 프롬프트
 
 ## 프로젝트 개요
@@ -285,6 +288,113 @@ const { paths, isLoading, error } = useRealPathData();
     URL.revokeObjectURL(url);
   };
 
+  const convertToCSV = (data: any[], headers: string[]) => {
+    const csvHeaders = headers.join(',');
+    const csvRows = data.map(row => {
+      return headers.map(header => {
+        const value = row[header];
+        // CSV에서 쉼표와 따옴표를 처리
+        if (value === null || value === undefined) return '';
+        const stringValue = String(value);
+        if (stringValue.includes(',') || stringValue.includes('"') || stringValue.includes('\n')) {
+          return `"${stringValue.replace(/"/g, '""')}"`;
+        }
+        return stringValue;
+      }).join(',');
+    });
+    
+    return [csvHeaders, ...csvRows].join('\n');
+  };
+
+  const exportSupabaseTables = async () => {
+    setIsExporting(true);
+    try {
+      // 건강정보 테이블 데이터 가져오기
+      const { data: healthData, error: healthError } = await supabase
+        .from('건강정보')
+        .select('*')
+        .limit(1000);
+
+      if (healthError) throw healthError;
+
+      // 내주변산책로 테이블 데이터 가져오기
+      const { data: pathData, error: pathError } = await supabase
+        .from('내주변산책로')
+        .select('*')
+        .limit(1000);
+
+      if (pathError) throw pathError;
+
+      // 전통시장현황 테이블 데이터 가져오기
+      const { data: marketData, error: marketError } = await supabase
+        .from('전통시장현황')
+        .select('*')
+        .limit(1000);
+
+      if (marketError) throw marketError;
+
+      // 각 테이블에 대한 CSV 생성
+      const healthHeaders = [
+        'ID', '이름', '나이', '성별', '체중(kg)', '신장(cm)', 
+        '수축기 혈압', '이완기 혈압', '혈당(mg/dL)', '총콜레스테롤(mg/dL)',
+        '진단 질병', '운동 빈도(회/주)', '음주 빈도(회/주)', '흡연 여부', '혈액형'
+      ];
+
+      const pathHeaders = [
+        'CoursCode', 'CoursName', 'CorusDetailName', 'Address', 'CoursLength',
+        'CoursDetailLength', 'CoursTime', 'CoursLv', 'CoursRoute', 'Latitude',
+        'Longitude', 'ADIT_DC', 'Option', 'Toilet', 'SIGNGU_NM', 'CVNTL_NM'
+      ];
+
+      const marketHeaders = [
+        '코드', '시장명', '시장유형', '시도', '시군구', '도로명주소', '지번주소',
+        '정제도로명주소', '정제지번주소', '경위도X좌표', '경위도Y좌표', 'PNU', '시장코드',
+        '아케이드보유여부', '엘리베이터_에스컬레이터_보유여부', '고객지원센터보유여부',
+        '스프링쿨러보유여부', '화재감지기보유여부', '유아놀이방_보유여부', '종합콜센터_보유여부',
+        '고객휴게실_보유여부', '수유센터_보유여부', '물품보관함_보유여부', '자전거보관함_보유여부',
+        '체육시설_보유여부', '간이_도서관_보유여부', '쇼핑카트_보유여부', '외국인_안내센터_보유여부',
+        '고객동선통로_보유여부', '방송센터_보유여부', '문화교실_보유여부', '공동물류창고_보유여부',
+        '시장전용고객주차장_보유여부', '교육장_보유여부', '회의실_보유여부', '자동심장충격기_보유여부'
+      ];
+
+      // CSV 파일 생성 및 다운로드
+      const healthCSV = convertToCSV(healthData || [], healthHeaders);
+      const pathCSV = convertToCSV(pathData || [], pathHeaders);
+      const marketCSV = convertToCSV(marketData || [], marketHeaders);
+
+      // 통합 ZIP 파일을 만들기 위해 각각 개별 다운로드
+      const downloadCSV = (csvContent: string, filename: string) => {
+        const BOM = '\uFEFF'; // UTF-8 BOM for proper Korean character display
+        const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      };
+
+      // 각 테이블 개별 다운로드
+      downloadCSV(healthCSV, '건강정보.csv');
+      setTimeout(() => downloadCSV(pathCSV, '내주변산책로.csv'), 500);
+      setTimeout(() => downloadCSV(marketCSV, '전통시장현황.csv'), 1000);
+
+      console.log('CSV 파일 다운로드 완료:', {
+        건강정보: `${healthData?.length || 0}개 레코드`,
+        내주변산책로: `${pathData?.length || 0}개 레코드`,
+        전통시장현황: `${marketData?.length || 0}개 레코드`
+      });
+
+    } catch (error) {
+      console.error('CSV 익스포트 중 오류 발생:', error);
+      alert('CSV 파일 다운로드 중 오류가 발생했습니다.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div className="bg-white rounded-lg shadow p-6 mb-6">
       <div className="flex items-center justify-between">
@@ -293,16 +403,30 @@ const { paths, isLoading, error } = useRealPathData();
             📝 AI 프롬프트 다운로드 (v3 - Supabase 스키마 포함)
           </h3>
           <p className="text-gray-600 text-sm">
-            현재 앱의 모든 기능과 구조, 그리고 Supabase 데이터베이스 테이블 스키마까지 포함한 완전한 AI 프롬프트를 다운로드할 수 있습니다.
+            현재 앱의 모든 기능과 구조, 그리고 Supabase 데이터베이스 테이블 스키마까지 포함한 완전한 AI 프롬프트를 다운로드하거나 CSV 파일로 데이터를 익스포트할 수 있습니다.
           </p>
         </div>
-        <Button 
-          onClick={downloadPrompt}
-          className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
-        >
-          <Download className="h-4 w-4" />
-          프롬프트 다운로드
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button 
+            onClick={downloadPrompt}
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
+          >
+            <Download className="h-4 w-4" />
+            프롬프트 다운로드
+          </Button>
+          <Button 
+            onClick={exportSupabaseTables}
+            disabled={isExporting}
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+          >
+            {isExporting ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Database className="h-4 w-4" />
+            )}
+            {isExporting ? '익스포트 중...' : 'CSV 익스포트'}
+          </Button>
+        </div>
       </div>
     </div>
   );
