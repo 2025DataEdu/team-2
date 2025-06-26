@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import LoadingScreen from '@/components/LoadingScreen';
 import AppHeader from '@/components/AppHeader';
@@ -104,45 +105,61 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100">
-      <div className="container mx-auto py-8 px-4">
-        <AppHeader />
-        
-        <NavigationButtons 
-          currentStep={currentStep}
-          onResetToRecommendations={resetToRecommendations}
-          onResetToProfile={resetToProfile}
-        />
-        
-        <PromptDownloader />
-        
-        <InfoCards 
-          userProfile={userProfile}
-          onEditProfile={handleEditProfile}
-        />
-
-        {currentStep === 'recommendations' && userProfile && (
-          <div className="space-y-8">
-            <WalkingPathRecommendations 
-              userProfile={userProfile} 
-              onPathSelect={handlePathSelect}
-              userLocation={location.error ? undefined : location}
-              selectedDifficulties={selectedDifficulties}
-            />
-          </div>
-        )}
-
-        {currentStep === 'selected' && selectedPath && (
-          <SelectedPathDetails selectedPath={selectedPath} />
-        )}
-        
-        {/* 난이도 선택 버튼을 마이크 버튼 왼쪽으로 배치하고 겹치지 않도록 조정 */}
-        <div className="fixed bottom-8 right-8 flex items-center gap-3">
-          <DifficultyPopover 
-            selectedDifficulties={selectedDifficulties}
-            onDifficultyChange={setSelectedDifficulties}
+    <div className="min-h-screen relative">
+      {/* 배경 이미지 레이어 */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2432&q=80')`,
+          filter: 'blur(8px) brightness(0.3)',
+          transform: 'scale(1.1)'
+        }}
+      />
+      
+      {/* 오버레이 */}
+      <div className="absolute inset-0 bg-gradient-to-br from-green-900/80 via-green-800/70 to-green-700/80" />
+      
+      {/* 메인 콘텐츠 */}
+      <div className="relative z-10 min-h-screen">
+        <div className="container mx-auto py-8 px-4">
+          <AppHeader />
+          
+          <NavigationButtons 
+            currentStep={currentStep}
+            onResetToRecommendations={resetToRecommendations}
+            onResetToProfile={resetToProfile}
           />
-          <VoiceInterface />
+          
+          <PromptDownloader />
+          
+          <InfoCards 
+            userProfile={userProfile}
+            onEditProfile={handleEditProfile}
+          />
+
+          {currentStep === 'recommendations' && userProfile && (
+            <div className="space-y-8">
+              <WalkingPathRecommendations 
+                userProfile={userProfile} 
+                onPathSelect={handlePathSelect}
+                userLocation={location.error ? undefined : location}
+                selectedDifficulties={selectedDifficulties}
+              />
+            </div>
+          )}
+
+          {currentStep === 'selected' && selectedPath && (
+            <SelectedPathDetails selectedPath={selectedPath} />
+          )}
+          
+          {/* 난이도 선택 버튼을 마이크 버튼 왼쪽으로 배치하고 겹치지 않도록 조정 */}
+          <div className="fixed bottom-8 right-8 flex items-center gap-3">
+            <DifficultyPopover 
+              selectedDifficulties={selectedDifficulties}
+              onDifficultyChange={setSelectedDifficulties}
+            />
+            <VoiceInterface />
+          </div>
         </div>
       </div>
     </div>
