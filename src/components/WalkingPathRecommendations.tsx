@@ -121,19 +121,6 @@ const WalkingPathRecommendations = ({
 
       <AIAnalysisCard userProfile={userProfile} userLocation={userLocation} />
 
-      {/* 위치 정보 디버깅 표시 */}
-      {userLocation && (
-        <div className="bg-blue-50 p-3 rounded-lg border-l-4 border-blue-400">
-          <div className="text-sm font-body text-blue-800">
-            <strong className="font-accent font-semibold">📍 현재 분석 위치:</strong> {userLocation.address}
-            <br />
-            <strong className="font-accent font-semibold">좌표:</strong> {userLocation.latitude.toFixed(4)}, {userLocation.longitude.toFixed(4)}
-            <br />
-            <span className="text-xs text-blue-600">위치가 변경되면 추천 경로가 자동으로 업데이트됩니다.</span>
-          </div>
-        </div>
-      )}
-
       {/* 건강정보 기반 추천 속도 표시 */}
       {walkingSpeed && (
         <div className="bg-green-50 p-4 rounded-lg border-l-4 border-green-400">
