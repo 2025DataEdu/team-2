@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -21,6 +20,10 @@ export default {
 		extend: {
 			fontFamily: {
 				sans: ['Noto Sans KR', 'sans-serif'],
+				'heading': ['Playfair Display', 'serif'], // 메인 제목용 - 우아하고 강인한 느낌
+				'body': ['Inter', 'Noto Sans KR', 'sans-serif'], // 본문용 - 가독성 좋음
+				'accent': ['Poppins', 'sans-serif'], // 강조 텍스트용 - 현대적이고 친근함
+				'card': ['Montserrat', 'sans-serif'], // 카드 제목용 - 깔끔하고 전문적
 			},
 			colors: {
 				border: 'hsl(var(--border))',
