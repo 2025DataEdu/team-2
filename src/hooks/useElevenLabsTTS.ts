@@ -10,8 +10,8 @@ export const useElevenLabsTTS = () => {
 
   const generateSpeech = async (text: string, apiKey: string) => {
     try {
-      // 아이유와 비슷한 목소리 특성을 가진 음성 ID (여성, 부드러운 톤)
-      const voiceId = '9BWtsMINqrJLrRacOk9x'; // Aria voice - 부드럽고 따뜻한 여성 목소리
+      // 어린 여자아이 목소리에 가까운 Charlotte 사용
+      const voiceId = 'XB0fDUnXU5powFXDhCwa'; // Charlotte voice - 젊고 밝은 여성 목소리
       
       const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
         method: 'POST',
@@ -24,9 +24,9 @@ export const useElevenLabsTTS = () => {
           text: text,
           model_id: 'eleven_multilingual_v2',
           voice_settings: {
-            stability: 0.75, // 안정적인 목소리
-            similarity_boost: 0.85, // 자연스러운 느낌
-            style: 0.6, // 감정적 표현력
+            stability: 0.60, // 약간 불안정하게 해서 어린아이 느낌
+            similarity_boost: 0.90, // 자연스러운 느낌
+            style: 0.85, // 높은 감정적 표현력
             use_speaker_boost: true
           }
         })
@@ -49,8 +49,8 @@ export const useElevenLabsTTS = () => {
   const speakText = async (text: string, apiKey?: string) => {
     if (!apiKey) {
       toast({
-        title: "API 키 필요",
-        description: "ElevenLabs API 키를 설정해주세요.",
+        title: "API 키 필요해요!",
+        description: "ElevenLabs API 키를 설정해주세요~",
         variant: "destructive",
       });
       return;
@@ -61,8 +61,8 @@ export const useElevenLabsTTS = () => {
       setIsPaused(false);
       
       toast({
-        title: "🎤 아이유 목소리 생성 중...",
-        description: "아이유와 비슷한 목소리로 변환하고 있어요!",
+        title: "🎀 귀여운 목소리 만드는 중...",
+        description: "와! 진짜 귀여운 목소리로 바꿔줄게~!",
       });
 
       const audioUrl = await generateSpeech(text, apiKey);
@@ -78,8 +78,8 @@ export const useElevenLabsTTS = () => {
 
       audio.onplay = () => {
         toast({
-          title: "🎵 아이유 목소리 재생",
-          description: "아이유와 비슷한 목소리로 들려드려요!",
+          title: "🎵 에헤헷! 들어봐~",
+          description: "귀여운 목소리로 말해줄게!",
         });
       };
 
@@ -88,8 +88,8 @@ export const useElevenLabsTTS = () => {
         setIsPaused(false);
         URL.revokeObjectURL(audioUrl);
         toast({
-          title: "✨ 재생 완료",
-          description: "음성 재생이 완료되었어요!",
+          title: "✨ 다 들었어?",
+          description: "어땠어? 귀여웠지? 히히~",
         });
       };
 
@@ -97,8 +97,8 @@ export const useElevenLabsTTS = () => {
         setIsPlaying(false);
         setIsPaused(false);
         toast({
-          title: "재생 오류",
-          description: "음성 재생 중 오류가 발생했어요.",
+          title: "앗! 오류가 났어",
+          description: "다시 해볼게! 걱정 마~",
           variant: "destructive",
         });
       };
@@ -108,8 +108,8 @@ export const useElevenLabsTTS = () => {
       setIsPlaying(false);
       setIsPaused(false);
       toast({
-        title: "음성 생성 실패",
-        description: "아이유 목소리 생성에 실패했어요. API 키를 확인해주세요.",
+        title: "음성 만들기 실패했어ㅠㅠ",
+        description: "API 키가 맞는지 확인해줘! 내가 도와줄게~",
         variant: "destructive",
       });
     }
@@ -121,15 +121,15 @@ export const useElevenLabsTTS = () => {
         audioRef.current.play();
         setIsPaused(false);
         toast({
-          title: "🎵 재생 재개",
-          description: "아이유 목소리 재생을 다시 시작해요!",
+          title: "🎵 다시 들어봐!",
+          description: "계속 말해줄게~!",
         });
       } else {
         audioRef.current.pause();
         setIsPaused(true);
         toast({
-          title: "⏸️ 재생 일시정지",
-          description: "아이유 목소리 재생을 잠시 멈췄어요.",
+          title: "⏸️ 잠깐 멈춰!",
+          description: "기다려줄게~ 언제든 다시 눌러!",
         });
       }
     }
@@ -142,8 +142,8 @@ export const useElevenLabsTTS = () => {
       setIsPlaying(false);
       setIsPaused(false);
       toast({
-        title: "🛑 재생 중지",
-        description: "아이유 목소리 재생을 중지했어요.",
+        title: "🛑 그만 말할게!",
+        description: "또 들려줄 거 있으면 말해줘~",
       });
     }
   };

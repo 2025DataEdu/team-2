@@ -1,3 +1,4 @@
+
 import { useState, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useElevenLabsTTS } from './useElevenLabsTTS';
@@ -17,8 +18,8 @@ export const useSpeechSynthesis = () => {
     setElevenLabsApiKey(apiKey);
     setUseElevenLabs(true);
     toast({
-      title: "🎤 아이유 목소리 활성화",
-      description: "ElevenLabs API가 설정되었어요! 이제 아이유 목소리를 사용할 수 있어요.",
+      title: "🎀 와! 귀여운 목소리 준비됐어!",
+      description: "이제 진짜 귀여운 목소리로 말해줄 수 있어! 에헤헷~",
     });
   };
 
@@ -26,31 +27,33 @@ export const useSpeechSynthesis = () => {
   const useBrowserTTS = () => {
     setUseElevenLabs(false);
     toast({
-      title: "기본 음성으로 변경",
-      description: "브라우저 기본 음성으로 변경되었어요.",
+      title: "기본 목소리로 바꿨어!",
+      description: "그래도 귀엽게 말해줄게~ 걱정 마!",
     });
   };
 
   const getOptimalVoice = () => {
     const voices = speechSynthesis.getVoices();
     
-    // 진짜 귀여운 여성 목소리 우선순위 (더 세밀한 필터링)
+    // 어린 여자아이 목소리에 가까운 순서대로 정렬
     const preferredVoices = [
-      // 한국어 여성 목소리들
+      // 한국어 여성 목소리들 (높은 톤)
       'Microsoft Heami',
       'Microsoft SunHi', 
       'Google 한국의',
       'Yuna',
-      // 일본어 여성 목소리들 (더 귀여운 톤)
+      // 일본어 여성 목소리들 (어린 느낌)
       'Kyoko',
       'Otoya',
       'Hattori',
-      // 영어 여성 목소리들 중 높은 톤
+      // 영어 여성 목소리들 중 어린 톤
       'Samantha',
       'Victoria',
+      'Alice',
       'Princess',
       'Kathy',
-      'Zoe'
+      'Zoe',
+      'Karen'
     ];
 
     // 우선순위에 따라 목소리 찾기
@@ -89,10 +92,59 @@ export const useSpeechSynthesis = () => {
     return voices[0]; // 기본 목소리
   };
 
+  const transformToChildlikeText = (text: string) => {
+    // 7살 여자아이 말투로 변환
+    let childText = text
+      // 존댓말을 반말로 바꾸기
+      .replace(/습니다/g, '어!')
+      .replace(/입니다/g, '야!')
+      .replace(/해요/g, '해!')
+      .replace(/이에요/g, '이야!')
+      .replace(/예요/g, '야!')
+      .replace(/니다/g, '어!')
+      // 감탄사 추가
+      .replace(/안녕하세요/g, '안녕! 반가워~')
+      .replace(/추천해드려요/g, '추천해줄게! 정말 좋아~')
+      .replace(/확인하실 수 있어요/g, '확인해봐! 재밌을 거야~')
+      .replace(/산책 되세요/g, '산책해! 조심하구~')
+      .replace(/소요시간은/g, '걸리는 시간은')
+      .replace(/칼로리입니다/g, '칼로리야! 대단하지?')
+      .replace(/편의시설로는/g, '편의시설은')
+      .replace(/맛집으로는/g, '맛집은')
+      // 귀여운 표현 추가
+      .replace(/선택된/g, '골라진')
+      .replace(/산책로:/g, '산책길이야!')
+      .replace(/이유:/g, '왜냐하면~')
+      .replace(/거리는/g, '길이는')
+      .replace(/예상/g, '아마')
+      .replace(/주변/g, '근처')
+      .replace(/있습니다/g, '있어!')
+      .replace(/추천합니다/g, '추천해! 맛있을 거야~');
+
+    // 문장 끝에 귀여운 표현 추가
+    childText = childText
+      .replace(/([.!?])\s*([가-힣])/g, '$1 와! $2')
+      .replace(/어!([가-힣])/g, '어~ $1')
+      .replace(/야!([가-힣])/g, '야! 그리고 $1');
+
+    // 시작과 끝에 귀여운 인사 추가
+    if (!childText.includes('안녕')) {
+      childText = '안녕! ' + childText;
+    }
+    if (!childText.includes('즐거운') && !childText.includes('재밌게')) {
+      childText = childText + ' 재밌게 해봐! 에헤헷~';
+    }
+
+    return childText;
+  };
+
   const speakText = async (text: string) => {
+    // 7살 여자아이 말투로 변환
+    const childlikeText = transformToChildlikeText(text);
+
     // ElevenLabs 사용 시
     if (useElevenLabs && elevenLabsApiKey) {
-      await elevenLabsTTS.speakText(text, elevenLabsApiKey);
+      await elevenLabsTTS.speakText(childlikeText, elevenLabsApiKey);
       setIsPlaying(elevenLabsTTS.isPlaying);
       setIsPaused(elevenLabsTTS.isPaused);
       return;
@@ -103,7 +155,7 @@ export const useSpeechSynthesis = () => {
       // 기존 음성이 재생 중이면 중지
       speechSynthesis.cancel();
       
-      const utterance = new SpeechSynthesisUtterance(text);
+      const utterance = new SpeechSynthesisUtterance(childlikeText);
       
       // 목소리 로드 대기 후 설정
       const setVoiceAndSpeak = () => {
@@ -113,16 +165,16 @@ export const useSpeechSynthesis = () => {
         }
         
         utterance.lang = 'ko-KR';
-        utterance.rate = 0.8; // 더 천천히 (귀여운 느낌)
-        utterance.pitch = 1.5; // 더 높은 톤 (진짜 귀여운 목소리)
+        utterance.rate = 0.9; // 약간 빠르게 (어린아이 느낌)
+        utterance.pitch = 1.8; // 매우 높은 톤 (7살 여자아이)
         utterance.volume = 1;
 
         utterance.onstart = () => {
           setIsPlaying(true);
           setIsPaused(false);
           toast({
-            title: "🎀 귀여운 음성 재생 시작",
-            description: "진짜 귀여운 목소리로 들려드려요!",
+            title: "🎀 에헤헷! 들어봐~",
+            description: "귀여운 목소리로 말해줄게!",
           });
         };
 
@@ -131,8 +183,8 @@ export const useSpeechSynthesis = () => {
           setIsPaused(false);
           utteranceRef.current = null;
           toast({
-            title: "🌸 음성 재생 완료",
-            description: "음성 재생이 완료되었어요!",
+            title: "🌸 다 말했어!",
+            description: "어땠어? 귀여웠지? 히히~",
           });
         };
 
@@ -142,8 +194,8 @@ export const useSpeechSynthesis = () => {
           setIsPaused(false);
           utteranceRef.current = null;
           toast({
-            title: "😅 음성 재생 오류",
-            description: "음성 재생 중 오류가 발생했어요.",
+            title: "😅 앗! 뭔가 잘못됐어",
+            description: "다시 해볼게! 걱정 마~",
             variant: "destructive",
           });
         };
@@ -162,8 +214,8 @@ export const useSpeechSynthesis = () => {
       }
     } else {
       toast({
-        title: "음성 재생 미지원",
-        description: "이 브라우저는 음성 재생을 지원하지 않습니다.",
+        title: "음성이 안 돼ㅠㅠ",
+        description: "이 브라우저는 목소리가 안 나와~",
         variant: "destructive",
       });
     }
@@ -182,15 +234,15 @@ export const useSpeechSynthesis = () => {
         speechSynthesis.resume();
         setIsPaused(false);
         toast({
-          title: "🎵 음성 재생 재개",
-          description: "음성 재생을 다시 시작해요!",
+          title: "🎵 다시 들어봐!",
+          description: "계속 말해줄게~",
         });
       } else {
         speechSynthesis.pause();
         setIsPaused(true);
         toast({
-          title: "⏸️ 음성 재생 일시정지",
-          description: "음성 재생을 잠시 멈췄어요.",
+          title: "⏸️ 잠깐 멈춰!",
+          description: "기다려줄게~ 언제든 다시 눌러!",
         });
       }
     }
@@ -210,8 +262,8 @@ export const useSpeechSynthesis = () => {
       setIsPaused(false);
       utteranceRef.current = null;
       toast({
-        title: "🛑 음성 재생 중지",
-        description: "음성 재생을 중지했어요.",
+        title: "🛑 그만 말할게!",
+        description: "또 들려줄 거 있으면 말해줘~",
       });
     }
   };

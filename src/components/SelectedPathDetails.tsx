@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
 import PathBasicInfo from './PathBasicInfo';
@@ -37,20 +38,20 @@ const SelectedPathDetails = ({ selectedPath }: SelectedPathDetailsProps) => {
 
   const handleSpeakPathDescription = () => {
     const textToSpeak = `
-      선택된 산책로: ${selectedPath.name}.
+      골라진 산책길: ${selectedPath.name}!
       ${selectedPath.description}
       
-      거리는 ${selectedPath.distance.toFixed(2)}킬로미터이고, 
-      예상 소요시간은 ${selectedPath.duration.toFixed(0)}분입니다.
-      예상 칼로리 소모량은 ${(selectedPath.distance * 50).toFixed(0)}칼로리입니다.
+      길이는 ${selectedPath.distance.toFixed(2)}킬로미터야! 
+      걸리는 시간은 ${selectedPath.duration.toFixed(0)}분 정도야!
+      칼로리는 ${(selectedPath.distance * 50).toFixed(0)}칼로리나 빠져! 대단하지?
       
-      선택 이유: ${selectedPath.recommendationReason}
+      왜 골랐냐면~ ${selectedPath.recommendationReason}
       
-      주변 편의시설로는 ${selectedPath.amenities.join(', ')}이 있습니다.
+      근처 편의시설은 ${selectedPath.amenities.join(', ')}가 있어!
       
-      근처 맛집으로는 ${selectedPath.nearbyFood.join(', ')}을 추천합니다.
+      맛집으로는 ${selectedPath.nearbyFood.join(', ')}를 추천할게! 맛있을 거야~
       
-      즐거운 산책 되세요!
+      재밌게 산책하고 물 많이 마셔! 에헤헷~
     `;
     
     speakText(textToSpeak);
@@ -85,7 +86,7 @@ const SelectedPathDetails = ({ selectedPath }: SelectedPathDetailsProps) => {
         
         <div className="mt-6 p-4 bg-green-50 rounded-lg">
           <p className="text-green-800 text-center">
-            🌟 즐거운 산책 되세요! 안전한 산책을 위해 충분한 수분 섭취를 잊지 마세요.
+            🌟 재밌게 산책해! 물 많이 마시는 거 잊지 마~ 에헤헷!
           </p>
         </div>
       </div>

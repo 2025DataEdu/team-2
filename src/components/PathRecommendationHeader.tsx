@@ -27,11 +27,11 @@ const PathRecommendationHeader = ({
 
   const handleSpeakRecommendationInfo = () => {
     const textToSpeak = `
-      안녕하세요! AI 맞춤형 산책로 추천 서비스예요!
-      개인의 건강 상태와 실시간 환경 정보를 분석해서 
-      가장 적합한 산책로를 추천해드려요.
-      원하는 산책로를 선택하시면 상세 정보를 확인하실 수 있어요!
-      즐거운 산책 되세요!
+      안녕! 나는 AI 산책로 추천 서비스야!
+      너의 건강 상태랑 지금 날씨를 보고서 
+      제일 좋은 산책길을 골라줄게!
+      원하는 산책길을 누르면 자세한 이야기를 들을 수 있어!
+      재밌게 산책하자! 에헤헷~
     `;
     
     speakText(textToSpeak);

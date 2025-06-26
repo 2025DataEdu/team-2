@@ -32,7 +32,7 @@ const VoiceSettings = ({ onSetApiKey, onUseBrowserTTS, useElevenLabs }: VoiceSet
         className="flex items-center gap-2"
       >
         <Settings className="h-4 w-4" />
-        음성 설정
+        목소리 설정
       </Button>
       
       {showSettings && (
@@ -40,10 +40,10 @@ const VoiceSettings = ({ onSetApiKey, onUseBrowserTTS, useElevenLabs }: VoiceSet
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Mic className="h-5 w-5" />
-              음성 설정
+              목소리 설정
             </CardTitle>
             <CardDescription>
-              아이유 목소리를 사용하려면 ElevenLabs API 키가 필요해요
+              더 귀여운 목소리를 쓰려면 ElevenLabs API 키가 필요해요!
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -53,13 +53,13 @@ const VoiceSettings = ({ onSetApiKey, onUseBrowserTTS, useElevenLabs }: VoiceSet
                 <Input
                   id="apiKey"
                   type="password"
-                  placeholder="API 키를 입력하세요"
+                  placeholder="API 키를 입력해주세요~"
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
                 />
               </div>
               <Button type="submit" className="w-full">
-                🎤 아이유 목소리 활성화
+                🎀 귀여운 목소리 켜기!
               </Button>
             </form>
             
@@ -69,13 +69,13 @@ const VoiceSettings = ({ onSetApiKey, onUseBrowserTTS, useElevenLabs }: VoiceSet
                 variant="outline" 
                 className="w-full"
               >
-                기본 음성 사용
+                기본 목소리 쓰기
               </Button>
             </div>
             
             {useElevenLabs && (
               <div className="text-sm text-green-600 text-center">
-                ✅ 아이유 목소리 활성화됨
+                ✅ 귀여운 목소리 준비 완료! 에헤헷~
               </div>
             )}
           </CardContent>

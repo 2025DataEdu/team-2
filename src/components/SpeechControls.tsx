@@ -41,12 +41,12 @@ const SpeechControls = ({
           variant="outline"
           className={`flex items-center gap-2 ${
             useElevenLabs 
-              ? 'bg-purple-50 hover:bg-purple-100 border-purple-300'
-              : 'bg-pink-50 hover:bg-pink-100 border-pink-300'
+              ? 'bg-pink-50 hover:bg-pink-100 border-pink-300'
+              : 'bg-purple-50 hover:bg-purple-100 border-purple-300'
           }`}
         >
-          <Volume2 className={`h-4 w-4 ${useElevenLabs ? 'text-purple-600' : 'text-pink-600'}`} />
-          {useElevenLabs ? '🎤 아이유 목소리로 듣기' : '🎀 귀여운 목소리로 듣기'}
+          <Volume2 className={`h-4 w-4 ${useElevenLabs ? 'text-pink-600' : 'text-purple-600'}`} />
+          {useElevenLabs ? '🎀 귀여운 목소리로 듣기' : '🌸 예쁜 목소리로 듣기'}
         </Button>
       ) : (
         <>
@@ -58,12 +58,12 @@ const SpeechControls = ({
             {isPaused ? (
               <>
                 <Play className="h-4 w-4 text-yellow-600" />
-                재개
+                다시 들어!
               </>
             ) : (
               <>
                 <Pause className="h-4 w-4 text-yellow-600" />
-                일시정지
+                잠깐 멈춰!
               </>
             )}
           </Button>
@@ -72,7 +72,7 @@ const SpeechControls = ({
             variant="outline"
             className="flex items-center gap-2 bg-red-50 hover:bg-red-100 border-red-300"
           >
-            중지
+            그만할래!
           </Button>
         </>
       )}
