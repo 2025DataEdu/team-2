@@ -1,5 +1,4 @@
-
-import React, { useEffect } from 'react';
+import React from 'react';
 import PathRecommendationHeader from './PathRecommendationHeader';
 import AIAnalysisCard from './AIAnalysisCard';
 import AIRecommendedPathGrid from './AIRecommendedPathGrid';
@@ -64,18 +63,7 @@ const WalkingPathRecommendations = ({
   // 건강정보 기반 걷기 속도 계산
   const walkingSpeed = healthProfile ? getWalkingSpeed(healthProfile) : null;
 
-  // 위치 정보가 변경될 때마다 추천 새로고침 - 강제로 generateRecommendations 호출
-  useEffect(() => {
-    if (userLocation && userLocation.latitude && userLocation.longitude) {
-      console.log('위치 정보 변경됨, 산책로 추천 새로고침:', userLocation);
-      // setTimeout을 사용해서 비동기적으로 호출하여 무한 루프 방지
-      const timer = setTimeout(() => {
-        generateRecommendations();
-      }, 100);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [userLocation?.latitude, userLocation?.longitude, generateRecommendations]);
+  // 중복된 useEffect 제거 - useAIRecommendedPaths 훅에서 처리함
   
   return (
     <div className="w-full space-y-6">
@@ -99,7 +87,7 @@ const WalkingPathRecommendations = ({
       {/* AI 추천 경로 */}
       <div>
         <h3 className="text-xl font-card font-semibold mb-4 text-zinc-50">
-          🤖 AI 맞춤 추천 경로
+          🤖 AI 맞춤 추천 경로 {userLocation && `(${userLocation.address} 기준)`}
         </h3>
         <AIRecommendedPathGrid 
           paths={recommendedPaths} 
