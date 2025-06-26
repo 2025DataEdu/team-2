@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -32,6 +32,8 @@ interface RealPathCardProps {
 }
 
 const RealPathCard = ({ path, onSelect, onCardClick }: RealPathCardProps) => {
+  const [isModalOpening, setIsModalOpening] = useState(false);
+
   const getDifficultyColor = (level: string | null) => {
     if (!level) return 'bg-gray-100 text-gray-800';
     const levelLower = level.toLowerCase();
@@ -152,7 +154,10 @@ const RealPathCard = ({ path, onSelect, onCardClick }: RealPathCardProps) => {
   };
 
   const handleCardClick = () => {
+    setIsModalOpening(true);
     onCardClick();
+    // 모달이 완전히 열린 후 상태 초기화
+    setTimeout(() => setIsModalOpening(false), 500);
   };
 
   const handleSelectClick = (e: React.MouseEvent) => {
@@ -201,6 +206,7 @@ const RealPathCard = ({ path, onSelect, onCardClick }: RealPathCardProps) => {
               longitude={path.Longitude} 
               height="180px"
               className="w-full"
+              isHidden={isModalOpening}
               walkingPath={{
                 name: path.CoursName || path.CorusDetailName || '산책로',
                 distance: path.CoursDetailLength || parseFloat(path.CoursLength || '0') || 2.5,

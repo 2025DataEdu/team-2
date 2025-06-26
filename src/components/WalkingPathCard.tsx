@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -31,6 +31,8 @@ interface WalkingPathCardProps {
 }
 
 const WalkingPathCard = ({ path, onSelect, onCardClick, walkingSpeed }: WalkingPathCardProps) => {
+  const [isModalOpening, setIsModalOpening] = useState(false);
+
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case 'easy': return 'bg-green-100 text-green-800';
@@ -50,7 +52,10 @@ const WalkingPathCard = ({ path, onSelect, onCardClick, walkingSpeed }: WalkingP
   };
 
   const handleCardClick = () => {
+    setIsModalOpening(true);
     onCardClick(path);
+    // 모달이 완전히 열린 후 상태 초기화
+    setTimeout(() => setIsModalOpening(false), 500);
   };
 
   const handleSelectClick = (e: React.MouseEvent) => {
@@ -177,7 +182,7 @@ const WalkingPathCard = ({ path, onSelect, onCardClick, walkingSpeed }: WalkingP
           </div>
         )}
 
-        {/* 산책로 경로가 표시되는 지도 */}
+        {/* 산책로 경로가 표시되는 지도 - 모달이 열릴 때 숨김 */}
         {originalData?.Latitude && originalData?.Longitude && (
           <div className="mb-4">
             <div className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
@@ -189,6 +194,7 @@ const WalkingPathCard = ({ path, onSelect, onCardClick, walkingSpeed }: WalkingP
               longitude={originalData.Longitude} 
               height="180px"
               className="w-full"
+              isHidden={isModalOpening}
               walkingPath={{
                 name: path.name,
                 distance: path.distance,

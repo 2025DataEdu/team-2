@@ -15,69 +15,85 @@ interface SmallMapProps {
     distance: number;
     coordinates?: [number, number][];
   };
+  isHidden?: boolean; // 맵을 숨길지 여부
 }
 
-const SmallMap = ({ latitude, longitude, className = '', height = '200px', walkingPath }: SmallMapProps) => {
+const SmallMap = ({ latitude, longitude, className = '', height = '200px', walkingPath, isHidden = false }: SmallMapProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
 
+  // 맵 정리 함수
+  const cleanupMap = () => {
+    if (mapInstanceRef.current) {
+      try {
+        mapInstanceRef.current.off();
+        mapInstanceRef.current.remove();
+      } catch (error) {
+        console.log('Map cleanup error:', error);
+      } finally {
+        mapInstanceRef.current = null;
+      }
+    }
+    
+    if (mapRef.current) {
+      mapRef.current.innerHTML = '';
+    }
+  };
+
   useEffect(() => {
-    if (!mapRef.current || !latitude || !longitude) return;
+    if (!mapRef.current || !latitude || !longitude || isHidden) {
+      cleanupMap();
+      return;
+    }
 
     // Leaflet 아이콘 초기화
     initializeLeafletIcons();
 
-    // 기존 맵이 있으면 완전히 제거
-    if (mapInstanceRef.current) {
-      mapInstanceRef.current.off();
-      mapInstanceRef.current.remove();
-      mapInstanceRef.current = null;
-    }
+    // 기존 맵 완전히 정리
+    cleanupMap();
 
-    // 맵 컨테이너 내용 정리
-    if (mapRef.current) {
-      mapRef.current.innerHTML = '';
-    }
+    // 짧은 지연 후 새 맵 생성 (DOM 정리 시간 확보)
+    const createMapTimeout = setTimeout(() => {
+      if (!mapRef.current || isHidden) return;
 
-    // 새 맵 생성
-    const map = L.map(mapRef.current, {
-      zoomControl: false,
-      attributionControl: false,
-      dragging: true,
-      scrollWheelZoom: true,
-      doubleClickZoom: true,
-      touchZoom: true,
-    }).setView([latitude, longitude], 14);
+      try {
+        // 새 맵 생성
+        const map = L.map(mapRef.current, {
+          zoomControl: false,
+          attributionControl: false,
+          dragging: true,
+          scrollWheelZoom: true,
+          doubleClickZoom: true,
+          touchZoom: true,
+        }).setView([latitude, longitude], 14);
 
-    // OpenStreetMap 타일 레이어 추가
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
+        // OpenStreetMap 타일 레이어 추가
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
 
-    // 산책로 경로 생성 및 표시
-    if (walkingPath) {
-      renderWalkingPath(map, latitude, longitude, walkingPath);
-    }
+        // 산책로 경로 생성 및 표시
+        if (walkingPath) {
+          renderWalkingPath(map, latitude, longitude, walkingPath);
+        }
 
-    mapInstanceRef.current = map;
+        mapInstanceRef.current = map;
+      } catch (error) {
+        console.error('Map creation error:', error);
+      }
+    }, 50);
 
     return () => {
-      if (mapInstanceRef.current) {
-        mapInstanceRef.current.off();
-        mapInstanceRef.current.remove();
-        mapInstanceRef.current = null;
-      }
-      if (mapRef.current) {
-        mapRef.current.innerHTML = '';
-      }
+      clearTimeout(createMapTimeout);
+      cleanupMap();
     };
-  }, [latitude, longitude, walkingPath]);
+  }, [latitude, longitude, walkingPath, isHidden]);
 
-  if (!latitude || !longitude) {
+  if (!latitude || !longitude || isHidden) {
     return (
       <div 
         className={`bg-gray-100 flex items-center justify-center rounded-lg ${className}`}
-        style={{ height }}
+        style={{ height, display: isHidden ? 'none' : 'flex' }}
       >
         <p className="text-gray-500 text-sm">위치 정보 없음</p>
       </div>
@@ -88,7 +104,7 @@ const SmallMap = ({ latitude, longitude, className = '', height = '200px', walki
     <div 
       ref={mapRef} 
       className={`rounded-lg border border-gray-200 ${className}`}
-      style={{ height }}
+      style={{ height, display: isHidden ? 'none' : 'block' }}
     />
   );
 };
