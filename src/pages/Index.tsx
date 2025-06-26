@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import LoadingScreen from '@/components/LoadingScreen';
 import AppHeader from '@/components/AppHeader';
@@ -8,6 +7,7 @@ import SelectedPathDetails from '@/components/SelectedPathDetails';
 import WalkingPathRecommendations from '@/components/WalkingPathRecommendations';
 import VoiceInterface from '@/components/VoiceInterface';
 import DifficultyPopover from '@/components/DifficultyPopover';
+import PromptDownloader from '@/components/PromptDownloader';
 import { useLocation } from '@/hooks/useLocation';
 
 interface UserProfile {
@@ -113,6 +113,8 @@ const Index = () => {
           onResetToRecommendations={resetToRecommendations}
           onResetToProfile={resetToProfile}
         />
+        
+        <PromptDownloader />
         
         <InfoCards 
           userProfile={userProfile}
