@@ -15,6 +15,7 @@ interface HealthProfile {
   '총콜레스테롤(mg/dL)': number | null;
   '진단 질병': string | null;
   '운동 빈도(회/주)': string | null;
+  '주당 운동 시간(시간)': number | null;
   '음주 빈도(회/주)': string | null;
   '흡연 여부': string | null;
   혈액형: string | null;

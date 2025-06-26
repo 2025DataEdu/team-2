@@ -106,6 +106,7 @@ export type Database = {
           "음주 빈도(회/주)": string | null
           이름: string | null
           "이완기 혈압": number | null
+          "주당 운동 시간(시간)": number | null
           "진단 질병": string | null
           "체중(kg)": number | null
           "총콜레스테롤(mg/dL)": number | null
@@ -123,6 +124,7 @@ export type Database = {
           "음주 빈도(회/주)"?: string | null
           이름?: string | null
           "이완기 혈압"?: number | null
+          "주당 운동 시간(시간)"?: number | null
           "진단 질병"?: string | null
           "체중(kg)"?: number | null
           "총콜레스테롤(mg/dL)"?: number | null
@@ -140,6 +142,7 @@ export type Database = {
           "음주 빈도(회/주)"?: string | null
           이름?: string | null
           "이완기 혈압"?: number | null
+          "주당 운동 시간(시간)"?: number | null
           "진단 질병"?: string | null
           "체중(kg)"?: number | null
           "총콜레스테롤(mg/dL)"?: number | null
