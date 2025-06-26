@@ -106,18 +106,18 @@ const Index = () => {
 
   return (
     <div className="min-h-screen relative">
-      {/* 배경 이미지 레이어 */}
+      {/* 배경 이미지 레이어 - 러너 이미지로 변경하고 더 선명하게 */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')`,
-          filter: 'blur(3px) brightness(0.8)',
-          transform: 'scale(1.05)'
+          backgroundImage: `url('https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80')`,
+          filter: 'brightness(1.1) contrast(1.1)',
+          transform: 'scale(1.02)'
         }}
       />
       
-      {/* 오버레이 */}
-      <div className="absolute inset-0 bg-gradient-to-br from-green-500/25 via-green-400/20 to-green-300/25" />
+      {/* 오버레이 - 훨씬 더 투명하게 */}
+      <div className="absolute inset-0 bg-gradient-to-br from-green-500/15 via-green-400/10 to-green-300/15" />
       
       {/* 메인 콘텐츠 */}
       <div className="relative z-10 min-h-screen">
