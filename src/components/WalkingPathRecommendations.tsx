@@ -1,4 +1,5 @@
-import React from 'react';
+
+import React, { useEffect } from 'react';
 import PathRecommendationHeader from './PathRecommendationHeader';
 import AIAnalysisCard from './AIAnalysisCard';
 import AIRecommendedPathGrid from './AIRecommendedPathGrid';
@@ -62,12 +63,39 @@ const WalkingPathRecommendations = ({
 
   // 건강정보 기반 걷기 속도 계산
   const walkingSpeed = healthProfile ? getWalkingSpeed(healthProfile) : null;
+
+  // 위치 변경 감지 및 강제 새로고침
+  useEffect(() => {
+    console.log('WalkingPathRecommendations: 위치 변경 감지됨', {
+      userLocation,
+      timestamp: new Date().toISOString()
+    });
+    
+    // 위치 정보가 있을 때만 새로고침
+    if (userLocation && userLocation.latitude && userLocation.longitude) {
+      console.log('위치 기반 추천 경로 강제 새로고침 실행');
+      generateRecommendations();
+    }
+  }, [userLocation?.latitude, userLocation?.longitude, userLocation?.address, generateRecommendations]);
   
   return (
     <div className="w-full space-y-6">
       <PathRecommendationHeader onRefresh={generateRecommendations} isLoading={isLoading} />
 
       <AIAnalysisCard userProfile={userProfile} userLocation={userLocation} />
+
+      {/* 위치 정보 디버깅 표시 */}
+      {userLocation && (
+        <div className="bg-blue-50 p-3 rounded-lg border-l-4 border-blue-400">
+          <div className="text-sm font-body text-blue-800">
+            <strong className="font-accent font-semibold">📍 현재 분석 위치:</strong> {userLocation.address}
+            <br />
+            <strong className="font-accent font-semibold">좌표:</strong> {userLocation.latitude.toFixed(4)}, {userLocation.longitude.toFixed(4)}
+            <br />
+            <span className="text-xs text-blue-600">위치가 변경되면 추천 경로가 자동으로 업데이트됩니다.</span>
+          </div>
+        </div>
+      )}
 
       {/* 건강정보 기반 추천 속도 표시 */}
       {walkingSpeed && (
@@ -85,7 +113,7 @@ const WalkingPathRecommendations = ({
       {/* AI 추천 경로 */}
       <div>
         <h3 className="text-xl font-card font-semibold mb-4 text-zinc-50">
-          🤖 AI 맞춤 추천 경로
+          🤖 AI 맞춤 추천 경로 {recommendedPaths.length > 0 && `(${recommendedPaths.length}개)`}
         </h3>
         <AIRecommendedPathGrid 
           paths={recommendedPaths} 
