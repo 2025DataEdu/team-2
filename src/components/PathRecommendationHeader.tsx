@@ -15,27 +15,72 @@ const PathRecommendationHeader = ({
 }: PathRecommendationHeaderProps) => {
   const { toast } = useToast();
 
+  const getOptimalVoice = () => {
+    const voices = speechSynthesis.getVoices();
+    
+    // 한국어 여성 목소리 우선순위
+    const preferredVoices = [
+      'Google 한국의', // Google Korean female
+      'Microsoft Heami - Korean (Korea)',
+      'Microsoft SunHi - Korean (Korea)', 
+      'Yuna', // Apple Korean female
+      'Kyoko', // Japanese female (fallback)
+      'Samantha', // English female (fallback)
+    ];
+
+    // 우선순위에 따라 목소리 찾기
+    for (const preferredName of preferredVoices) {
+      const voice = voices.find(v => 
+        v.name.includes(preferredName) || 
+        (v.lang.includes('ko') && v.name.toLowerCase().includes('female'))
+      );
+      if (voice) return voice;
+    }
+
+    // 한국어 목소리 중 아무거나
+    const koreanVoice = voices.find(v => v.lang.startsWith('ko'));
+    if (koreanVoice) return koreanVoice;
+
+    // 여성 목소리 중 아무거나
+    const femaleVoice = voices.find(v => 
+      v.name.toLowerCase().includes('female') || 
+      v.name.toLowerCase().includes('woman') ||
+      v.name.toLowerCase().includes('girl')
+    );
+    if (femaleVoice) return femaleVoice;
+
+    return voices[0]; // 기본 목소리
+  };
+
   const speakRecommendationInfo = () => {
     if ('speechSynthesis' in window) {
       speechSynthesis.cancel();
       
       const textToSpeak = `
-        AI 맞춤형 산책로 추천 서비스입니다.
-        개인의 건강 상태와 실시간 환경 정보를 분석하여 
-        가장 적합한 산책로를 추천해드립니다.
-        원하는 산책로를 선택하시면 상세 정보를 확인하실 수 있습니다.
+        안녕하세요! AI 맞춤형 산책로 추천 서비스예요!
+        개인의 건강 상태와 실시간 환경 정보를 분석해서 
+        가장 적합한 산책로를 추천해드려요.
+        원하는 산책로를 선택하시면 상세 정보를 확인하실 수 있어요!
+        즐거운 산책 되세요!
       `;
 
       const utterance = new SpeechSynthesisUtterance(textToSpeak);
+      
+      // 귀여운 여자아이 목소리 설정
+      const optimalVoice = getOptimalVoice();
+      if (optimalVoice) {
+        utterance.voice = optimalVoice;
+      }
+      
       utterance.lang = 'ko-KR';
-      utterance.rate = 0.8;
-      utterance.pitch = 1;
+      utterance.rate = 0.9; // 조금 더 빠르게 (귀여운 느낌)
+      utterance.pitch = 1.2; // 높은 톤 (귀여운 목소리)
       utterance.volume = 1;
 
       utterance.onstart = () => {
         toast({
-          title: "음성 안내 시작",
-          description: "서비스 소개를 음성으로 들려드립니다.",
+          title: "🎀 귀여운 음성 안내 시작",
+          description: "서비스 소개를 귀여운 목소리로 들려드려요!",
         });
       };
 
@@ -58,10 +103,10 @@ const PathRecommendationHeader = ({
         <Button
           onClick={speakRecommendationInfo}
           variant="outline"
-          className="flex items-center gap-2 font-accent bg-blue-50 hover:bg-blue-100 border-blue-300"
+          className="flex items-center gap-2 font-accent bg-pink-50 hover:bg-pink-100 border-pink-300"
         >
-          <Volume2 className="h-4 w-4 text-blue-600" />
-          음성 안내
+          <Volume2 className="h-4 w-4 text-pink-600" />
+          🎀 귀여운 음성 안내
         </Button>
         <Button 
           onClick={onRefresh} 
