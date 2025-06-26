@@ -169,20 +169,24 @@ const SmallMap = ({ latitude, longitude, className = '', height = '200px', walki
         L.marker(currPoint, { icon: arrowIcon }).addTo(map);
       }
 
-      // 경로 정보 표시
-      const pathInfo = L.control({ position: 'topright' });
-      pathInfo.onAdd = function() {
-        const div = L.DomUtil.create('div', 'path-info');
-        div.innerHTML = `
-          <div style="background: white; padding: 8px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); font-size: 12px;">
-            <div style="font-weight: bold; color: #1f2937; margin-bottom: 4px;">🚶‍♂️ ${walkingPath.name}</div>
-            <div style="color: #6b7280;">📏 ${walkingPath.distance.toFixed(1)}km</div>
-            <div style="color: #3b82f6; margin-top: 4px;">--- 예상 경로</div>
-          </div>
-        `;
-        return div;
-      };
-      pathInfo.addTo(map);
+      // 경로 정보 표시를 위한 커스텀 컨트롤 생성
+      const PathInfoControl = L.Control.extend({
+        onAdd: function() {
+          const div = L.DomUtil.create('div', 'path-info');
+          div.innerHTML = `
+            <div style="background: white; padding: 8px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); font-size: 12px;">
+              <div style="font-weight: bold; color: #1f2937; margin-bottom: 4px;">🚶‍♂️ ${walkingPath.name}</div>
+              <div style="color: #6b7280;">📏 ${walkingPath.distance.toFixed(1)}km</div>
+              <div style="color: #3b82f6; margin-top: 4px;">--- 예상 경로</div>
+            </div>
+          `;
+          return div;
+        }
+      });
+
+      // 컨트롤을 맵에 추가
+      const pathInfoControl = new PathInfoControl({ position: 'topright' });
+      pathInfoControl.addTo(map);
 
       // 전체 경로가 보이도록 맵 범위 조정
       try {
