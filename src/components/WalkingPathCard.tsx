@@ -1,10 +1,10 @@
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Route, Clock, TrendingUp, Heart, Star, Lightbulb, UtensilsCrossed, Navigation, Building, MapPin } from 'lucide-react';
 import SmallMap from './SmallMap';
-import { WalkingSpeed } from '@/utils/exerciseRecommendation';
 
 interface WalkingPath {
   id: string;
@@ -27,10 +27,9 @@ interface WalkingPathCardProps {
   path: WalkingPath;
   onSelect: (path: WalkingPath) => void;
   onCardClick: (path: WalkingPath) => void;
-  walkingSpeed?: WalkingSpeed | null;
 }
 
-const WalkingPathCard = ({ path, onSelect, onCardClick, walkingSpeed }: WalkingPathCardProps) => {
+const WalkingPathCard = ({ path, onSelect, onCardClick }: WalkingPathCardProps) => {
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case 'easy': return 'bg-green-100 text-green-800';
@@ -159,23 +158,6 @@ const WalkingPathCard = ({ path, onSelect, onCardClick, walkingSpeed }: WalkingP
             </div>
           </div>
         </div>
-
-        {/* 권장 운동 속도 정보 (walkingSpeed가 있는 경우만) */}
-        {walkingSpeed && (
-          <div className="mb-4 p-3 bg-green-50 rounded-lg border-l-3 border-green-400">
-            <div className="flex items-start gap-2">
-              <Heart className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-              <div>
-                <div className="text-sm font-medium text-green-800 mb-1">권장 속도</div>
-                <div className="text-sm text-green-700">
-                  <div>걷기: {walkingSpeed.walkingSpeed}</div>
-                  <div>조깅: {walkingSpeed.joggingSpeed}</div>
-                  <div className="text-xs mt-1">💓 목표 심박수: {walkingSpeed.heartRateRange.min}-{walkingSpeed.heartRateRange.max} BPM</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* 작은 지도 추가 */}
         {originalData?.Latitude && originalData?.Longitude && (
