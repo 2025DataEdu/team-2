@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from 'react';
+import { geocodeAddress } from '@/utils/geocoding';
 
 interface LocationData {
   latitude: number;
@@ -18,7 +19,8 @@ export const useLocation = () => {
     error: null
   });
 
-  useEffect(() => {
+  // 현재 위치 가져오기
+  const getCurrentLocation = () => {
     if (!navigator.geolocation) {
       setLocation(prev => ({
         ...prev,
@@ -28,17 +30,18 @@ export const useLocation = () => {
       return;
     }
 
+    setLocation(prev => ({ ...prev, isLoading: true, error: null }));
+
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
         
         try {
-          // Reverse geocoding으로 주소 가져오기 (실제 환경에서는 Google Maps API 등 사용)
           const mockAddress = `서울시 ${latitude > 37.55 ? '강북구' : '강남구'} ${longitude > 127.0 ? '동쪽' : '서쪽'} 지역`;
           
           setLocation({
-            latitude: Number(latitude.toFixed(2)),
-            longitude: Number(longitude.toFixed(2)),
+            latitude: Number(latitude.toFixed(6)),
+            longitude: Number(longitude.toFixed(6)),
             address: mockAddress,
             isLoading: false,
             error: null
@@ -65,17 +68,57 @@ export const useLocation = () => {
             break;
         }
         
-        // 에러 시 기본 위치 (서울 시청) 사용
         setLocation({
-          latitude: Number((37.5665).toFixed(2)),
-          longitude: Number((126.9780).toFixed(2)),
+          latitude: Number((37.5665).toFixed(6)),
+          longitude: Number((126.9780).toFixed(6)),
           address: '서울특별시 중구 (기본 위치)',
           isLoading: false,
           error: errorMessage
         });
       }
     );
+  };
+
+  // 주소로 위치 검색
+  const searchByAddress = async (address: string) => {
+    if (!address.trim()) return;
+
+    setLocation(prev => ({ ...prev, isLoading: true, error: null }));
+
+    try {
+      const result = await geocodeAddress(address);
+      
+      if (result) {
+        setLocation({
+          latitude: Number(result.latitude.toFixed(6)),
+          longitude: Number(result.longitude.toFixed(6)),
+          address: result.formattedAddress,
+          isLoading: false,
+          error: null
+        });
+      } else {
+        setLocation(prev => ({
+          ...prev,
+          isLoading: false,
+          error: '주소를 찾을 수 없습니다. 다른 주소로 시도해보세요.'
+        }));
+      }
+    } catch (error) {
+      setLocation(prev => ({
+        ...prev,
+        isLoading: false,
+        error: '주소 검색 중 오류가 발생했습니다.'
+      }));
+    }
+  };
+
+  useEffect(() => {
+    getCurrentLocation();
   }, []);
 
-  return location;
+  return {
+    ...location,
+    getCurrentLocation,
+    searchByAddress
+  };
 };
