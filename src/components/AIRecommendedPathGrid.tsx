@@ -1,7 +1,7 @@
-
 import React, { useState } from 'react';
 import WalkingPathCard from './WalkingPathCard';
 import PathDetailModal from './PathDetailModal';
+import { WalkingSpeed } from '@/utils/exerciseRecommendation';
 
 interface WalkingPath {
   id: string;
@@ -23,13 +23,15 @@ interface AIRecommendedPathGridProps {
   isLoading: boolean;
   onPathSelect: (path: WalkingPath) => void;
   selectedDifficulties: string[];
+  walkingSpeed?: WalkingSpeed | null;
 }
 
 const AIRecommendedPathGrid = ({ 
   paths, 
   isLoading, 
   onPathSelect, 
-  selectedDifficulties
+  selectedDifficulties,
+  walkingSpeed
 }: AIRecommendedPathGridProps) => {
   const [selectedPath, setSelectedPath] = useState<WalkingPath | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -75,6 +77,7 @@ const AIRecommendedPathGrid = ({
               path={path} 
               onSelect={onPathSelect}
               onCardClick={handleCardClick}
+              walkingSpeed={walkingSpeed}
             />
           ))}
         </div>
