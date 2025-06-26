@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { RealWalkingPath, UseAIRecommendedPathsProps } from '@/types/walkingPath';
+import { RealWalkingPath, RealWalkingPathWithDistance, UseAIRecommendedPathsProps } from '@/types/walkingPath';
 import { calculateDistance } from '@/utils/distanceCalculation';
 import { convertToWalkingPath } from '@/utils/pathConverter';
 
@@ -20,7 +20,7 @@ export const useAIRecommendedPaths = ({ userProfile, userLocation }: UseAIRecomm
         .select('*')
         .not('Latitude', 'is', null)
         .not('Longitude', 'is', null)
-        .limit(100); // 더 많은 데이터를 가져와서 선택의 폭을 늘림
+        .limit(100);
 
       if (error) {
         console.error('Error fetching paths:', error);
@@ -35,7 +35,7 @@ export const useAIRecommendedPaths = ({ userProfile, userLocation }: UseAIRecomm
       }
 
       // 사용자 위치가 있다면 거리 계산하여 필터링
-      let filteredPaths = allPaths;
+      let filteredPaths: RealWalkingPathWithDistance[] = [];
       if (userLocation && userLocation.latitude && userLocation.longitude) {
         console.log('사용자 위치 기반 필터링:', userLocation);
         
@@ -52,10 +52,10 @@ export const useAIRecommendedPaths = ({ userProfile, userLocation }: UseAIRecomm
           return {
             ...path,
             calculatedDistance: Number(distance.toFixed(2))
-          };
-        }).filter((path): path is RealWalkingPath & { calculatedDistance: number } => 
-          path !== null && path.calculatedDistance <= 15 // 15km 이내로 확장
-        ).sort((a, b) => a.calculatedDistance - b.calculatedDistance); // 거리순 정렬
+          } as RealWalkingPathWithDistance;
+        }).filter((path): path is RealWalkingPathWithDistance => 
+          path !== null && path.calculatedDistance <= 15
+        ).sort((a, b) => a.calculatedDistance - b.calculatedDistance);
 
         console.log('거리순 정렬된 경로 수:', filteredPaths.length);
       }
@@ -76,10 +76,10 @@ export const useAIRecommendedPaths = ({ userProfile, userLocation }: UseAIRecomm
       });
 
       // 다양성을 위해 거리별로 분산 선택
-      const selectedPaths = [];
-      const nearPaths = userPreferredPaths.filter(p => p.calculatedDistance <= 5); // 5km 이내
-      const mediumPaths = userPreferredPaths.filter(p => p.calculatedDistance > 5 && p.calculatedDistance <= 10); // 5-10km
-      const farPaths = userPreferredPaths.filter(p => p.calculatedDistance > 10); // 10km 이상
+      const selectedPaths: RealWalkingPathWithDistance[] = [];
+      const nearPaths = userPreferredPaths.filter(p => p.calculatedDistance <= 5);
+      const mediumPaths = userPreferredPaths.filter(p => p.calculatedDistance > 5 && p.calculatedDistance <= 10);
+      const farPaths = userPreferredPaths.filter(p => p.calculatedDistance > 10);
       
       // 가까운 곳에서 1개, 중간 거리에서 1개, 먼 거리에서 1개 선택
       if (nearPaths.length > 0) selectedPaths.push(nearPaths[0]);

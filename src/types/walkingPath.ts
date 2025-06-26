@@ -18,6 +18,11 @@ export interface RealWalkingPath {
   CoursRoute: string | null;
 }
 
+// 거리 계산이 포함된 경로 타입 추가
+export interface RealWalkingPathWithDistance extends RealWalkingPath {
+  calculatedDistance: number;
+}
+
 export interface UserProfile {
   age: number;
   fitnessLevel: string;
