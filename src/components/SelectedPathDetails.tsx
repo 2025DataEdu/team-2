@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
 import PathBasicInfo from './PathBasicInfo';
@@ -25,7 +24,16 @@ interface SelectedPathDetailsProps {
 }
 
 const SelectedPathDetails = ({ selectedPath }: SelectedPathDetailsProps) => {
-  const { isPlaying, isPaused, speakText, pauseResumeSpeech, stopSpeech } = useSpeechSynthesis();
+  const { 
+    isPlaying, 
+    isPaused, 
+    useElevenLabs,
+    speakText, 
+    pauseResumeSpeech, 
+    stopSpeech,
+    setApiKey,
+    useBrowserTTS
+  } = useSpeechSynthesis();
 
   const handleSpeakPathDescription = () => {
     const textToSpeak = `
@@ -58,9 +66,12 @@ const SelectedPathDetails = ({ selectedPath }: SelectedPathDetailsProps) => {
           <SpeechControls
             isPlaying={isPlaying}
             isPaused={isPaused}
+            useElevenLabs={useElevenLabs}
             onSpeak={handleSpeakPathDescription}
             onPauseResume={pauseResumeSpeech}
             onStop={stopSpeech}
+            onSetApiKey={setApiKey}
+            onUseBrowserTTS={useBrowserTTS}
           />
         </div>
         

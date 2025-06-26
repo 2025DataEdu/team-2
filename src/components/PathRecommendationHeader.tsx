@@ -14,7 +14,16 @@ const PathRecommendationHeader = ({
   onRefresh,
   isLoading
 }: PathRecommendationHeaderProps) => {
-  const { isPlaying, isPaused, speakText, pauseResumeSpeech, stopSpeech } = useSpeechSynthesis();
+  const { 
+    isPlaying, 
+    isPaused, 
+    useElevenLabs,
+    speakText, 
+    pauseResumeSpeech, 
+    stopSpeech,
+    setApiKey,
+    useBrowserTTS
+  } = useSpeechSynthesis();
 
   const handleSpeakRecommendationInfo = () => {
     const textToSpeak = `
@@ -37,9 +46,12 @@ const PathRecommendationHeader = ({
         <SpeechControls
           isPlaying={isPlaying}
           isPaused={isPaused}
+          useElevenLabs={useElevenLabs}
           onSpeak={handleSpeakRecommendationInfo}
           onPauseResume={pauseResumeSpeech}
           onStop={stopSpeech}
+          onSetApiKey={setApiKey}
+          onUseBrowserTTS={useBrowserTTS}
         />
         <Button 
           onClick={onRefresh} 

@@ -1,12 +1,35 @@
-
 import { useState, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { useElevenLabsTTS } from './useElevenLabsTTS';
 
 export const useSpeechSynthesis = () => {
   const { toast } = useToast();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [useElevenLabs, setUseElevenLabs] = useState(false);
+  const [elevenLabsApiKey, setElevenLabsApiKey] = useState<string>('');
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+  
+  const elevenLabsTTS = useElevenLabsTTS();
+
+  // ElevenLabs API 키 설정 함수
+  const setApiKey = (apiKey: string) => {
+    setElevenLabsApiKey(apiKey);
+    setUseElevenLabs(true);
+    toast({
+      title: "🎤 아이유 목소리 활성화",
+      description: "ElevenLabs API가 설정되었어요! 이제 아이유 목소리를 사용할 수 있어요.",
+    });
+  };
+
+  // 기본 브라우저 TTS로 전환
+  const useBrowserTTS = () => {
+    setUseElevenLabs(false);
+    toast({
+      title: "기본 음성으로 변경",
+      description: "브라우저 기본 음성으로 변경되었어요.",
+    });
+  };
 
   const getOptimalVoice = () => {
     const voices = speechSynthesis.getVoices();
@@ -66,7 +89,16 @@ export const useSpeechSynthesis = () => {
     return voices[0]; // 기본 목소리
   };
 
-  const speakText = (text: string) => {
+  const speakText = async (text: string) => {
+    // ElevenLabs 사용 시
+    if (useElevenLabs && elevenLabsApiKey) {
+      await elevenLabsTTS.speakText(text, elevenLabsApiKey);
+      setIsPlaying(elevenLabsTTS.isPlaying);
+      setIsPaused(elevenLabsTTS.isPaused);
+      return;
+    }
+
+    // 기본 브라우저 TTS 사용
     if ('speechSynthesis' in window) {
       // 기존 음성이 재생 중이면 중지
       speechSynthesis.cancel();
@@ -138,6 +170,13 @@ export const useSpeechSynthesis = () => {
   };
 
   const pauseResumeSpeech = () => {
+    if (useElevenLabs) {
+      elevenLabsTTS.pauseResumeSpeech();
+      setIsPlaying(elevenLabsTTS.isPlaying);
+      setIsPaused(elevenLabsTTS.isPaused);
+      return;
+    }
+
     if ('speechSynthesis' in window) {
       if (isPaused) {
         speechSynthesis.resume();
@@ -158,6 +197,13 @@ export const useSpeechSynthesis = () => {
   };
 
   const stopSpeech = () => {
+    if (useElevenLabs) {
+      elevenLabsTTS.stopSpeech();
+      setIsPlaying(false);
+      setIsPaused(false);
+      return;
+    }
+
     if ('speechSynthesis' in window) {
       speechSynthesis.cancel();
       setIsPlaying(false);
@@ -171,10 +217,13 @@ export const useSpeechSynthesis = () => {
   };
 
   return {
-    isPlaying,
-    isPaused,
+    isPlaying: useElevenLabs ? elevenLabsTTS.isPlaying : isPlaying,
+    isPaused: useElevenLabs ? elevenLabsTTS.isPaused : isPaused,
+    useElevenLabs,
     speakText,
     pauseResumeSpeech,
     stopSpeech,
+    setApiKey,
+    useBrowserTTS,
   };
 };
