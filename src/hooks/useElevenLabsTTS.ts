@@ -10,8 +10,8 @@ export const useElevenLabsTTS = () => {
 
   const generateSpeech = async (text: string, apiKey: string) => {
     try {
-      // Halley 목소리 사용 - 젊고 활기찬 여성 목소리
-      const voiceId = 'oWAxZDx7w5VEj9dCyTzz'; // Halley voice - 젊고 활기찬 목소리
+      // Anika 목소리 사용 - 매우 자연스럽고 표현력 있는 여성 목소리
+      const voiceId = '9BWtsMINqrJLrRacOk9x'; // Anika voice - 자연스럽고 표현력 있는 목소리
       
       const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
         method: 'POST',
@@ -24,9 +24,9 @@ export const useElevenLabsTTS = () => {
           text: text,
           model_id: 'eleven_turbo_v2_5', // 빠른 모델 사용
           voice_settings: {
-            stability: 0.7, // 약간 다양한 톤
-            similarity_boost: 0.8, // 원래 목소리 특성 유지
-            style: 0.9, // 높은 감정 표현
+            stability: 0.75, // 안정적인 목소리
+            similarity_boost: 0.75, // 자연스러운 톤
+            style: 0.8, // 적당한 감정 표현
             use_speaker_boost: true
           }
         })
@@ -61,8 +61,8 @@ export const useElevenLabsTTS = () => {
       setIsPaused(false);
       
       toast({
-        title: "🎤 Halley 목소리로 변환 중...",
-        description: "젊고 활기찬 목소리로 만들어드리고 있어요!",
+        title: "🎤 Anika 목소리로 변환 중...",
+        description: "자연스럽고 표현력 있는 목소리로 만들어드리고 있어요!",
       });
 
       const audioUrl = await generateSpeech(text, apiKey);
@@ -81,8 +81,8 @@ export const useElevenLabsTTS = () => {
 
       audio.onplay = () => {
         toast({
-          title: "🎵 Halley 목소리로 재생 중",
-          description: "젊고 활기찬 목소리를 들어보세요!",
+          title: "🎵 Anika 목소리로 재생 중",
+          description: "자연스럽고 표현력 있는 목소리를 들어보세요!",
         });
       };
 
@@ -92,7 +92,7 @@ export const useElevenLabsTTS = () => {
         URL.revokeObjectURL(audioUrl);
         toast({
           title: "✨ 재생 완료",
-          description: "Halley 목소리는 어떠셨나요? 더 들으시려면 다시 눌러주세요!",
+          description: "Anika 목소리는 어떠셨나요? 더 들으시려면 다시 눌러주세요!",
         });
       };
 
@@ -112,7 +112,7 @@ export const useElevenLabsTTS = () => {
       setIsPaused(false);
       toast({
         title: "음성 생성 실패",
-        description: "Halley 목소리 생성에 실패했습니다. 다시 시도해주세요.",
+        description: "Anika 목소리 생성에 실패했습니다. 다시 시도해주세요.",
         variant: "destructive",
       });
     }

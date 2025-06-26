@@ -10,11 +10,7 @@ interface LocationData {
   error: string | null;
 }
 
-interface UseLocationOptions {
-  onLocationChange?: (location: { latitude: number; longitude: number; address: string }) => void;
-}
-
-export const useLocation = (options?: UseLocationOptions) => {
+export const useLocation = () => {
   const [location, setLocation] = useState<LocationData>({
     latitude: 0,
     longitude: 0,
@@ -22,38 +18,6 @@ export const useLocation = (options?: UseLocationOptions) => {
     isLoading: true,
     error: null
   });
-
-  // 위치 업데이트 헬퍼 함수
-  const updateLocation = (newLocation: Omit<LocationData, 'isLoading' | 'error'>) => {
-    console.log('updateLocation 호출됨:', newLocation);
-    
-    setLocation(prev => {
-      // 위치가 실제로 변경되었는지 확인
-      const hasChanged = 
-        prev.latitude !== newLocation.latitude || 
-        prev.longitude !== newLocation.longitude || 
-        prev.address !== newLocation.address;
-        
-      if (hasChanged) {
-        console.log('위치 변경 감지됨, 콜백 호출 예정:', newLocation);
-        
-        // 위치 변경 콜백 호출
-        if (options?.onLocationChange) {
-          console.log('위치 변경 콜백 호출:', newLocation);
-          // 다음 렌더링 사이클에서 콜백 호출
-          setTimeout(() => {
-            options.onLocationChange!(newLocation);
-          }, 0);
-        }
-      }
-      
-      return {
-        ...newLocation,
-        isLoading: false,
-        error: null
-      };
-    });
-  };
 
   // 현재 위치 가져오기
   const getCurrentLocation = () => {
@@ -75,14 +39,13 @@ export const useLocation = (options?: UseLocationOptions) => {
         try {
           const mockAddress = `서울시 ${latitude > 37.55 ? '강북구' : '강남구'} ${longitude > 127.0 ? '동쪽' : '서쪽'} 지역`;
           
-          const newLocation = {
+          setLocation({
             latitude: Number(latitude.toFixed(6)),
             longitude: Number(longitude.toFixed(6)),
-            address: mockAddress
-          };
-          
-          console.log('getCurrentLocation 완료:', newLocation);
-          updateLocation(newLocation);
+            address: mockAddress,
+            isLoading: false,
+            error: null
+          });
         } catch (error) {
           setLocation(prev => ({
             ...prev,
@@ -105,14 +68,10 @@ export const useLocation = (options?: UseLocationOptions) => {
             break;
         }
         
-        const defaultLocation = {
+        setLocation({
           latitude: Number((37.5665).toFixed(6)),
           longitude: Number((126.9780).toFixed(6)),
-          address: '서울특별시 중구 (기본 위치)'
-        };
-        
-        setLocation({
-          ...defaultLocation,
+          address: '서울특별시 중구 (기본 위치)',
           isLoading: false,
           error: errorMessage
         });
@@ -130,15 +89,13 @@ export const useLocation = (options?: UseLocationOptions) => {
       const result = await geocodeAddress(address);
       
       if (result) {
-        console.log('주소 검색 결과:', result);
-        const newLocation = {
+        setLocation({
           latitude: Number(result.latitude.toFixed(6)),
           longitude: Number(result.longitude.toFixed(6)),
-          address: result.formattedAddress
-        };
-        
-        console.log('searchByAddress 완료:', newLocation);
-        updateLocation(newLocation);
+          address: result.formattedAddress,
+          isLoading: false,
+          error: null
+        });
       } else {
         setLocation(prev => ({
           ...prev,

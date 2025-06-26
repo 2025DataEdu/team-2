@@ -1,12 +1,33 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PathRecommendationHeader from './PathRecommendationHeader';
 import AIAnalysisCard from './AIAnalysisCard';
 import AIRecommendedPathGrid from './AIRecommendedPathGrid';
 import { useAIRecommendedPaths } from '@/hooks/useAIRecommendedPaths';
-import { usePathRecommendations } from '@/hooks/usePathRecommendations';
 import { useHealthProfile } from '@/hooks/useHealthProfile';
 import { getWalkingSpeed } from '@/utils/exerciseRecommendation';
-import { WalkingPath, UserProfile } from '@/types/walkingPath';
+
+interface WalkingPath {
+  id: string;
+  name: string;
+  distance: number;
+  duration: number;
+  difficulty: 'easy' | 'medium' | 'hard';
+  elevation: number;
+  rating: number;
+  features: string[];
+  description: string;
+  amenities: string[];
+  recommendationReason: string;
+  nearbyFood: string[];
+}
+
+interface UserProfile {
+  age: number;
+  fitnessLevel: string;
+  preferredDistance: number[];
+  healthConditions: string;
+  walkingGoal: string;
+}
 
 interface WalkingPathRecommendationsProps {
   userProfile: UserProfile;
@@ -17,31 +38,19 @@ interface WalkingPathRecommendationsProps {
     address: string;
   };
   selectedDifficulties: string[];
-  onRefreshRef?: (refreshFn: () => void) => void;
 }
 
 const WalkingPathRecommendations = ({
   userProfile,
   onPathSelect,
   userLocation,
-  selectedDifficulties,
-  onRefreshRef
+  selectedDifficulties
 }: WalkingPathRecommendationsProps) => {
   const {
     recommendedPaths,
     isLoading,
     generateRecommendations
   } = useAIRecommendedPaths({
-    userProfile,
-    userLocation
-  });
-
-  // usePathRecommendations 훅 추가
-  const {
-    recommendedPaths: pathRecommendations,
-    isLoading: isPathLoading,
-    generateRecommendations: generatePathRecommendations
-  } = usePathRecommendations({
     userProfile,
     userLocation
   });
@@ -53,27 +62,10 @@ const WalkingPathRecommendations = ({
 
   // 건강정보 기반 걷기 속도 계산
   const walkingSpeed = healthProfile ? getWalkingSpeed(healthProfile) : null;
-
-  // 통합 새로고침 함수
-  const handleRefresh = () => {
-    console.log('=== 수동 새로고침 함수 호출됨 ===');
-    console.log('현재 위치 정보:', userLocation);
-    generateRecommendations();
-    generatePathRecommendations();
-    console.log('=== 수동 추천 경로 새로고침 완료 ===');
-  };
-
-  // 부모 컴포넌트에 새로고침 함수 전달
-  useEffect(() => {
-    if (onRefreshRef) {
-      console.log('새로고침 함수를 부모에 전달');
-      onRefreshRef(handleRefresh);
-    }
-  }, [onRefreshRef]);
   
   return (
     <div className="w-full space-y-6">
-      <PathRecommendationHeader onRefresh={handleRefresh} isLoading={isLoading || isPathLoading} />
+      <PathRecommendationHeader onRefresh={generateRecommendations} isLoading={isLoading} />
 
       <AIAnalysisCard userProfile={userProfile} userLocation={userLocation} />
 
@@ -93,7 +85,7 @@ const WalkingPathRecommendations = ({
       {/* AI 추천 경로 */}
       <div>
         <h3 className="text-xl font-card font-semibold mb-4 text-zinc-50">
-          🤖 AI 맞춤 추천 경로 {recommendedPaths.length > 0 && `(${recommendedPaths.length}개)`}
+          🤖 AI 맞춤 추천 경로
         </h3>
         <AIRecommendedPathGrid 
           paths={recommendedPaths} 

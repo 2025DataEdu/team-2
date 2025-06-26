@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useElevenLabsTTS } from './useElevenLabsTTS';
@@ -17,8 +18,8 @@ export const useSpeechSynthesis = () => {
     if (elevenLabsApiKey) {
       setUseElevenLabs(true);
       toast({
-        title: "🎤 와! Halley 목소리 준비됐어!",
-        description: "젊고 활기찬 목소리로 말해줄 수 있어! 정말 멋져!",
+        title: "🎀 와와! 5살 여아 목소리 준비됐어!",
+        description: "진짜진짜 귀여운 목소리로 말해줄 수 있어! 빨리빨리! 헤헤헷~",
       });
     }
   }, []);
@@ -28,8 +29,8 @@ export const useSpeechSynthesis = () => {
     setElevenLabsApiKey(apiKey);
     setUseElevenLabs(true);
     toast({
-      title: "🎤 와! Halley 목소리 준비됐어!",
-      description: "이제 젊고 활기찬 목소리로 말해줄 수 있어! 정말 멋져!",
+      title: "🎀 와와! 진짜 귀여운 목소리 준비됐어!",
+      description: "이제 5살 여자아이 목소리로 말해줄 수 있어! 완전 귀여워! 헤헤헷~",
     });
   };
 
@@ -38,7 +39,7 @@ export const useSpeechSynthesis = () => {
     setUseElevenLabs(false);
     toast({
       title: "기본 목소리로 바꿨어!",
-      description: "그래도 예쁘게 말해줄게~ 걱정 마!",
+      description: "그래도 귀엽게 말해줄게~ 걱정 마!",
     });
   };
 

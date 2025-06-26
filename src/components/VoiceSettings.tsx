@@ -50,7 +50,7 @@ const VoiceSettings = ({ onSetApiKey, onUseBrowserTTS, useElevenLabs }: VoiceSet
               목소리 설정
             </CardTitle>
             <CardDescription>
-              현재 Halley 목소리를 사용하고 있습니다 - 젊고 활기찬 여성 목소리에요!
+              현재 Anika 목소리를 사용하고 있습니다 - 자연스럽고 표현력 있는 여성 목소리에요!
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -66,7 +66,7 @@ const VoiceSettings = ({ onSetApiKey, onUseBrowserTTS, useElevenLabs }: VoiceSet
                 />
               </div>
               <Button type="submit" className="w-full">
-                🎤 Halley 목소리 설정하기
+                🎤 Anika 목소리 설정하기
               </Button>
             </form>
             
@@ -82,7 +82,7 @@ const VoiceSettings = ({ onSetApiKey, onUseBrowserTTS, useElevenLabs }: VoiceSet
             
             {useElevenLabs && (
               <div className="text-sm text-green-600 text-center">
-                ✅ Halley 목소리 준비 완료! 젊고 활기찬 목소리로 들려드릴게요~
+                ✅ Anika 목소리 준비 완료! 자연스럽고 표현력 있는 목소리로 들려드릴게요~
               </div>
             )}
           </CardContent>
