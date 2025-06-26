@@ -35,7 +35,7 @@ export const useSpeechSynthesis = () => {
   };
 
   // 기본 브라우저 TTS로 전환
-  const useBrowserTTS = () => {
+  const switchToBrowserTTS = () => {
     setUseElevenLabs(false);
     toast({
       title: "기본 목소리로 바꿨어!",
@@ -83,6 +83,6 @@ export const useSpeechSynthesis = () => {
     pauseResumeSpeech,
     stopSpeech,
     setApiKey,
-    useBrowserTTS,
+    useBrowserTTS: switchToBrowserTTS,
   };
 };
