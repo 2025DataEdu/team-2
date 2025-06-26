@@ -10,8 +10,8 @@ export const useElevenLabsTTS = () => {
 
   const generateSpeech = async (text: string, apiKey: string) => {
     try {
-      // 어린 여자아이 목소리에 가까운 Charlotte 사용
-      const voiceId = 'XB0fDUnXU5powFXDhCwa'; // Charlotte voice - 젊고 밝은 여성 목소리
+      // 7살 여자아이에게 가장 적합한 목소리 - Alice 사용 (더 어린 느낌)
+      const voiceId = 'Xb7hH8MSUJpSbSDYk0k2'; // Alice voice - 어린 여자아이 목소리
       
       const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
         method: 'POST',
@@ -24,9 +24,9 @@ export const useElevenLabsTTS = () => {
           text: text,
           model_id: 'eleven_multilingual_v2',
           voice_settings: {
-            stability: 0.60, // 약간 불안정하게 해서 어린아이 느낌
-            similarity_boost: 0.90, // 자연스러운 느낌
-            style: 0.85, // 높은 감정적 표현력
+            stability: 0.45, // 더 불안정하게 해서 어린아이의 자연스러운 느낌
+            similarity_boost: 0.95, // 높은 유사도로 자연스럽게
+            style: 0.90, // 매우 높은 감정적 표현력
             use_speaker_boost: true
           }
         })
@@ -62,7 +62,7 @@ export const useElevenLabsTTS = () => {
       
       toast({
         title: "🎀 귀여운 목소리 만드는 중...",
-        description: "와! 진짜 귀여운 목소리로 바꿔줄게~!",
+        description: "와! 진짜 귀여운 목소리로 바꿔줄게~! 에헤헷!",
       });
 
       const audioUrl = await generateSpeech(text, apiKey);
@@ -79,7 +79,7 @@ export const useElevenLabsTTS = () => {
       audio.onplay = () => {
         toast({
           title: "🎵 에헤헷! 들어봐~",
-          description: "귀여운 목소리로 말해줄게!",
+          description: "7살 여자아이 목소리로 말해줄게! 귀엽지?",
         });
       };
 
@@ -89,7 +89,7 @@ export const useElevenLabsTTS = () => {
         URL.revokeObjectURL(audioUrl);
         toast({
           title: "✨ 다 들었어?",
-          description: "어땠어? 귀여웠지? 히히~",
+          description: "어땠어? 진짜 귀여웠지? 에헤헷~ 히히~",
         });
       };
 
@@ -98,7 +98,7 @@ export const useElevenLabsTTS = () => {
         setIsPaused(false);
         toast({
           title: "앗! 오류가 났어",
-          description: "다시 해볼게! 걱정 마~",
+          description: "괜찮아! 다시 해볼게~ 걱정 마!",
           variant: "destructive",
         });
       };
@@ -109,7 +109,7 @@ export const useElevenLabsTTS = () => {
       setIsPaused(false);
       toast({
         title: "음성 만들기 실패했어ㅠㅠ",
-        description: "API 키가 맞는지 확인해줘! 내가 도와줄게~",
+        description: "API 키 문제일 수도 있어! 다시 한 번 해볼까?",
         variant: "destructive",
       });
     }
@@ -156,3 +156,5 @@ export const useElevenLabsTTS = () => {
     stopSpeech,
   };
 };
+
+export default useElevenLabsTTS;

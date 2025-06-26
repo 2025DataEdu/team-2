@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,6 +15,13 @@ interface VoiceSettingsProps {
 const VoiceSettings = ({ onSetApiKey, onUseBrowserTTS, useElevenLabs }: VoiceSettingsProps) => {
   const [apiKey, setApiKey] = useState('');
   const [showSettings, setShowSettings] = useState(false);
+
+  // 컴포넌트가 마운트될 때 자동으로 API 키 설정
+  useEffect(() => {
+    const elevenLabsApiKey = 'sk_bd4c994d18130506af1073635b71783520c7f5688ee9ecc1';
+    onSetApiKey(elevenLabsApiKey);
+    setApiKey(elevenLabsApiKey);
+  }, [onSetApiKey]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

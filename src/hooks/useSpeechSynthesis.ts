@@ -1,5 +1,4 @@
-
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useElevenLabsTTS } from './useElevenLabsTTS';
 
@@ -7,11 +6,22 @@ export const useSpeechSynthesis = () => {
   const { toast } = useToast();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const [useElevenLabs, setUseElevenLabs] = useState(false);
-  const [elevenLabsApiKey, setElevenLabsApiKey] = useState<string>('');
+  const [useElevenLabs, setUseElevenLabs] = useState(true); // 기본값을 true로 변경
+  const [elevenLabsApiKey, setElevenLabsApiKey] = useState<string>('sk_bd4c994d18130506af1073635b71783520c7f5688ee9ecc1'); // API 키 기본값 설정
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   
   const elevenLabsTTS = useElevenLabsTTS();
+
+  // 컴포넌트 마운트시 자동으로 ElevenLabs 활성화
+  useEffect(() => {
+    if (elevenLabsApiKey) {
+      setUseElevenLabs(true);
+      toast({
+        title: "🎀 와! 귀여운 목소리 준비됐어!",
+        description: "7살 여자아이 목소리로 말해줄 수 있어! 에헤헷~ 기대해!",
+      });
+    }
+  }, []);
 
   // ElevenLabs API 키 설정 함수
   const setApiKey = (apiKey: string) => {
@@ -19,7 +29,7 @@ export const useSpeechSynthesis = () => {
     setUseElevenLabs(true);
     toast({
       title: "🎀 와! 귀여운 목소리 준비됐어!",
-      description: "이제 진짜 귀여운 목소리로 말해줄 수 있어! 에헤헷~",
+      description: "이제 진짜 귀여운 7살 여자아이 목소리로 말해줄 수 있어! 에헤헷~",
     });
   };
 
@@ -163,7 +173,7 @@ export const useSpeechSynthesis = () => {
     // 7살 여자아이 말투로 변환
     const childlikeText = transformToChildlikeText(text);
 
-    // ElevenLabs 사용 시
+    // ElevenLabs 사용 시 (기본값)
     if (useElevenLabs && elevenLabsApiKey) {
       await elevenLabsTTS.speakText(childlikeText, elevenLabsApiKey);
       setIsPlaying(elevenLabsTTS.isPlaying);
