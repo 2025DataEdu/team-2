@@ -36,20 +36,20 @@ const SelectedPathDetails = ({ selectedPath }: SelectedPathDetailsProps) => {
 
   const handleSpeakPathDescription = () => {
     const textToSpeak = `
-      골라진 산책길: ${selectedPath.name}!
+      골라진 산책길은 ${selectedPath.name}이야!
       ${selectedPath.description}
       
       길이는 ${selectedPath.distance.toFixed(2)}킬로미터야! 
-      걸리는 시간은 ${selectedPath.duration.toFixed(0)}분 정도야!
-      칼로리는 ${(selectedPath.distance * 50).toFixed(0)}칼로리나 빠져! 대단하지?
+      걸리는 시간은 ${selectedPath.duration.toFixed(0)}분이면 돼!
+      칼로리는 ${(selectedPath.distance * 50).toFixed(0)}칼로리나 빠져! 
       
       왜 골랐냐면~ ${selectedPath.recommendationReason}
       
       근처 편의시설은 ${selectedPath.amenities.join(', ')}가 있어!
       
-      맛집으로는 ${selectedPath.nearbyFood.join(', ')}를 추천할게! 맛있을 거야~
+      맛집으로는 ${selectedPath.nearbyFood.join(', ')}를 추천할게! 
       
-      재밌게 산책하고 물 많이 마셔! 에헤헷~
+      재밌게 산책하고 물 많이 마셔!
     `;
     
     speakText(textToSpeak);
@@ -82,7 +82,7 @@ const SelectedPathDetails = ({ selectedPath }: SelectedPathDetailsProps) => {
         
         <div className="mt-6 p-4 bg-green-50 rounded-lg">
           <p className="text-green-800 text-center">
-            🌟 재밌게 산책해! 물 많이 마시는 거 잊지 마~ 에헤헷!
+            🌟 재밌게 산책해! 물 많이 마시는 거 잊지 마~
           </p>
         </div>
       </div>

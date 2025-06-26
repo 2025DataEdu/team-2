@@ -93,47 +93,68 @@ export const useSpeechSynthesis = () => {
   };
 
   const transformToChildlikeText = (text: string) => {
-    // 7살 여자아이 말투로 변환
+    // 7살 여자아이 말투로 변환 - 더 귀엽고 자연스럽게
     let childText = text
-      // 존댓말을 반말로 바꾸기
-      .replace(/습니다/g, '어!')
-      .replace(/입니다/g, '야!')
-      .replace(/해요/g, '해!')
-      .replace(/이에요/g, '이야!')
-      .replace(/예요/g, '야!')
-      .replace(/니다/g, '어!')
-      // 감탄사 추가
+      // 기본 존댓말을 친근한 반말로
       .replace(/안녕하세요/g, '안녕! 반가워~')
-      .replace(/추천해드려요/g, '추천해줄게! 정말 좋아~')
-      .replace(/확인하실 수 있어요/g, '확인해봐! 재밌을 거야~')
-      .replace(/산책 되세요/g, '산책해! 조심하구~')
+      .replace(/추천해드려요/g, '추천해줄게!')
+      .replace(/확인하실 수 있어요/g, '확인해봐~')
+      .replace(/산책하세요/g, '산책해!')
+      .replace(/드릴게요/g, '줄게!')
+      .replace(/해주세요/g, '해줘~')
+      
+      // 딱딱한 표현을 부드럽게
       .replace(/소요시간은/g, '걸리는 시간은')
-      .replace(/칼로리입니다/g, '칼로리야! 대단하지?')
+      .replace(/칼로리입니다/g, '칼로리야!')
       .replace(/편의시설로는/g, '편의시설은')
       .replace(/맛집으로는/g, '맛집은')
-      // 귀여운 표현 추가
       .replace(/선택된/g, '골라진')
-      .replace(/산책로:/g, '산책길이야!')
+      .replace(/산책로:/g, '산책길!')
       .replace(/이유:/g, '왜냐하면~')
       .replace(/거리는/g, '길이는')
       .replace(/예상/g, '아마')
       .replace(/주변/g, '근처')
       .replace(/있습니다/g, '있어!')
-      .replace(/추천합니다/g, '추천해! 맛있을 거야~');
+      .replace(/추천합니다/g, '추천해!')
+      
+      // 어미 변환 - 더 다양하고 귀엽게
+      .replace(/습니다/g, '어~')
+      .replace(/입니다/g, '야!')
+      .replace(/해요/g, '해!')
+      .replace(/이에요/g, '이야~')
+      .replace(/예요/g, '야!')
+      .replace(/니다/g, '어!');
 
+    // 감탄사와 리듬감 추가
+    const exclamations = ['우와~', '에헤헷!', '짱!', '오호호~', '야호~'];
+    const randomExclamation = exclamations[Math.floor(Math.random() * exclamations.length)];
+    
+    // 문장 시작에 감탄사 추가 (가끔)
+    if (Math.random() > 0.7 && !childText.includes('안녕')) {
+      childText = randomExclamation + ' ' + childText;
+    }
+    
     // 문장 끝에 귀여운 표현 추가
-    childText = childText
-      .replace(/([.!?])\s*([가-힣])/g, '$1 와! $2')
-      .replace(/어!([가-힣])/g, '어~ $1')
-      .replace(/야!([가-힣])/g, '야! 그리고 $1');
+    if (!childText.includes('에헤헷') && !childText.includes('히히')) {
+      const endings = ['에헤헷~', '히히~', '호호~', '우후후~'];
+      const randomEnding = endings[Math.floor(Math.random() * endings.length)];
+      if (Math.random() > 0.6) {
+        childText = childText + ' ' + randomEnding;
+      }
+    }
 
-    // 시작과 끝에 귀여운 인사 추가
-    if (!childText.includes('안녕')) {
-      childText = '안녕! ' + childText;
-    }
-    if (!childText.includes('즐거운') && !childText.includes('재밌게')) {
-      childText = childText + ' 재밌게 해봐! 에헤헷~';
-    }
+    // 중요한 부분 강조
+    childText = childText
+      .replace(/([0-9]+)킬로미터/g, '$1킬로미터나!')
+      .replace(/([0-9]+)분/g, '$1분이면 돼!')
+      .replace(/([0-9]+)칼로리/g, '$1칼로리나 빠져! 대단하지?');
+
+    // 문장에 자연스러운 쉼표와 감정 추가
+    childText = childText
+      .replace(/근처/g, '근처에는~ ')
+      .replace(/맛집은/g, '맛집은~ ')
+      .replace(/편의시설은/g, '편의시설은~ ')
+      .replace(/왜냐하면~/g, '왜냐하면~ ');
 
     return childText;
   };
@@ -165,8 +186,8 @@ export const useSpeechSynthesis = () => {
         }
         
         utterance.lang = 'ko-KR';
-        utterance.rate = 0.9; // 약간 빠르게 (어린아이 느낌)
-        utterance.pitch = 1.8; // 매우 높은 톤 (7살 여자아이)
+        utterance.rate = 0.85; // 조금 느리게 (더 귀엽게)
+        utterance.pitch = 1.9; // 매우 높은 톤 (7살 여자아이)
         utterance.volume = 1;
 
         utterance.onstart = () => {
