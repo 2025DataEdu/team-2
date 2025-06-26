@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -19,11 +18,6 @@ interface RealWalkingPath {
   Address: string | null;
   CorusDetailName: string | null;
   CoursRoute: string | null;
-}
-
-// distance 속성이 추가된 타입 정의
-interface RealWalkingPathWithDistance extends RealWalkingPath {
-  distance: number;
 }
 
 interface UserProfile {
@@ -61,36 +55,29 @@ export const useAIRecommendedPaths = ({ userProfile, userLocation }: UseAIRecomm
     setIsLoading(true);
     
     try {
-      console.log('🔍 위치 기반 AI 추천 생성 시작:', userLocation);
-      
       // 내주변산책로 테이블에서 데이터 가져오기
       const { data: allPaths, error } = await supabase
         .from('내주변산책로')
         .select('*')
         .not('Latitude', 'is', null)
         .not('Longitude', 'is', null)
-        .limit(100); // 더 많은 데이터로 확장
+        .limit(50);
 
       if (error) {
-        console.error('❌ 산책로 데이터 조회 오류:', error);
+        console.error('Error fetching paths:', error);
         setIsLoading(false);
         return;
       }
 
       if (!allPaths || allPaths.length === 0) {
-        console.log('⚠️ 조회된 산책로 데이터가 없음');
         setRecommendedPaths([]);
         setIsLoading(false);
         return;
       }
 
-      console.log('📊 총 조회된 산책로 수:', allPaths.length);
-
       // 사용자 위치가 있다면 거리 계산하여 필터링
-      let filteredPaths: RealWalkingPathWithDistance[] = [];
+      let filteredPaths = allPaths;
       if (userLocation) {
-        console.log('📍 사용자 위치 정보:', userLocation);
-        
         filteredPaths = allPaths.map(path => {
           if (!path.Latitude || !path.Longitude) return null;
           
@@ -104,23 +91,10 @@ export const useAIRecommendedPaths = ({ userProfile, userLocation }: UseAIRecomm
           return {
             ...path,
             distance: Number(distance.toFixed(2))
-          } as RealWalkingPathWithDistance;
-        }).filter((path): path is RealWalkingPathWithDistance => 
-          path !== null && path.distance <= 15 // 15km 이내로 확장
+          };
+        }).filter((path): path is RealWalkingPath & { distance: number } => 
+          path !== null && path.distance <= 10 // 10km 이내
         ).sort((a, b) => a.distance - b.distance);
-
-        console.log('🎯 위치 기반 필터링된 산책로 수:', filteredPaths.length);
-        console.log('🚶‍♂️ 가장 가까운 3개 경로:', filteredPaths.slice(0, 3).map(p => ({
-          name: p.CoursName,
-          distance: p.distance,
-          area: p.SIGNGU_NM
-        })));
-      } else {
-        // 위치 정보가 없으면 기본 경로들을 사용 (distance 없이)
-        filteredPaths = allPaths.slice(0, 20).map(path => ({
-          ...path,
-          distance: 0
-        })) as RealWalkingPathWithDistance[];
       }
 
       // 사용자 프로필에 따른 필터링
@@ -135,19 +109,8 @@ export const useAIRecommendedPaths = ({ userProfile, userLocation }: UseAIRecomm
           return false;
         }
         
-        // 선호 거리 고려
-        const pathDistance = path.CoursDetailLength || parseFloat(path.CoursLength || '0') || 0;
-        const preferredMin = Math.min(...userProfile.preferredDistance);
-        const preferredMax = Math.max(...userProfile.preferredDistance);
-        
-        if (pathDistance > 0 && (pathDistance < preferredMin * 0.5 || pathDistance > preferredMax * 2)) {
-          return false;
-        }
-        
         return true;
       });
-
-      console.log('👤 사용자 프로필 기반 필터링된 경로 수:', userPreferredPaths.length);
 
       // 상위 3개만 선택 (정확히 3개만)
       const selectedPaths = userPreferredPaths.slice(0, 3).map((path, index) => {
@@ -163,20 +126,18 @@ export const useAIRecommendedPaths = ({ userProfile, userLocation }: UseAIRecomm
           features: getFeatures(path),
           description: path.ADIT_DC || `${path.SIGNGU_NM || '지역'}의 아름다운 산책로입니다.`,
           amenities: getAmenities(path),
-          recommendationReason: getRecommendationReason(path, userProfile, index, userLocation),
+          recommendationReason: getRecommendationReason(path, userProfile, index),
           nearbyFood: getNearbyFood(index),
           realPath: true,
-          originalData: path,
-          locationDistance: userLocation ? path.distance : undefined
+          originalData: path
         };
 
         return convertedPath;
       });
 
-      console.log('✅ 최종 AI 추천 경로 생성 완료:', selectedPaths.length, '개');
       setRecommendedPaths(selectedPaths);
     } catch (error) {
-      console.error('❌ AI 추천 생성 중 오류:', error);
+      console.error('Error in generateRecommendations:', error);
     } finally {
       setIsLoading(false);
     }
@@ -200,7 +161,7 @@ export const useAIRecommendedPaths = ({ userProfile, userLocation }: UseAIRecomm
     return Math.floor(Math.random() * 15);
   };
 
-  const getFeatures = (path: RealWalkingPathWithDistance): string[] => {
+  const getFeatures = (path: RealWalkingPath): string[] => {
     const features = [];
     if (path.Option?.includes('화장실') || path.Toilet === 'Y') features.push('화장실');
     if (path.SIGNGU_NM) features.push('도시');
@@ -216,7 +177,7 @@ export const useAIRecommendedPaths = ({ userProfile, userLocation }: UseAIRecomm
     return features.slice(0, 4);
   };
 
-  const getAmenities = (path: RealWalkingPathWithDistance): string[] => {
+  const getAmenities = (path: RealWalkingPath): string[] => {
     const amenities = [];
     if (path.Toilet === 'Y') amenities.push('화장실');
     if (path.Option?.includes('주차')) amenities.push('주차장');
@@ -228,13 +189,8 @@ export const useAIRecommendedPaths = ({ userProfile, userLocation }: UseAIRecomm
     return amenities.slice(0, 4);
   };
 
-  const getRecommendationReason = (path: RealWalkingPathWithDistance, userProfile: UserProfile, index: number, userLocation?: { latitude: number; longitude: number; address: string }): string => {
+  const getRecommendationReason = (path: RealWalkingPath, userProfile: UserProfile, index: number): string => {
     const reasons = [];
-    
-    // 위치 기반 추천 이유 추가
-    if (userLocation && path.distance > 0) {
-      reasons.push(`현재 위치에서 ${path.distance}km 거리에 위치한`);
-    }
     
     if (userProfile.fitnessLevel === 'beginner') {
       reasons.push('초보자에게 적합한');
@@ -268,19 +224,9 @@ export const useAIRecommendedPaths = ({ userProfile, userLocation }: UseAIRecomm
     return foodOptions[index % foodOptions.length];
   };
 
-  // 위치 정보 변경 시 자동으로 추천 재생성
   useEffect(() => {
-    console.log('🔄 위치 또는 프로필 변경 감지, 추천 재생성 중...');
     generateRecommendations();
-  }, [
-    userProfile.age,
-    userProfile.fitnessLevel,
-    userProfile.walkingGoal,
-    userProfile.healthConditions,
-    userLocation?.latitude,
-    userLocation?.longitude,
-    userLocation?.address
-  ]);
+  }, [userProfile, userLocation]);
 
   return {
     recommendedPaths,
