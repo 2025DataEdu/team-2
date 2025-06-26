@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import LoadingScreen from '@/components/LoadingScreen';
 import AppHeader from '@/components/AppHeader';
@@ -38,6 +39,8 @@ const Index = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [selectedPath, setSelectedPath] = useState<WalkingPath | null>(null);
   const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>([]);
+  
+  // 중앙에서 위치 상태 관리
   const location = useLocation();
 
   // 자동으로 건강 정보 로드 및 추천 생성
@@ -132,6 +135,7 @@ const Index = () => {
           <InfoCards 
             userProfile={userProfile}
             onEditProfile={handleEditProfile}
+            location={location}
           />
 
           {currentStep === 'recommendations' && userProfile && (

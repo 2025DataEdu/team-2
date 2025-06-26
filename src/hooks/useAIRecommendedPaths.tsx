@@ -10,7 +10,10 @@ export const useAIRecommendedPaths = ({ userProfile, userLocation }: UseAIRecomm
   const [isLoading, setIsLoading] = useState(false);
 
   const generateRecommendations = useCallback(async () => {
-    console.log('generateRecommendations 함수 실행됨, 위치:', userLocation);
+    console.log('=== generateRecommendations 함수 실행됨 ===');
+    console.log('사용자 위치:', userLocation);
+    console.log('사용자 프로필:', userProfile);
+    
     setIsLoading(true);
     
     try {
@@ -29,15 +32,22 @@ export const useAIRecommendedPaths = ({ userProfile, userLocation }: UseAIRecomm
       }
 
       if (!allPaths || allPaths.length === 0) {
+        console.log('산책로 데이터가 없습니다.');
         setRecommendedPaths([]);
         setIsLoading(false);
         return;
       }
 
+      console.log('가져온 전체 산책로 수:', allPaths.length);
+
       // 사용자 위치가 있다면 거리 계산하여 필터링
       let filteredPaths: RealWalkingPathWithDistance[] = [];
       if (userLocation && userLocation.latitude && userLocation.longitude) {
-        console.log('사용자 위치 기반 필터링:', userLocation);
+        console.log('사용자 위치 기반 필터링 시작:', {
+          lat: userLocation.latitude,
+          lng: userLocation.longitude,
+          address: userLocation.address
+        });
         
         filteredPaths = allPaths.map(path => {
           if (!path.Latitude || !path.Longitude) return null;
@@ -58,6 +68,17 @@ export const useAIRecommendedPaths = ({ userProfile, userLocation }: UseAIRecomm
         ).sort((a, b) => a.calculatedDistance - b.calculatedDistance);
 
         console.log('거리순 정렬된 경로 수:', filteredPaths.length);
+        console.log('가장 가까운 3개 경로:', filteredPaths.slice(0, 3).map(p => ({
+          name: p.CoursName,
+          distance: p.calculatedDistance
+        })));
+      } else {
+        console.log('사용자 위치 정보가 없어 기본 경로 사용');
+        // 위치 정보가 없으면 기본적으로 처음 몇 개만 사용
+        filteredPaths = allPaths.slice(0, 10).map(path => ({
+          ...path,
+          calculatedDistance: 0
+        })) as RealWalkingPathWithDistance[];
       }
 
       // 사용자 프로필에 따른 필터링
@@ -75,11 +96,19 @@ export const useAIRecommendedPaths = ({ userProfile, userLocation }: UseAIRecomm
         return true;
       });
 
+      console.log('프로필 필터링 후 경로 수:', userPreferredPaths.length);
+
       // 다양성을 위해 거리별로 분산 선택
       const selectedPaths: RealWalkingPathWithDistance[] = [];
       const nearPaths = userPreferredPaths.filter(p => p.calculatedDistance <= 5);
       const mediumPaths = userPreferredPaths.filter(p => p.calculatedDistance > 5 && p.calculatedDistance <= 10);
       const farPaths = userPreferredPaths.filter(p => p.calculatedDistance > 10);
+      
+      console.log('거리별 분류:', {
+        near: nearPaths.length,
+        medium: mediumPaths.length,
+        far: farPaths.length
+      });
       
       // 가까운 곳에서 1개, 중간 거리에서 1개, 먼 거리에서 1개 선택
       if (nearPaths.length > 0) selectedPaths.push(nearPaths[0]);
@@ -98,12 +127,14 @@ export const useAIRecommendedPaths = ({ userProfile, userLocation }: UseAIRecomm
         }
       }
 
+      console.log('최종 선택된 경로 수:', selectedPaths.length);
+
       // 변환하여 최종 추천 경로 생성
       const convertedPaths = selectedPaths.map((path, index) => 
         convertToWalkingPath(path, userProfile, index)
       );
 
-      console.log('새로운 추천 경로 생성됨:', convertedPaths.length, '개');
+      console.log('=== 새로운 추천 경로 생성 완료 ===');
       console.log('추천 경로 세부사항:', convertedPaths.map(p => ({ 
         name: p.name, 
         distance: p.distance,
@@ -120,12 +151,18 @@ export const useAIRecommendedPaths = ({ userProfile, userLocation }: UseAIRecomm
 
   // 위치 정보 변경시 새로운 추천 생성
   useEffect(() => {
-    console.log('useAIRecommendedPaths: 위치 정보 변경 감지');
-    console.log('현재 위치:', userLocation);
+    console.log('=== useAIRecommendedPaths: 위치 정보 변경 감지 ===');
+    console.log('현재 위치:', {
+      latitude: userLocation?.latitude,
+      longitude: userLocation?.longitude,
+      address: userLocation?.address
+    });
     
     if (userLocation && userLocation.latitude && userLocation.longitude) {
-      console.log('유효한 위치 정보로 새로운 추천 생성');
+      console.log('유효한 위치 정보로 새로운 추천 생성 시작');
       generateRecommendations();
+    } else {
+      console.log('위치 정보가 유효하지 않아 추천 생성하지 않음');
     }
   }, [userLocation?.latitude, userLocation?.longitude, userLocation?.address, generateRecommendations]);
 

@@ -4,10 +4,26 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { MapPin, AlertCircle, Search, Navigation } from 'lucide-react';
-import { useLocation } from '@/hooks/useLocation';
 
-const LocationInfo = () => {
-  const { latitude, longitude, address, isLoading, error, getCurrentLocation, searchByAddress } = useLocation();
+interface LocationInfoProps {
+  latitude: number;
+  longitude: number;
+  address: string;
+  isLoading: boolean;
+  error: string | null;
+  getCurrentLocation: () => void;
+  searchByAddress: (address: string) => Promise<void>;
+}
+
+const LocationInfo = ({
+  latitude,
+  longitude,
+  address,
+  isLoading,
+  error,
+  getCurrentLocation,
+  searchByAddress
+}: LocationInfoProps) => {
   const [searchAddress, setSearchAddress] = useState('');
   const [isSearching, setIsSearching] = useState(false);
 
