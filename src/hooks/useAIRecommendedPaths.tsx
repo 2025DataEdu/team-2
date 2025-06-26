@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface RealWalkingPath {
@@ -51,7 +51,8 @@ export const useAIRecommendedPaths = ({ userProfile, userLocation }: UseAIRecomm
   const [recommendedPaths, setRecommendedPaths] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const generateRecommendations = async () => {
+  const generateRecommendations = useCallback(async () => {
+    console.log('generateRecommendations 함수 실행됨, 위치:', userLocation);
     setIsLoading(true);
     
     try {
@@ -135,13 +136,14 @@ export const useAIRecommendedPaths = ({ userProfile, userLocation }: UseAIRecomm
         return convertedPath;
       });
 
+      console.log('새로운 추천 경로 생성됨:', selectedPaths.length, '개');
       setRecommendedPaths(selectedPaths);
     } catch (error) {
       console.error('Error in generateRecommendations:', error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [userProfile, userLocation]);
 
   // 헬퍼 함수들
   const getDifficultyFromLevel = (level: string | null): string => {
@@ -224,9 +226,11 @@ export const useAIRecommendedPaths = ({ userProfile, userLocation }: UseAIRecomm
     return foodOptions[index % foodOptions.length];
   };
 
+  // 초기 로드 시에만 실행
   useEffect(() => {
+    console.log('useAIRecommendedPaths 초기 로드');
     generateRecommendations();
-  }, [userProfile, userLocation]);
+  }, [generateRecommendations]);
 
   return {
     recommendedPaths,

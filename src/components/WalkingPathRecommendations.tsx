@@ -64,13 +64,18 @@ const WalkingPathRecommendations = ({
   // 건강정보 기반 걷기 속도 계산
   const walkingSpeed = healthProfile ? getWalkingSpeed(healthProfile) : null;
 
-  // 위치 정보가 변경될 때마다 추천 새로고침 - generateRecommendations 의존성 제거
+  // 위치 정보가 변경될 때마다 추천 새로고침 - 강제로 generateRecommendations 호출
   useEffect(() => {
-    if (userLocation) {
+    if (userLocation && userLocation.latitude && userLocation.longitude) {
       console.log('위치 정보 변경됨, 산책로 추천 새로고침:', userLocation);
-      generateRecommendations();
+      // setTimeout을 사용해서 비동기적으로 호출하여 무한 루프 방지
+      const timer = setTimeout(() => {
+        generateRecommendations();
+      }, 100);
+      
+      return () => clearTimeout(timer);
     }
-  }, [userLocation?.latitude, userLocation?.longitude]); // generateRecommendations 제거
+  }, [userLocation?.latitude, userLocation?.longitude, generateRecommendations]);
   
   return (
     <div className="w-full space-y-6">
