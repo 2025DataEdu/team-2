@@ -192,11 +192,20 @@ const RealPathCard = ({ path, onSelect, onCardClick }: RealPathCardProps) => {
       <CardContent className="flex flex-col h-full">
         <div className="flex-grow">
           <div className="mb-4">
+            <div className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+              <MapPin className="h-4 w-4 text-blue-600" />
+              산책로 경로
+            </div>
             <SmallMap 
               latitude={path.Latitude} 
               longitude={path.Longitude} 
-              height="150px"
+              height="180px"
               className="w-full"
+              walkingPath={{
+                name: path.CoursName || path.CorusDetailName || '산책로',
+                distance: path.CoursDetailLength || parseFloat(path.CoursLength || '0') || 2.5,
+                coordinates: undefined // 실제 좌표 데이터가 있다면 여기에 추가
+              }}
             />
           </div>
 

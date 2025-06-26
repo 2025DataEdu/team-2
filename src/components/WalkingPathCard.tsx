@@ -177,18 +177,23 @@ const WalkingPathCard = ({ path, onSelect, onCardClick, walkingSpeed }: WalkingP
           </div>
         )}
 
-        {/* 작은 지도 추가 */}
+        {/* 산책로 경로가 표시되는 지도 */}
         {originalData?.Latitude && originalData?.Longitude && (
           <div className="mb-4">
             <div className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
               <MapPin className="h-4 w-4 text-blue-600" />
-              위치
+              산책로 경로
             </div>
             <SmallMap 
               latitude={originalData.Latitude} 
               longitude={originalData.Longitude} 
-              height="120px"
+              height="180px"
               className="w-full"
+              walkingPath={{
+                name: path.name,
+                distance: path.distance,
+                coordinates: undefined // 실제 좌표 데이터가 있다면 여기에 추가
+              }}
             />
           </div>
         )}
