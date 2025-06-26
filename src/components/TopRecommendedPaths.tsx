@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import LocationBasedRecommendedPaths from './LocationBasedRecommendedPaths';
 import { useLocation } from '@/hooks/useLocation';
 
@@ -9,6 +9,15 @@ interface TopRecommendedPathsProps {
 
 const TopRecommendedPaths = ({ title = "내 주변 추천 산책로 TOP 3" }: TopRecommendedPathsProps) => {
   const { latitude, longitude, isLoading: locationLoading, error: locationError } = useLocation();
+  const [key, setKey] = useState(0);
+
+  // 위치가 변경될 때마다 컴포넌트 재렌더링 강제
+  useEffect(() => {
+    if (!locationLoading && latitude && longitude) {
+      console.log('TOP 3 추천 - 위치 변경 감지:', { latitude, longitude });
+      setKey(prev => prev + 1);
+    }
+  }, [latitude, longitude, locationLoading]);
 
   if (locationLoading) {
     return (
@@ -37,6 +46,7 @@ const TopRecommendedPaths = ({ title = "내 주변 추천 산책로 TOP 3" }: To
   return (
     <div>
       <LocationBasedRecommendedPaths
+        key={key}
         userLatitude={latitude}
         userLongitude={longitude}
         maxDistance={5}
