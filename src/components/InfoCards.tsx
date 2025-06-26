@@ -12,12 +12,23 @@ interface UserProfile {
   walkingGoal: string;
 }
 
+interface LocationData {
+  latitude: number;
+  longitude: number;
+  address: string;
+  isLoading: boolean;
+  error: string | null;
+  getCurrentLocation: () => void;
+  searchByAddress: (address: string) => Promise<void>;
+}
+
 interface InfoCardsProps {
   userProfile: UserProfile | null;
   onEditProfile: () => void;
+  location: LocationData;
 }
 
-const InfoCards = ({ userProfile, onEditProfile }: InfoCardsProps) => {
+const InfoCards = ({ userProfile, onEditProfile, location }: InfoCardsProps) => {
   const { healthProfile, isLoading: healthLoading, error: healthError } = useHealthProfile();
 
   return (
@@ -25,7 +36,15 @@ const InfoCards = ({ userProfile, onEditProfile }: InfoCardsProps) => {
       {/* 기존 정보 카드들 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <WeatherInfo />
-        <LocationInfo />
+        <LocationInfo 
+          latitude={location.latitude}
+          longitude={location.longitude}
+          address={location.address}
+          isLoading={location.isLoading}
+          error={location.error}
+          getCurrentLocation={location.getCurrentLocation}
+          searchByAddress={location.searchByAddress}
+        />
         <div className="lg:col-span-1">
           <div className="bg-white rounded-lg shadow p-4">
             <h3 className="font-bold text-gray-900 mb-3">📋 건강 프로필</h3>
