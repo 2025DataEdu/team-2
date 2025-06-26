@@ -1,3 +1,4 @@
+
 import { useState, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -12,8 +13,8 @@ export const useElevenLabsTTS = () => {
       // 5살 여자아이에게 가장 적합한 목소리 - Lily 사용 (더 어리고 순수한 느낌)
       const voiceId = 'pFZP5JQG7iQjIQuC4Bku'; // Lily voice - 진짜 5살 여자아이 목소리
       
-      // 5살 여자아이 목소리를 위한 프롬프트를 텍스트에 추가
-      const enhancedText = `Please generate speech in the voice of a 5-year-old girl. Her voice should be high-pitched, soft, and cheerful. The tone should be innocent, curious, and playful—like a child discovering something for the first time. Speak slowly and clearly, with slightly exaggerated expressions. Add subtle giggles, rising intonation at the end of questions, and natural childlike rhythm. The pronunciation should be slightly imperfect, as a real young child might speak, but still understandable. Here's what to say: ${text}`;
+      // 5살 여자아이 목소리를 위한 한국어 프롬프트를 텍스트에 추가
+      const enhancedText = `당신은 5살 여자아이입니다. 높고 부드럽고 귀여운 목소리로 말해주세요. 목소리는 순수하고 호기심 많고 장난스러워야 합니다 - 마치 처음 뭔가를 발견한 어린아이처럼요. 천천히 그리고 명확하게 말하되, 살짝 과장된 표현을 사용하세요. 자연스러운 어린아이 특유의 웃음소리나 의문문 끝의 올라가는 억양, 그리고 자연스러운 어린이 리듬을 추가해주세요. 발음은 진짜 어린 아이처럼 살짝 부정확하되, 여전히 알아들을 수 있게 해주세요. 다음 내용을 한국어로 말해주세요: ${text}`;
       
       const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
         method: 'POST',
