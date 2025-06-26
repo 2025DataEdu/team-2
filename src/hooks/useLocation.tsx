@@ -10,7 +10,11 @@ interface LocationData {
   error: string | null;
 }
 
-export const useLocation = () => {
+interface UseLocationOptions {
+  onLocationChange?: (location: { latitude: number; longitude: number; address: string }) => void;
+}
+
+export const useLocation = (options?: UseLocationOptions) => {
   const [location, setLocation] = useState<LocationData>({
     latitude: 0,
     longitude: 0,
@@ -18,6 +22,20 @@ export const useLocation = () => {
     isLoading: true,
     error: null
   });
+
+  // 위치 업데이트 헬퍼 함수
+  const updateLocation = (newLocation: Omit<LocationData, 'isLoading' | 'error'>) => {
+    setLocation({
+      ...newLocation,
+      isLoading: false,
+      error: null
+    });
+    
+    // 위치 변경 콜백 호출
+    if (options?.onLocationChange) {
+      options.onLocationChange(newLocation);
+    }
+  };
 
   // 현재 위치 가져오기
   const getCurrentLocation = () => {
@@ -39,12 +57,10 @@ export const useLocation = () => {
         try {
           const mockAddress = `서울시 ${latitude > 37.55 ? '강북구' : '강남구'} ${longitude > 127.0 ? '동쪽' : '서쪽'} 지역`;
           
-          setLocation({
+          updateLocation({
             latitude: Number(latitude.toFixed(6)),
             longitude: Number(longitude.toFixed(6)),
-            address: mockAddress,
-            isLoading: false,
-            error: null
+            address: mockAddress
           });
         } catch (error) {
           setLocation(prev => ({
@@ -68,10 +84,14 @@ export const useLocation = () => {
             break;
         }
         
-        setLocation({
+        const defaultLocation = {
           latitude: Number((37.5665).toFixed(6)),
           longitude: Number((126.9780).toFixed(6)),
-          address: '서울특별시 중구 (기본 위치)',
+          address: '서울특별시 중구 (기본 위치)'
+        };
+        
+        setLocation({
+          ...defaultLocation,
           isLoading: false,
           error: errorMessage
         });
@@ -89,12 +109,11 @@ export const useLocation = () => {
       const result = await geocodeAddress(address);
       
       if (result) {
-        setLocation({
+        console.log('주소 검색 결과:', result);
+        updateLocation({
           latitude: Number(result.latitude.toFixed(6)),
           longitude: Number(result.longitude.toFixed(6)),
-          address: result.formattedAddress,
-          isLoading: false,
-          error: null
+          address: result.formattedAddress
         });
       } else {
         setLocation(prev => ({

@@ -38,7 +38,14 @@ const Index = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [selectedPath, setSelectedPath] = useState<WalkingPath | null>(null);
   const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>([]);
-  const location = useLocation();
+  
+  // 위치 변경 시 추천 경로 자동 업데이트를 위한 콜백
+  const location = useLocation({
+    onLocationChange: (newLocation) => {
+      console.log('위치가 변경되었습니다:', newLocation);
+      // 추천 경로가 자동으로 재생성됩니다
+    }
+  });
 
   // 자동으로 건강 정보 로드 및 추천 생성
   useEffect(() => {
@@ -139,7 +146,11 @@ const Index = () => {
               <WalkingPathRecommendations 
                 userProfile={userProfile} 
                 onPathSelect={handlePathSelect}
-                userLocation={location.error ? undefined : location}
+                userLocation={location.error ? undefined : {
+                  latitude: location.latitude,
+                  longitude: location.longitude,
+                  address: location.address
+                }}
                 selectedDifficulties={selectedDifficulties}
               />
             </div>
