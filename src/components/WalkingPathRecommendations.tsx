@@ -1,7 +1,9 @@
+
 import React from 'react';
 import PathRecommendationHeader from './PathRecommendationHeader';
 import AIAnalysisCard from './AIAnalysisCard';
 import AIRecommendedPathGrid from './AIRecommendedPathGrid';
+import LocationBasedRecommendedPaths from './LocationBasedRecommendedPaths';
 import { useAIRecommendedPaths } from '@/hooks/useAIRecommendedPaths';
 import { useHealthProfile } from '@/hooks/useHealthProfile';
 import { getWalkingSpeed } from '@/utils/exerciseRecommendation';
@@ -79,6 +81,19 @@ const WalkingPathRecommendations = ({
             <strong className="font-accent font-semibold">목표 심박수:</strong> {walkingSpeed.heartRateRange.min}-{walkingSpeed.heartRateRange.max} BPM 
             ({walkingSpeed.recommendedPace})
           </div>
+        </div>
+      )}
+
+      {/* 위치 기반 실제 산책로 추천 - 가장 상단에 배치 */}
+      {userLocation && (
+        <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
+          <LocationBasedRecommendedPaths
+            userLatitude={userLocation.latitude}
+            userLongitude={userLocation.longitude}
+            maxDistance={5}
+            limit={3}
+            title="🎯 현재 위치 기반 실제 산책로 TOP 3"
+          />
         </div>
       )}
 
