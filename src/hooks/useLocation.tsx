@@ -25,17 +25,34 @@ export const useLocation = (options?: UseLocationOptions) => {
 
   // 위치 업데이트 헬퍼 함수
   const updateLocation = (newLocation: Omit<LocationData, 'isLoading' | 'error'>) => {
-    setLocation({
-      ...newLocation,
-      isLoading: false,
-      error: null
-    });
+    console.log('updateLocation 호출됨:', newLocation);
     
-    // 위치 변경 콜백 호출
-    if (options?.onLocationChange) {
-      console.log('위치 변경 콜백 호출:', newLocation);
-      options.onLocationChange(newLocation);
-    }
+    setLocation(prev => {
+      // 위치가 실제로 변경되었는지 확인
+      const hasChanged = 
+        prev.latitude !== newLocation.latitude || 
+        prev.longitude !== newLocation.longitude || 
+        prev.address !== newLocation.address;
+        
+      if (hasChanged) {
+        console.log('위치 변경 감지됨, 콜백 호출 예정:', newLocation);
+        
+        // 위치 변경 콜백 호출
+        if (options?.onLocationChange) {
+          console.log('위치 변경 콜백 호출:', newLocation);
+          // 다음 렌더링 사이클에서 콜백 호출
+          setTimeout(() => {
+            options.onLocationChange!(newLocation);
+          }, 0);
+        }
+      }
+      
+      return {
+        ...newLocation,
+        isLoading: false,
+        error: null
+      };
+    });
   };
 
   // 현재 위치 가져오기

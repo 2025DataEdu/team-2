@@ -39,6 +39,7 @@ const Index = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [selectedPath, setSelectedPath] = useState<WalkingPath | null>(null);
   const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>([]);
+  const [forceUpdateKey, setForceUpdateKey] = useState(0); // 강제 업데이트를 위한 키
   
   // 추천 경로 강제 갱신을 위한 ref
   const recommendationRefreshRef = useRef<(() => void) | null>(null);
@@ -46,14 +47,19 @@ const Index = () => {
   // 위치 변경 시 추천 경로 자동 업데이트를 위한 콜백
   const location = useLocation({
     onLocationChange: (newLocation) => {
-      console.log('위치가 변경되었습니다:', newLocation);
-      console.log('추천 경로 갱신 시작');
+      console.log('===== 위치 변경 감지! 추천 경로 강제 업데이트 시작 =====');
+      console.log('새로운 위치:', newLocation);
+      
+      // 강제 업데이트 키 증가로 컴포넌트 재렌더링 유발
+      setForceUpdateKey(prev => prev + 1);
       
       // 추천 경로 강제 갱신
       if (recommendationRefreshRef.current) {
-        console.log('recommendationRefreshRef.current 호출');
+        console.log('recommendationRefreshRef.current 호출 - 추천 경로 새로고침');
         recommendationRefreshRef.current();
       }
+      
+      console.log('===== 위치 변경 처리 완료 =====');
     }
   });
 
@@ -154,6 +160,7 @@ const Index = () => {
           {currentStep === 'recommendations' && userProfile && (
             <div className="space-y-8">
               <WalkingPathRecommendations 
+                key={`recommendations-${forceUpdateKey}`} // 강제 업데이트를 위한 키
                 userProfile={userProfile} 
                 onPathSelect={handlePathSelect}
                 userLocation={location.error ? undefined : {
@@ -163,6 +170,7 @@ const Index = () => {
                 }}
                 selectedDifficulties={selectedDifficulties}
                 onRefreshRef={(refreshFn) => {
+                  console.log('onRefreshRef 콜백 등록됨');
                   recommendationRefreshRef.current = refreshFn;
                 }}
               />
