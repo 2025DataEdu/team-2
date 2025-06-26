@@ -20,7 +20,7 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				sans: ['Noto Sans KR', 'sans-serif'],
+				sans: ['Noto Serif KR', 'serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
