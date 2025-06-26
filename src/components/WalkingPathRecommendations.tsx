@@ -79,11 +79,11 @@ const WalkingPathRecommendations = ({
 
   // 통합 새로고침 함수
   const handleRefresh = () => {
-    console.log('=== handleRefresh 함수 호출됨 ===');
+    console.log('=== 수동 새로고침 함수 호출됨 ===');
     console.log('현재 위치 정보:', userLocation);
     generateRecommendations();
     generatePathRecommendations();
-    console.log('=== 추천 경로 새로고침 완료 ===');
+    console.log('=== 수동 추천 경로 새로고침 완료 ===');
   };
 
   // 부모 컴포넌트에 새로고침 함수 전달
@@ -93,27 +93,6 @@ const WalkingPathRecommendations = ({
       onRefreshRef(handleRefresh);
     }
   }, [onRefreshRef]);
-
-  // 위치 변경 감지 및 강제 새로고침 - 더 정확한 감지
-  useEffect(() => {
-    console.log('=== WalkingPathRecommendations: 위치 변경 감지 useEffect ===');
-    console.log('userLocation 변경됨:', userLocation);
-    console.log('timestamp:', new Date().toISOString());
-    
-    // 위치 정보가 있고 유효할 때만 새로고침
-    if (userLocation && 
-        userLocation.latitude && 
-        userLocation.longitude && 
-        userLocation.address) {
-      console.log('=== 유효한 위치 정보 감지, 강제 새로고침 실행 ===');
-      handleRefresh();
-    }
-  }, [
-    userLocation?.latitude, 
-    userLocation?.longitude, 
-    userLocation?.address,
-    userProfile // userProfile 변경시에도 새로고침
-  ]);
   
   return (
     <div className="w-full space-y-6">
