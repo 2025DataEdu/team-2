@@ -47,15 +47,10 @@ export const useLocationBasedPaths = ({ userLatitude, userLongitude, maxDistance
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // 위치가 변경될 때마다 데이터 다시 불러오기
   useEffect(() => {
     const fetchPaths = async () => {
       try {
         setIsLoading(true);
-        setError(null);
-        
-        console.log('새로운 위치 기반 산책로 검색:', { userLatitude, userLongitude });
-        
         const { data, error } = await supabase
           .from('내주변산책로')
           .select('*')
@@ -66,7 +61,6 @@ export const useLocationBasedPaths = ({ userLatitude, userLongitude, maxDistance
           throw error;
         }
 
-        console.log('위치 기반 산책로 데이터 로드 완료:', data?.length || 0);
         setAllPaths(data || []);
       } catch (err) {
         console.error('Error fetching walking paths:', err);
@@ -76,18 +70,17 @@ export const useLocationBasedPaths = ({ userLatitude, userLongitude, maxDistance
       }
     };
 
-    if (userLatitude && userLongitude) {
-      fetchPaths();
-    }
-  }, [userLatitude, userLongitude]); // 위치 변경 시 데이터 재로드
+    fetchPaths();
+  }, []);
 
   // 위치 기반으로 필터링하고 정렬된 산책로 - 정확히 3개만
   const nearbyPaths = useMemo(() => {
     if (!allPaths.length || !userLatitude || !userLongitude) return [];
 
-    console.log('새로운 위치로 TOP 3 산책로 계산 중...');
-    console.log('현재 위치:', { userLatitude, userLongitude });
-    console.log('사용 가능한 전체 산책로:', allPaths.length);
+    console.log('Processing paths for TOP 3 recommendation...');
+    console.log('Total paths available:', allPaths.length);
+    console.log('User location:', { userLatitude, userLongitude });
+    console.log('Max distance:', maxDistance);
 
     const pathsWithDistance = allPaths.map(path => {
       if (!path.Latitude || !path.Longitude) return null;
@@ -107,13 +100,14 @@ export const useLocationBasedPaths = ({ userLatitude, userLongitude, maxDistance
       path !== null && path.distance <= maxDistance
     );
 
-    console.log('거리 내 산책로 개수:', pathsWithDistance.length);
+    console.log('Paths within distance:', pathsWithDistance.length);
 
     // 거리순으로 정렬하고 정확히 3개만 반환
     const sortedPaths = pathsWithDistance.sort((a, b) => a.distance - b.distance);
     const top3Paths = sortedPaths.slice(0, 3);
     
-    console.log('새로운 TOP 3 산책로:', top3Paths.map(p => ({ 
+    console.log('Final TOP 3 paths:', top3Paths.length);
+    console.log('TOP 3 paths details:', top3Paths.map(p => ({ 
       name: p.CoursName, 
       distance: p.distance 
     })));

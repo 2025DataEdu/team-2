@@ -1,5 +1,4 @@
-
-import React, { useEffect } from 'react';
+import React from 'react';
 import PathRecommendationHeader from './PathRecommendationHeader';
 import AIAnalysisCard from './AIAnalysisCard';
 import AIRecommendedPathGrid from './AIRecommendedPathGrid';
@@ -63,14 +62,6 @@ const WalkingPathRecommendations = ({
 
   // 건강정보 기반 걷기 속도 계산
   const walkingSpeed = healthProfile ? getWalkingSpeed(healthProfile) : null;
-
-  // 위치 정보가 변경될 때마다 자동으로 추천 재생성
-  useEffect(() => {
-    if (userLocation && userLocation.latitude && userLocation.longitude) {
-      console.log('위치 정보 변경 감지:', userLocation);
-      generateRecommendations();
-    }
-  }, [userLocation?.latitude, userLocation?.longitude, generateRecommendations]);
   
   return (
     <div className="w-full space-y-6">
