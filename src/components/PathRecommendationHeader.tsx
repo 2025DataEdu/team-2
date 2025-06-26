@@ -20,9 +20,7 @@ const PathRecommendationHeader = ({
     useElevenLabs,
     speakText, 
     pauseResumeSpeech, 
-    stopSpeech,
-    setApiKey,
-    useBrowserTTS
+    stopSpeech
   } = useSpeechSynthesis();
 
   const handleSpeakRecommendationInfo = () => {
@@ -50,8 +48,6 @@ const PathRecommendationHeader = ({
           onSpeak={handleSpeakRecommendationInfo}
           onPauseResume={pauseResumeSpeech}
           onStop={stopSpeech}
-          onSetApiKey={setApiKey}
-          onUseBrowserTTS={useBrowserTTS}
         />
         <Button 
           onClick={onRefresh} 

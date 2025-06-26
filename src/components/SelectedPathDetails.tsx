@@ -31,9 +31,7 @@ const SelectedPathDetails = ({ selectedPath }: SelectedPathDetailsProps) => {
     useElevenLabs,
     speakText, 
     pauseResumeSpeech, 
-    stopSpeech,
-    setApiKey,
-    useBrowserTTS
+    stopSpeech
   } = useSpeechSynthesis();
 
   const handleSpeakPathDescription = () => {
@@ -71,8 +69,6 @@ const SelectedPathDetails = ({ selectedPath }: SelectedPathDetailsProps) => {
             onSpeak={handleSpeakPathDescription}
             onPauseResume={pauseResumeSpeech}
             onStop={stopSpeech}
-            onSetApiKey={setApiKey}
-            onUseBrowserTTS={useBrowserTTS}
           />
         </div>
         

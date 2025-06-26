@@ -2,7 +2,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Volume2, Pause, Play } from 'lucide-react';
-import VoiceSettings from './VoiceSettings';
 
 interface SpeechControlsProps {
   isPlaying: boolean;
@@ -11,8 +10,6 @@ interface SpeechControlsProps {
   onSpeak: () => void;
   onPauseResume: () => void;
   onStop: () => void;
-  onSetApiKey?: (apiKey: string) => void;
-  onUseBrowserTTS?: () => void;
 }
 
 const SpeechControls = ({
@@ -22,19 +19,9 @@ const SpeechControls = ({
   onSpeak,
   onPauseResume,
   onStop,
-  onSetApiKey,
-  onUseBrowserTTS,
 }: SpeechControlsProps) => {
   return (
     <div className="flex gap-2 items-center">
-      {onSetApiKey && onUseBrowserTTS && (
-        <VoiceSettings
-          onSetApiKey={onSetApiKey}
-          onUseBrowserTTS={onUseBrowserTTS}
-          useElevenLabs={useElevenLabs}
-        />
-      )}
-      
       {!isPlaying ? (
         <Button
           onClick={onSpeak}
