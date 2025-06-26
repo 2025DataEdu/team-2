@@ -11,12 +11,10 @@ export const useBrowserTTS = () => {
 
   const speakText = (text: string) => {
     if ('speechSynthesis' in window) {
-      // 기존 음성이 재생 중이면 중지
       speechSynthesis.cancel();
       
       const utterance = new SpeechSynthesisUtterance(text);
       
-      // 목소리 로드 대기 후 설정
       const setVoiceAndSpeak = () => {
         const optimalVoice = getOptimalVoice();
         if (optimalVoice) {
@@ -24,7 +22,7 @@ export const useBrowserTTS = () => {
         }
         
         utterance.lang = 'ko-KR';
-        utterance.rate = 0.9; // 조금 빠르게 (5살 아이처럼)
+        utterance.rate = 1.1; // 조금 빠르게 (5살 아이처럼)
         utterance.pitch = 2.0; // 최대 높은 톤 (5살 여자아이)
         utterance.volume = 1;
 
@@ -32,8 +30,8 @@ export const useBrowserTTS = () => {
           setIsPlaying(true);
           setIsPaused(false);
           toast({
-            title: "🎀 헤헤헷! 들어봐봐~",
-            description: "5살 여자아이 목소리야! 완전 귀여워!",
+            title: "🎀 헤헷! 들어봐~",
+            description: "5살 여자아이 목소리쪄! 귀여워!",
           });
         };
 
@@ -42,8 +40,8 @@ export const useBrowserTTS = () => {
           setIsPaused(false);
           utteranceRef.current = null;
           toast({
-            title: "🌸 다 말했어어!",
-            description: "어땠어? 완전 귀여웠지? 히히히헷~",
+            title: "🌸 다 말했어!",
+            description: "어땠어? 귀여웠지? 짠!",
           });
         };
 
@@ -54,7 +52,7 @@ export const useBrowserTTS = () => {
           utteranceRef.current = null;
           toast({
             title: "😅 앗! 안 돼!",
-            description: "다시 해볼게! 걱정 마마~",
+            description: "다시 해볼게! 걱정 마~",
             variant: "destructive",
           });
         };
@@ -63,7 +61,6 @@ export const useBrowserTTS = () => {
         speechSynthesis.speak(utterance);
       };
 
-      // 목소리 로드 확인
       if (speechSynthesis.getVoices().length === 0) {
         speechSynthesis.onvoiceschanged = () => {
           setVoiceAndSpeak();
@@ -86,15 +83,15 @@ export const useBrowserTTS = () => {
         speechSynthesis.resume();
         setIsPaused(false);
         toast({
-          title: "🎵 다시 들어봐봐!",
-          description: "계속 말해줄게~! 히히히~",
+          title: "🎵 다시 들어봐!",
+          description: "계속 말해줄게~ 헤헷!",
         });
       } else {
         speechSynthesis.pause();
         setIsPaused(true);
         toast({
-          title: "⏸️ 잠깐만잠깐만!",
-          description: "기다려줄게~ 언제든 다시 눌러봐봐!",
+          title: "⏸️ 잠깐만!",
+          description: "기다려줄게~ 언제든 다시 눌러봐!",
         });
       }
     }
@@ -108,7 +105,7 @@ export const useBrowserTTS = () => {
       utteranceRef.current = null;
       toast({
         title: "🛑 그만 말할게!",
-        description: "또 들려줄 거 있으면 말해줘~ 기다릴게!",
+        description: "또 들려줄 거 있으면 말해줘~ 기다릴게쪄!",
       });
     }
   };
