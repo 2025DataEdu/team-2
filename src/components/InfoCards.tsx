@@ -71,7 +71,7 @@ const InfoCards = ({ userProfile, onEditProfile }: InfoCardsProps) => {
                 </div>
                 <div className="flex justify-between">
                   <span>운동시간(주당):</span>
-                  <span>{healthProfile['주당 운동 시간(시간)'] ? `${healthProfile['주당 운동 시간(시간)']}시간/주` : '정보없음'}</span>
+                  <span>{healthProfile['주당 운동 시간(시간)'] ? `${healthProfile['주당 운동 시간(시간)'].toFixed(2)}시간/주` : '정보없음'}</span>
                 </div>
                 {healthProfile['진단 질병'] && (
                   <div className="flex justify-between">
