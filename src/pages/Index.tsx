@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import LoadingScreen from '@/components/LoadingScreen';
 import AppHeader from '@/components/AppHeader';
@@ -106,18 +105,16 @@ const Index = () => {
 
   return (
     <div className="min-h-screen relative">
-      {/* 배경 이미지 레이어 - 러너 이미지로 변경하고 더 선명하게 */}
+      {/* 배경 이미지 레이어 - 런닝하는 사람 이미지 */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80')`,
-          filter: 'brightness(1.1) contrast(1.1)',
-          transform: 'scale(1.02)'
+          backgroundImage: `url('https://images.unsplash.com/photo-1571008887538-b36bb32f4571?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80')`,
         }}
       />
       
-      {/* 오버레이 - 훨씬 더 투명하게 */}
-      <div className="absolute inset-0 bg-gradient-to-br from-green-500/15 via-green-400/10 to-green-300/15" />
+      {/* 오버레이 - 매우 투명하게 */}
+      <div className="absolute inset-0 bg-black/20" />
       
       {/* 메인 콘텐츠 */}
       <div className="relative z-10 min-h-screen">
