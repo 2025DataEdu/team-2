@@ -27,9 +27,16 @@ const SmallMap = ({ latitude, longitude, className = '', height = '200px', walki
     // Leaflet 아이콘 초기화
     initializeLeafletIcons();
 
-    // 기존 맵이 있으면 제거
+    // 기존 맵이 있으면 완전히 제거
     if (mapInstanceRef.current) {
+      mapInstanceRef.current.off();
       mapInstanceRef.current.remove();
+      mapInstanceRef.current = null;
+    }
+
+    // 맵 컨테이너 내용 정리
+    if (mapRef.current) {
+      mapRef.current.innerHTML = '';
     }
 
     // 새 맵 생성
@@ -56,8 +63,12 @@ const SmallMap = ({ latitude, longitude, className = '', height = '200px', walki
 
     return () => {
       if (mapInstanceRef.current) {
+        mapInstanceRef.current.off();
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
+      }
+      if (mapRef.current) {
+        mapRef.current.innerHTML = '';
       }
     };
   }, [latitude, longitude, walkingPath]);

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {
   Dialog,
@@ -108,15 +109,20 @@ const PathDetailModal = ({ path, isOpen, onClose, onSelect }: PathDetailModalPro
             </div>
           </div>
 
-          {/* 큰 지도 섹션 */}
+          {/* 큰 지도 섹션 - 산책로 경로도 함께 표시 */}
           {originalData?.Latitude && originalData?.Longitude && (
             <div>
-              <h4 className="font-medium text-gray-900 mb-3">🗺️ 위치</h4>
+              <h4 className="font-medium text-gray-900 mb-3">🗺️ 위치 및 산책로 경로</h4>
               <SmallMap 
                 latitude={originalData.Latitude} 
                 longitude={originalData.Longitude} 
                 height="300px"
                 className="w-full"
+                walkingPath={{
+                  name: path.name,
+                  distance: path.distance,
+                  coordinates: undefined // 실제 좌표 데이터가 있다면 여기에 추가
+                }}
               />
             </div>
           )}
