@@ -66,8 +66,8 @@ const InfoCards = ({ userProfile, onEditProfile }: InfoCardsProps) => {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span>운동빈도:</span>
-                  <span>{healthProfile['운동 빈도(회/주)'] || '정보없음'}</span>
+                  <span>운동빈도(주당):</span>
+                  <span>{healthProfile['운동 빈도(회/주)'] ? `${healthProfile['운동 빈도(회/주)']}회/주` : '정보없음'}</span>
                 </div>
                 {healthProfile['진단 질병'] && (
                   <div className="flex justify-between">
