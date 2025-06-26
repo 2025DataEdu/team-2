@@ -97,13 +97,13 @@ const LocationInfo = () => {
             <div className="flex justify-between items-center">
               <span className="text-gray-600">위도:</span>
               <span className="font-medium">
-                {isSearching ? '검색 중...' : latitude.toFixed(6)}
+                {isSearching ? '검색 중...' : latitude.toFixed(2)}
               </span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-gray-600">경도:</span>
               <span className="font-medium">
-                {isSearching ? '검색 중...' : longitude.toFixed(6)}
+                {isSearching ? '검색 중...' : longitude.toFixed(2)}
               </span>
             </div>
           </div>
