@@ -10,8 +10,8 @@ export const useElevenLabsTTS = () => {
 
   const generateSpeech = async (text: string, apiKey: string) => {
     try {
-      // 5살 여자아이에게 가장 적합한 목소리 - Charlotte 사용 (더 어리고 귀여운 느낌)
-      const voiceId = 'XB0fDUnXU5powFXDhCwa'; // Charlotte voice - 5살 여자아이 목소리
+      // Anika 목소리 사용 - 매우 자연스럽고 표현력 있는 여성 목소리
+      const voiceId = '9BWtsMINqrJLrRacOk9x'; // Anika voice - 자연스럽고 표현력 있는 목소리
       
       const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
         method: 'POST',
@@ -22,11 +22,11 @@ export const useElevenLabsTTS = () => {
         },
         body: JSON.stringify({
           text: text,
-          model_id: 'eleven_turbo_v2_5', // 더 빠른 모델로 변경
+          model_id: 'eleven_turbo_v2_5', // 빠른 모델 사용
           voice_settings: {
-            stability: 0.35, // 더 불안정하게 해서 5살 아이의 자연스러운 느낌
-            similarity_boost: 0.85, // 조금 낮춰서 더 변화무쌍하게
-            style: 1.0, // 최대 감정적 표현력
+            stability: 0.75, // 안정적인 목소리
+            similarity_boost: 0.75, // 자연스러운 톤
+            style: 0.8, // 적당한 감정 표현
             use_speaker_boost: true
           }
         })
@@ -49,8 +49,8 @@ export const useElevenLabsTTS = () => {
   const speakText = async (text: string, apiKey?: string) => {
     if (!apiKey) {
       toast({
-        title: "API 키 필요해요!",
-        description: "ElevenLabs API 키를 설정해주세요~",
+        title: "API 키 필요",
+        description: "ElevenLabs API 키를 설정해주세요",
         variant: "destructive",
       });
       return;
@@ -61,8 +61,8 @@ export const useElevenLabsTTS = () => {
       setIsPaused(false);
       
       toast({
-        title: "🎀 5살 여아 목소리 만드는 중...",
-        description: "진짜진짜 귀여운 목소리로 바꿔줄게! 빨리빨리!",
+        title: "🎤 Anika 목소리로 변환 중...",
+        description: "자연스럽고 표현력 있는 목소리로 만들어드리고 있어요!",
       });
 
       const audioUrl = await generateSpeech(text, apiKey);
@@ -81,8 +81,8 @@ export const useElevenLabsTTS = () => {
 
       audio.onplay = () => {
         toast({
-          title: "🎵 야호! 들어봐봐~",
-          description: "5살 여자아이 목소리야! 진짜 귀엽지? 히히히~",
+          title: "🎵 Anika 목소리로 재생 중",
+          description: "자연스럽고 표현력 있는 목소리를 들어보세요!",
         });
       };
 
@@ -91,8 +91,8 @@ export const useElevenLabsTTS = () => {
         setIsPaused(false);
         URL.revokeObjectURL(audioUrl);
         toast({
-          title: "✨ 어땠어어땠어?",
-          description: "진짜 귀여웠지? 또 들을래? 헤헤헤헷~",
+          title: "✨ 재생 완료",
+          description: "Anika 목소리는 어떠셨나요? 더 들으시려면 다시 눌러주세요!",
         });
       };
 
@@ -100,8 +100,8 @@ export const useElevenLabsTTS = () => {
         setIsPlaying(false);
         setIsPaused(false);
         toast({
-          title: "앗! 안 돼!",
-          description: "괜찮아괜찮아! 다시 해볼게~ 걱정 마!",
+          title: "재생 오류",
+          description: "음성 재생 중 문제가 발생했습니다. 다시 시도해주세요.",
           variant: "destructive",
         });
       };
@@ -111,8 +111,8 @@ export const useElevenLabsTTS = () => {
       setIsPlaying(false);
       setIsPaused(false);
       toast({
-        title: "목소리 만들기 실패했어ㅠㅠ",
-        description: "또 해볼게! 진짜 귀여운 목소리로 만들어줄게!",
+        title: "음성 생성 실패",
+        description: "Anika 목소리 생성에 실패했습니다. 다시 시도해주세요.",
         variant: "destructive",
       });
     }
@@ -124,15 +124,15 @@ export const useElevenLabsTTS = () => {
         audioRef.current.play();
         setIsPaused(false);
         toast({
-          title: "🎵 다시 들어봐봐!",
-          description: "계속 말해줄게~! 히히~",
+          title: "🎵 재생 재개",
+          description: "계속 들어보세요!",
         });
       } else {
         audioRef.current.pause();
         setIsPaused(true);
         toast({
-          title: "⏸️ 잠깐만!",
-          description: "기다려줄게~ 언제든 다시 눌러봐!",
+          title: "⏸️ 일시 정지",
+          description: "언제든 다시 재생할 수 있어요!",
         });
       }
     }
@@ -145,8 +145,8 @@ export const useElevenLabsTTS = () => {
       setIsPlaying(false);
       setIsPaused(false);
       toast({
-        title: "🛑 그만 말할게!",
-        description: "또 들려줄 거 있으면 말해줘~ 기다릴게!",
+        title: "🛑 재생 중지",
+        description: "음성 재생을 중지했습니다.",
       });
     }
   };

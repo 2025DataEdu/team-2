@@ -25,11 +25,12 @@ const PathRecommendationHeader = ({
 
   const handleSpeakRecommendationInfo = () => {
     const textToSpeak = `
-      안녕! 나는 AI 산책로 추천이야!
-      너의 건강이랑 날씨를 보고서 
-      제일 좋은 산책길을 골라줄게!
-      원하는 산책길을 누르면 자세한 이야기를 들을 수 있어!
-      같이 재밌게 산책하자!
+      안녕하세요! 저는 AI 산책로 추천 시스템입니다.
+      여러분의 건강 상태와 현재 날씨 정보를 종합적으로 분석하여
+      최적의 산책 경로를 추천해드리고 있어요.
+      각 산책로를 클릭하시면 상세한 정보와 함께
+      맞춤형 안내를 들으실 수 있습니다.
+      함께 건강한 산책을 즐겨보세요!
     `;
     
     speakText(textToSpeak);

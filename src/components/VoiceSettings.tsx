@@ -50,7 +50,7 @@ const VoiceSettings = ({ onSetApiKey, onUseBrowserTTS, useElevenLabs }: VoiceSet
               목소리 설정
             </CardTitle>
             <CardDescription>
-              더 귀여운 목소리를 쓰려면 ElevenLabs API 키가 필요해요!
+              현재 Anika 목소리를 사용하고 있습니다 - 자연스럽고 표현력 있는 여성 목소리에요!
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -60,13 +60,13 @@ const VoiceSettings = ({ onSetApiKey, onUseBrowserTTS, useElevenLabs }: VoiceSet
                 <Input
                   id="apiKey"
                   type="password"
-                  placeholder="API 키를 입력해주세요~"
+                  placeholder="API 키를 입력해주세요"
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
                 />
               </div>
               <Button type="submit" className="w-full">
-                🎀 귀여운 목소리 켜기!
+                🎤 Anika 목소리 설정하기
               </Button>
             </form>
             
@@ -76,13 +76,13 @@ const VoiceSettings = ({ onSetApiKey, onUseBrowserTTS, useElevenLabs }: VoiceSet
                 variant="outline" 
                 className="w-full"
               >
-                기본 목소리 쓰기
+                기본 목소리 사용하기
               </Button>
             </div>
             
             {useElevenLabs && (
               <div className="text-sm text-green-600 text-center">
-                ✅ 귀여운 목소리 준비 완료! 에헤헷~
+                ✅ Anika 목소리 준비 완료! 자연스럽고 표현력 있는 목소리로 들려드릴게요~
               </div>
             )}
           </CardContent>
