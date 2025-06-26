@@ -10,8 +10,8 @@ export const useElevenLabsTTS = () => {
 
   const generateSpeech = async (text: string, apiKey: string) => {
     try {
-      // 7살 여자아이에게 가장 적합한 목소리 - Alice 사용 (더 어린 느낌)
-      const voiceId = 'Xb7hH8MSUJpSbSDYk0k2'; // Alice voice - 어린 여자아이 목소리
+      // 5살 여자아이에게 가장 적합한 목소리 - Charlotte 사용 (더 어리고 귀여운 느낌)
+      const voiceId = 'XB0fDUnXU5powFXDhCwa'; // Charlotte voice - 5살 여자아이 목소리
       
       const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
         method: 'POST',
@@ -22,11 +22,11 @@ export const useElevenLabsTTS = () => {
         },
         body: JSON.stringify({
           text: text,
-          model_id: 'eleven_multilingual_v2',
+          model_id: 'eleven_turbo_v2_5', // 더 빠른 모델로 변경
           voice_settings: {
-            stability: 0.45, // 더 불안정하게 해서 어린아이의 자연스러운 느낌
-            similarity_boost: 0.95, // 높은 유사도로 자연스럽게
-            style: 0.90, // 매우 높은 감정적 표현력
+            stability: 0.35, // 더 불안정하게 해서 5살 아이의 자연스러운 느낌
+            similarity_boost: 0.85, // 조금 낮춰서 더 변화무쌍하게
+            style: 1.0, // 최대 감정적 표현력
             use_speaker_boost: true
           }
         })
@@ -61,8 +61,8 @@ export const useElevenLabsTTS = () => {
       setIsPaused(false);
       
       toast({
-        title: "🎀 귀여운 목소리 만드는 중...",
-        description: "와! 진짜 귀여운 목소리로 바꿔줄게~! 에헤헷!",
+        title: "🎀 5살 여아 목소리 만드는 중...",
+        description: "진짜진짜 귀여운 목소리로 바꿔줄게! 빨리빨리!",
       });
 
       const audioUrl = await generateSpeech(text, apiKey);
@@ -76,10 +76,13 @@ export const useElevenLabsTTS = () => {
       const audio = new Audio(audioUrl);
       audioRef.current = audio;
 
+      // 오디오 로딩 최적화
+      audio.preload = 'auto';
+
       audio.onplay = () => {
         toast({
-          title: "🎵 에헤헷! 들어봐~",
-          description: "7살 여자아이 목소리로 말해줄게! 귀엽지?",
+          title: "🎵 야호! 들어봐봐~",
+          description: "5살 여자아이 목소리야! 진짜 귀엽지? 히히히~",
         });
       };
 
@@ -88,8 +91,8 @@ export const useElevenLabsTTS = () => {
         setIsPaused(false);
         URL.revokeObjectURL(audioUrl);
         toast({
-          title: "✨ 다 들었어?",
-          description: "어땠어? 진짜 귀여웠지? 에헤헷~ 히히~",
+          title: "✨ 어땠어어땠어?",
+          description: "진짜 귀여웠지? 또 들을래? 헤헤헤헷~",
         });
       };
 
@@ -97,8 +100,8 @@ export const useElevenLabsTTS = () => {
         setIsPlaying(false);
         setIsPaused(false);
         toast({
-          title: "앗! 오류가 났어",
-          description: "괜찮아! 다시 해볼게~ 걱정 마!",
+          title: "앗! 안 돼!",
+          description: "괜찮아괜찮아! 다시 해볼게~ 걱정 마!",
           variant: "destructive",
         });
       };
@@ -108,8 +111,8 @@ export const useElevenLabsTTS = () => {
       setIsPlaying(false);
       setIsPaused(false);
       toast({
-        title: "음성 만들기 실패했어ㅠㅠ",
-        description: "API 키 문제일 수도 있어! 다시 한 번 해볼까?",
+        title: "목소리 만들기 실패했어ㅠㅠ",
+        description: "또 해볼게! 진짜 귀여운 목소리로 만들어줄게!",
         variant: "destructive",
       });
     }
@@ -121,15 +124,15 @@ export const useElevenLabsTTS = () => {
         audioRef.current.play();
         setIsPaused(false);
         toast({
-          title: "🎵 다시 들어봐!",
-          description: "계속 말해줄게~!",
+          title: "🎵 다시 들어봐봐!",
+          description: "계속 말해줄게~! 히히~",
         });
       } else {
         audioRef.current.pause();
         setIsPaused(true);
         toast({
-          title: "⏸️ 잠깐 멈춰!",
-          description: "기다려줄게~ 언제든 다시 눌러!",
+          title: "⏸️ 잠깐만!",
+          description: "기다려줄게~ 언제든 다시 눌러봐!",
         });
       }
     }
@@ -143,7 +146,7 @@ export const useElevenLabsTTS = () => {
       setIsPaused(false);
       toast({
         title: "🛑 그만 말할게!",
-        description: "또 들려줄 거 있으면 말해줘~",
+        description: "또 들려줄 거 있으면 말해줘~ 기다릴게!",
       });
     }
   };
