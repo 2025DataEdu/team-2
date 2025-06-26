@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import PathRecommendationHeader from './PathRecommendationHeader';
 import AIAnalysisCard from './AIAnalysisCard';
@@ -7,29 +6,7 @@ import { useAIRecommendedPaths } from '@/hooks/useAIRecommendedPaths';
 import { usePathRecommendations } from '@/hooks/usePathRecommendations';
 import { useHealthProfile } from '@/hooks/useHealthProfile';
 import { getWalkingSpeed } from '@/utils/exerciseRecommendation';
-
-interface WalkingPath {
-  id: string;
-  name: string;
-  distance: number;
-  duration: number;
-  difficulty: 'easy' | 'medium' | 'hard';
-  elevation: number;
-  rating: number;
-  features: string[];
-  description: string;
-  amenities: string[];
-  recommendationReason: string;
-  nearbyFood: string[];
-}
-
-interface UserProfile {
-  age: number;
-  fitnessLevel: string;
-  preferredDistance: number[];
-  healthConditions: string;
-  walkingGoal: string;
-}
+import { WalkingPath, UserProfile } from '@/types/walkingPath';
 
 interface WalkingPathRecommendationsProps {
   userProfile: UserProfile;
