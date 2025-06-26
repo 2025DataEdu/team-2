@@ -19,6 +19,11 @@ const LocationInfo = () => {
     setIsSearching(false);
   };
 
+  const handleGetCurrentLocation = async () => {
+    setSearchAddress(''); // 주소 검색 입력창 초기화
+    getCurrentLocation();
+  };
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleAddressSearch();
@@ -76,7 +81,7 @@ const LocationInfo = () => {
                 <Search className="h-4 w-4" />
               </Button>
               <Button 
-                onClick={getCurrentLocation}
+                onClick={handleGetCurrentLocation}
                 disabled={isLoading}
                 variant="outline"
                 size="sm"
