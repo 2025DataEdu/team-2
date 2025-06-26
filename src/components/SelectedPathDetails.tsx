@@ -1,7 +1,6 @@
-
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Volume2 } from 'lucide-react';
+import { Volume2, Pause, Play } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface WalkingPath {
@@ -25,6 +24,9 @@ interface SelectedPathDetailsProps {
 
 const SelectedPathDetails = ({ selectedPath }: SelectedPathDetailsProps) => {
   const { toast } = useToast();
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   const speakPathDescription = () => {
     if ('speechSynthesis' in window) {
@@ -56,6 +58,8 @@ const SelectedPathDetails = ({ selectedPath }: SelectedPathDetailsProps) => {
       utterance.volume = 1;
 
       utterance.onstart = () => {
+        setIsPlaying(true);
+        setIsPaused(false);
         toast({
           title: "음성 재생 시작",
           description: "선택된 산책로 정보를 음성으로 들려드립니다.",
@@ -63,6 +67,9 @@ const SelectedPathDetails = ({ selectedPath }: SelectedPathDetailsProps) => {
       };
 
       utterance.onend = () => {
+        setIsPlaying(false);
+        setIsPaused(false);
+        utteranceRef.current = null;
         toast({
           title: "음성 재생 완료",
           description: "산책로 정보 음성 재생이 완료되었습니다.",
@@ -71,6 +78,9 @@ const SelectedPathDetails = ({ selectedPath }: SelectedPathDetailsProps) => {
 
       utterance.onerror = (event) => {
         console.error('Speech synthesis error:', event.error);
+        setIsPlaying(false);
+        setIsPaused(false);
+        utteranceRef.current = null;
         toast({
           title: "음성 재생 오류",
           description: "음성 재생 중 오류가 발생했습니다.",
@@ -78,12 +88,46 @@ const SelectedPathDetails = ({ selectedPath }: SelectedPathDetailsProps) => {
         });
       };
 
+      utteranceRef.current = utterance;
       speechSynthesis.speak(utterance);
     } else {
       toast({
         title: "음성 재생 미지원",
         description: "이 브라우저는 음성 재생을 지원하지 않습니다.",
         variant: "destructive",
+      });
+    }
+  };
+
+  const pauseResumeSpeech = () => {
+    if ('speechSynthesis' in window) {
+      if (isPaused) {
+        speechSynthesis.resume();
+        setIsPaused(false);
+        toast({
+          title: "음성 재생 재개",
+          description: "음성 재생을 다시 시작합니다.",
+        });
+      } else {
+        speechSynthesis.pause();
+        setIsPaused(true);
+        toast({
+          title: "음성 재생 일시정지",
+          description: "음성 재생을 일시정지했습니다.",
+        });
+      }
+    }
+  };
+
+  const stopSpeech = () => {
+    if ('speechSynthesis' in window) {
+      speechSynthesis.cancel();
+      setIsPlaying(false);
+      setIsPaused(false);
+      utteranceRef.current = null;
+      toast({
+        title: "음성 재생 중지",
+        description: "음성 재생을 중지했습니다.",
       });
     }
   };
@@ -95,14 +139,45 @@ const SelectedPathDetails = ({ selectedPath }: SelectedPathDetailsProps) => {
           <h2 className="text-2xl font-bold text-green-700">
             🎉 선택된 산책로
           </h2>
-          <Button
-            onClick={speakPathDescription}
-            variant="outline"
-            className="flex items-center gap-2 bg-blue-50 hover:bg-blue-100 border-blue-300"
-          >
-            <Volume2 className="h-4 w-4 text-blue-600" />
-            음성으로 듣기
-          </Button>
+          <div className="flex gap-2">
+            {!isPlaying ? (
+              <Button
+                onClick={speakPathDescription}
+                variant="outline"
+                className="flex items-center gap-2 bg-blue-50 hover:bg-blue-100 border-blue-300"
+              >
+                <Volume2 className="h-4 w-4 text-blue-600" />
+                음성으로 듣기
+              </Button>
+            ) : (
+              <>
+                <Button
+                  onClick={pauseResumeSpeech}
+                  variant="outline"
+                  className="flex items-center gap-2 bg-yellow-50 hover:bg-yellow-100 border-yellow-300"
+                >
+                  {isPaused ? (
+                    <>
+                      <Play className="h-4 w-4 text-yellow-600" />
+                      재개
+                    </>
+                  ) : (
+                    <>
+                      <Pause className="h-4 w-4 text-yellow-600" />
+                      일시정지
+                    </>
+                  )}
+                </Button>
+                <Button
+                  onClick={stopSpeech}
+                  variant="outline"
+                  className="flex items-center gap-2 bg-red-50 hover:bg-red-100 border-red-300"
+                >
+                  중지
+                </Button>
+              </>
+            )}
+          </div>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
