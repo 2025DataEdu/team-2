@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Activity, Heart, Clock, Calendar, AlertTriangle } from 'lucide-react';
+import { Activity, Heart, Clock, Calendar } from 'lucide-react';
 import { ExerciseRecommendation, getIntensityColor } from '@/utils/exerciseRecommendation';
 
 interface ExerciseRecommendationCardProps {
@@ -59,22 +59,6 @@ const ExerciseRecommendationCard = ({ recommendation }: ExerciseRecommendationCa
           <p className="text-xs text-green-700 leading-relaxed">
             {recommendation.reasoning}
           </p>
-        </div>
-
-        {/* 주의사항 (최대 2개만) */}
-        <div className="bg-orange-50 p-3 rounded-lg border-l-4 border-orange-400">
-          <div className="flex items-start gap-2 mb-2">
-            <AlertTriangle className="h-3 w-3 text-orange-600 mt-0.5 flex-shrink-0" />
-            <div className="text-xs font-medium text-orange-800">주의사항</div>
-          </div>
-          <ul className="space-y-1">
-            {recommendation.precautions.slice(0, 2).map((precaution, index) => (
-              <li key={index} className="text-xs text-orange-700 flex items-start gap-2">
-                <span className="text-orange-400 mt-0.5">•</span>
-                <span>{precaution}</span>
-              </li>
-            ))}
-          </ul>
         </div>
       </CardContent>
     </Card>
